@@ -1,0 +1,5 @@
+require 'test/test_fundamental.rb'
+require 'test/test_matrix.rb'
+require 'test/test_polynomial.rb'
+require 'test/test_prime.rb'
+require 'test/test_vector.rb'
