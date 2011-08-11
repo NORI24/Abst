@@ -42,4 +42,21 @@ class TC_Prime < Test::Unit::TestCase
 			assert_equal(expect, prime?(n))
 		end
 	end
+
+	def test_factorization
+		test_cases = [
+			[1, [[1, 1]]],
+			[2, [[2, 1]]],
+			[3, [[3, 1]]],
+			[4, [[2, 2]]],
+			[5, [[5, 1]]],
+			[12, [[2, 2], [3, 1]]],
+			[1024, [[2, 10]]],
+			[81, [[3, 4]]],
+		]
+
+		test_cases.each do |n, expect|
+			assert_equal(expect, factorization(n))
+		end
+	end
 end

@@ -31,8 +31,37 @@ end
 # factorization
 #
 
+# Param::  positive integer n
+# Return:: factorization of n s.t. [[a, b], [c, d], ...], n = a**b * c**d * ...
 def factorization(n)
-	raise NotImplementedError
+	return [[1, 1]] if 1 == n
+
+	rslt = []
+
+	count = 0
+	while n % 2 == 0
+		n >>= 1
+		count += 1
+	end
+	rslt.push([2, count]) if 1 <= count
+
+	limit = integer_square_root(n)
+	3.step(limit, 2) do |d|
+		count = 0
+		while n % d == 0
+			n /= d
+			count += 1
+		end
+
+		if 1 <= count
+			rslt.push([d, count])
+			break if 1 == n
+			limit = integer_square_root(n)
+		end
+	end
+
+	rslt.push([n, 1]) if 1 < n
+	return rslt
 end
 
 #
