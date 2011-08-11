@@ -1,4 +1,4 @@
-# return gcd(a, b)
+# GCD
 # Param::  a and b are member of Euclidean domain
 # Return:: gcd of a and b
 def gcd(a, b)
