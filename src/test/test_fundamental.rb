@@ -1,6 +1,7 @@
 require 'test/unit'
+require 'abst'
 
-class fundamental < Test::Unit::TestCase
+class TC_Fundamental < Test::Unit::TestCase
 	def test_gcd
 		test_cases = [
 			[3, 4, 1],
