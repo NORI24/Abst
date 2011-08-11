@@ -4,11 +4,11 @@
 
 # Param::  positive integer n
 # Return:: a proper divisor of n if found out else nil
-def trial_division(n)
+def trial_division(n, limit = nil)
 	return nil if n <= 3
 	return 2 if n[0] == 0
 
-	limit = integer_square_root(n)
+	limit = integer_square_root(n) unless limit
 	3.step(limit, 2) do |d|
 		return d if n % d == 0
 	end
