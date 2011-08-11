@@ -2,8 +2,29 @@
 # primality test
 #
 
+# Param::  positive integer n
+# Return:: a proper divisor of n if found out else nil
+def trial_division(n)
+	return nil if n <= 3
+	return 2 if n[0] == 0
+
+	limit = integer_square_root(n)
+	3.step(limit, 2) do |d|
+		return d if n % d == 0
+	end
+
+	return nil
+end
+
+# Param::  positive integer n
+# Return:: boolean whether n is prime or not
 def prime?(n)
-	raise NotImplementedError
+	if n <= 3
+		return false if n <= 1
+		return true
+	end
+
+	return (not trial_division(n))
 end
 
 #
