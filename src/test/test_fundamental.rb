@@ -12,5 +12,4 @@ class TC_Fundamental < Test::Unit::TestCase
 			assert_equal(g, gcd(a, b))
 		end
 	end
-
 end
