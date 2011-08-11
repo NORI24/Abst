@@ -1,5 +1,30 @@
+# Param::  g is a element of a group
+#          n is a Integer
+#          mod is a element of a Euclidean domain
+# Return:: gcd of a and b
+def power(g, n, mod = nil)
+	return g.class.one if 0 == n
+
+	if n < 0
+		n = -n
+		g = g.inverse
+	end
+
+	# get integer e s.t. 2^e <= n < 2^(e+1)
+	e = Math.log2(n).floor
+
+	rslt = g
+	while 0 != e
+		e -= 1
+		rslt **= 2
+		rslt *= g if 1 == n[e]
+	end
+
+	return rslt
+end
+
 # GCD
-# Param::  a and b are member of Euclidean domain
+# Param::  a and b are member of a Euclidean domain
 # Return:: gcd of a and b
 def gcd(a, b)
 	until b.zero?
@@ -47,4 +72,23 @@ def binary_gcd(a, b)
 			b = -t
 		end
 	end
+end
+
+# Integer Square Root
+# Param::  positive integer n
+# Return:: integer part of the square root of n
+#  i.e. the number m s.t. m^2 <= n < (m+1)^2
+def integer_square_root(n)
+	x = n
+
+	loop do
+		# Newtonian step
+		y = (x + n / x) >> 1
+
+		break if x <= y
+
+		x = y
+	end
+
+	return x
 end
