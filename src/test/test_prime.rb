@@ -43,7 +43,7 @@ class TC_Prime < Test::Unit::TestCase
 		end
 	end
 
-	def test_factorization
+	def test_factorize
 		test_cases = [
 			[1, [[1, 1]]],
 			[2, [[2, 1]]],
@@ -56,7 +56,7 @@ class TC_Prime < Test::Unit::TestCase
 		]
 
 		test_cases.each do |n, expect|
-			assert_equal(expect, factorization(n))
+			assert_equal(expect, factorize(n))
 		end
 	end
 end

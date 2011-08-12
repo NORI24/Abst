@@ -33,7 +33,7 @@ end
 
 # Param::  positive integer n
 # Return:: factorization of n s.t. [[a, b], [c, d], ...], n = a**b * c**d * ...
-def factorization(n)
+def factorize(n)
 	return [[1, 1]] if 1 == n
 
 	rslt = []
