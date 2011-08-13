@@ -68,12 +68,26 @@ end
 # generation
 #
 
+# Param::  positive integer n
+# Return:: The least prime greater than n
 def next_prime(n)
-	raise NotImplementedError
+	return 2 if n < 2
+
+	n -= 1 if 0 == n[0]
+
+	loop do
+		n += 2
+
+		return n if prime?(n)
+	end
 end
 
 class Range
-	def each_prime(n)
-		raise NotImplementedError
+	def each_prime()
+		return Enumerator.new(self, :each_prime) unless block_given?
+
+		self.each do |i|
+			yield(i) if prime?(i)
+		end
 	end
 end
