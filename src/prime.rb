@@ -74,12 +74,9 @@ def next_prime(n)
 	return 2 if n < 2
 
 	n += n[0] + 1
+	n += 2 until prime?(n)
 
-	loop do
-		return n if prime?(n)
-
-		n += 2
-	end
+	return n
 end
 
 class Range
