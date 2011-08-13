@@ -6,7 +6,7 @@ $fibonacci = {0 => 0, 1 => 1}
 def fibonacci(n)
 	return $fibonacci[n] if $fibonacci.include?(n)
 
-	m = n > 1
+	m = n >> 1
 	if n[0] == 0
 		f1 = fibonacci(m - 1)
 		f2 = fibonacci(m)
