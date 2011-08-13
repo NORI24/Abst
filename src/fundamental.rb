@@ -23,10 +23,16 @@ def power(g, n, mod = nil)
 	return rslt
 end
 
-# Param::  positive integer n
-# Return:: factorial n!
+class Integer
+	# Param::  positive integer n
+	# Return:: factorial n!
+	def factorial
+		return (2..self).inject(1) {|r, i| r * i}
+	end
+end
+
 def factorial(n)
-	return (2..n).inject(1) {|r, i| r * i}
+	return n.factorial
 end
 
 # GCD
