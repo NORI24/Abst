@@ -73,12 +73,12 @@ end
 def next_prime(n)
 	return 2 if n < 2
 
-	n -= 1 if 0 == n[0]
+	n += n[0] + 1
 
 	loop do
-		n += 2
-
 		return n if prime?(n)
+
+		n += 2
 	end
 end
 
