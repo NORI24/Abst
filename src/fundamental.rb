@@ -23,6 +23,12 @@ def power(g, n, mod = nil)
 	return rslt
 end
 
+# Param::  positive integer n
+# Return:: factorial n!
+def factorial(n)
+	return (2..n).inject(1) {|r, i| r * i}
+end
+
 # GCD
 # Param::  a and b are member of a Euclidean domain
 # Return:: gcd of a and b
