@@ -37,7 +37,6 @@ class Rational
 
 			i += 1
 		end
-#return quotient
 
 		# format
 		rslt = "0."

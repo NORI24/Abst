@@ -7,8 +7,10 @@ def power(g, n, mod = nil)
 
 	if n < 0
 		n = -n
-		g = g.inverse
+		g = g ** (-1)
 	end
+
+	g %= mod if mod
 
 	# get integer e s.t. 2^e <= n < 2^(e+1)
 	e = Math.log2(n).floor
@@ -18,6 +20,7 @@ def power(g, n, mod = nil)
 		e -= 1
 		rslt **= 2
 		rslt *= g if 1 == n[e]
+		rslt %= mod if mod
 	end
 
 	return rslt
