@@ -18,6 +18,7 @@ class TC_Fundamental < Test::Unit::TestCase
 
 	def test_factorial
 		test_cases = [
+			[0, 1],
 			[1, 1],
 			[2, 2],
 			[3, 6],

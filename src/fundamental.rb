@@ -24,7 +24,7 @@ def power(g, n, mod = nil)
 end
 
 class Integer
-	# Param::  positive integer n
+	# Param::  non-negative integer n
 	# Return:: factorial n!
 	def factorial
 		return (2..self).inject(1) {|r, i| r * i}
