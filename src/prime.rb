@@ -68,7 +68,7 @@ end
 # generation
 #
 
-# Param::  positive integer n
+# Param::  integer n
 # Return:: The least prime greater than n
 def next_prime(n)
 	return 2 if n < 2
