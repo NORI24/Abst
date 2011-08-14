@@ -81,7 +81,7 @@ end
 # Param::  positive integer n
 # Return:: integer part of the square root of n
 #  i.e. the number m s.t. m^2 <= n < (m+1)^2
-def integer_square_root(n)
+def isqrt(n)
 	x = n
 
 	loop do

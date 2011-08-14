@@ -39,11 +39,11 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
-	def test_integer_square_root
+	def test_isqrt
 		tc = [1, 2, 3, 13, 16, 50, 97, 2412342342347]
 
 		tc.each do |i|
-			sroot = integer_square_root(i)
+			sroot = isqrt(i)
 			assert(sroot ** 2 <= i && i < (sroot + 1) ** 2)
 		end
 	end
