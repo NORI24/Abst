@@ -26,18 +26,6 @@ def power(g, n, mod = nil)
 	return rslt
 end
 
-class Integer
-	# Param::  non-negative integer n
-	# Return:: factorial n!
-	def factorial
-		return (2..self).inject(1) {|r, i| r * i}
-	end
-end
-
-def factorial(n)
-	return n.factorial
-end
-
 # GCD
 # Param::  a and b are member of a Euclidean domain
 # Return:: gcd of a and b

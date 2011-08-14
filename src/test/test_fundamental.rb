@@ -16,24 +16,6 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
-	def test_factorial
-		test_cases = [
-			[0, 1],
-			[1, 1],
-			[2, 2],
-			[3, 6],
-			[4, 24],
-			[5, 120],
-			[6, 720],
-		]
-
-		test_cases.each do |n, expect|
-			rslt = factorial(n)
-
-			assert_equal(expect, rslt)
-		end
-	end
-
 	def test_gcd
 		test_cases = [
 			[3, 4, 1],
