@@ -3,21 +3,13 @@ require 'abst'
 
 class TC_Combination < Test::Unit::TestCase
 	def test_factorial
-		test_cases = [
-			[0, 1],
-			[1, 1],
-			[2, 2],
-			[3, 6],
-			[4, 24],
-			[5, 120],
-			[6, 720],
-		]
-
-		test_cases.each do |n, expect|
-			rslt = factorial(n)
-
-			assert_equal(expect, rslt)
-		end
+		assert_equal(1, factorial(0))
+		assert_equal(1, factorial(1))
+		assert_equal(2, factorial(2))
+		assert_equal(6, factorial(3))
+		assert_equal(24, factorial(4))
+		assert_equal(120, factorial(5))
+		assert_equal(720, factorial(6))
 	end
 
 	def test_binomial
