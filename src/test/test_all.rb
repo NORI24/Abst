@@ -1,3 +1,4 @@
+require 'test/test_combination'
 require 'test/test_fundamental'
 require 'test/test_matrix'
 require 'test/test_polynomial'
