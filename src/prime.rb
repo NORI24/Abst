@@ -1,4 +1,35 @@
 #
+# Cache
+#
+
+def precompute_primes
+	primes = (2..PRIME_CACHE_LIMIT).each_prime.to_a
+
+	Dir::mkdir(DATA_DIR) unless FileTest.exist?(DATA_DIR)
+	open(PRIMES_LIST, "w") {|io| io.write(primes.map {|p| p.to_s}.join("\n"))}
+
+	return primes
+end
+
+def load_precomputed_primes
+	open(PRIMES_LIST) {|io| return io.read.split("\n").map {|line| line.to_i}}
+end
+
+$primes = []
+def load_primes_list
+	return $primes unless $primes.empty?
+
+	# precomputed?
+	if FileTest.exist?(PRIMES_LIST)
+		$primes = load_precomputed_primes
+	else
+		$primes = precompute_primes
+	end
+
+	return $primes
+end
+
+#
 # primality test
 #
 
