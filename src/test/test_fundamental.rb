@@ -47,4 +47,14 @@ class TC_Fundamental < Test::Unit::TestCase
 			assert(sroot ** 2 <= i && i < (sroot + 1) ** 2)
 		end
 	end
+
+	def test_square?
+		assert_equal(1, square?(1))
+		assert_equal(false, square?(2))
+		assert_equal(false, square?(3))
+		assert_equal(2, square?(4))
+		assert_equal(false, square?(5))
+		assert_equal(13, square?(169))
+		assert_equal(false, square?(42342341))
+	end
 end
