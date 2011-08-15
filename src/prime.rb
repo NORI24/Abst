@@ -2,8 +2,11 @@
 # Cache
 #
 
+class CacheAccessError < Exception; end
+
+# precompute primes by eratosthenes
 def precompute_primes
-	primes = (2..PRIME_CACHE_LIMIT).each_prime.to_a
+	primes = eratosthenes_sieve(PRIME_CACHE_LIMIT).to_a
 
 	Dir::mkdir(DATA_DIR) unless FileTest.exist?(DATA_DIR)
 	open(PRIMES_LIST, "w") {|io| io.write(primes.map {|p| p.to_s}.join("\n"))}
@@ -16,7 +19,7 @@ def load_precomputed_primes
 end
 
 $primes = []
-def load_primes_list
+def primes_list
 	return $primes unless $primes.empty?
 
 	# precomputed?
@@ -24,6 +27,37 @@ def load_primes_list
 		$primes = load_precomputed_primes
 	else
 		$primes = precompute_primes
+	end
+
+	# set read only
+	def $primes.[]=(index, value)
+		raise CacheAccessError, "Primes cache is Read Only"
+	end
+
+	# Binary search the index of p
+	# Param::  integer p
+	# Return:: index of p if exist else nil
+	def $primes.index_of(p)
+		a = 0
+		b = size - 1
+
+		while a < b
+			t = (a + b) >> 1
+
+			if p < $primes[t]
+				b = t - 1
+			elsif p == $primes[t]
+				return t
+			else
+				a = t + 1
+			end
+		end
+
+		return false
+	end
+
+	def $primes.include?(p)
+		return index_of(p)
 	end
 
 	return $primes
@@ -39,7 +73,7 @@ def trial_division(n, limit = nil)
 	return nil if n <= 3
 	return 2 if n[0] == 0
 
-	limit = integer_square_root(n) unless limit
+	limit = isqrt(n) unless limit
 	3.step(limit, 2) do |d|
 		return d if n % d == 0
 	end
@@ -69,15 +103,10 @@ def factorize(n)
 
 	rslt = []
 
-	count = 0
-	while n % 2 == 0
-		n >>= 1
-		count += 1
-	end
-	rslt.push([2, count]) if 1 <= count
+	limit = isqrt(n)
+	(2..limit).each_prime do |d|
+		break if limit < d
 
-	limit = integer_square_root(n)
-	3.step(limit, 2) do |d|
 		count = 0
 		while n % d == 0
 			n /= d
@@ -87,7 +116,7 @@ def factorize(n)
 		if 1 <= count
 			rslt.push([d, count])
 			break if 1 == n
-			limit = integer_square_root(n)
+			limit = isqrt(n)
 		end
 	end
 
@@ -98,6 +127,69 @@ end
 #
 # generation
 #
+
+def eratosthenes_sieve(n)
+	return Enumerator.new(self, :eratosthenes_sieve, n) unless block_given?
+
+	return if n < 2
+
+	yield(2)
+	return if 2 == n
+
+	yield 3
+
+	# make list for sieve
+	sieve_len_max = (n + 1) / 2
+	sieve = [true, false, true]
+	sieve_len = 3
+	k = 5
+	i = 2
+	while sieve_len < sieve_len_max
+		if sieve[i]
+			yield k
+			sieve_len *= k
+			if sieve_len_max < sieve_len
+				sieve_len /= k
+				# adjust sieve list length
+				sieve *= sieve_len_max / sieve_len
+				sieve += sieve[0...(sieve_len_max - sieve.size)]
+				sieve_len = sieve_len_max
+			else
+				sieve = sieve * k
+			end
+
+			i.step(sieve_len, k) do |j|
+				sieve[j] = false
+			end
+		end
+
+		k += 2
+		i += 1
+	end
+
+	# sieve
+	limit = isqrt(n)
+	while k <= limit
+		if sieve[i]
+			yield k
+			j = (k ** 2 - 1) >> 1
+			while j < sieve_len_max
+				sieve[j] = false
+				j += k
+			end
+		end
+
+		k += 2
+		i += 1
+	end
+
+	# output result
+	limit = (n - 1) >> 1
+	while i <= limit
+		yield(2 * i + 1) if sieve[i]
+		i += 1
+	end
+end
 
 # Param::  integer n
 # Return:: The least prime greater than n
@@ -114,7 +206,34 @@ class Range
 	def each_prime()
 		return Enumerator.new(self, :each_prime) unless block_given?
 
-		self.each do |i|
+		primes = primes_list
+
+		max = last + (exclude_end? ? -1 : 0)
+		if (first <= primes.last)
+			a = 0
+			b = primes.size - 1
+			while a < b
+				t = (a + b) >> 1
+
+				if first < primes[t]
+					b = t
+				elsif first == primes[t]
+					a = t
+					break
+				else
+					a = t + 1
+				end
+			end
+
+			(a..(primes.size - 1)).each do |i|
+				return if max < primes[i]
+				yield(primes[i])
+			end
+		end
+
+		s = primes.last
+		s += 1 + s[0]
+		s.step(max, 2) do |i|
 			yield(i) if prime?(i)
 		end
 	end
