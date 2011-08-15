@@ -27,6 +27,8 @@ end
 
 require path + 'config'
 
+require path + 'cache'
+
 require path + 'combination'
 require path + 'prime'
 require path + 'fundamental'
