@@ -77,6 +77,26 @@ def binary_gcd(a, b)
 	end
 end
 
+def extended_gcd(a, b)
+	raise NotImplementedError
+end
+
+def extended_binary_gcd(a, b)
+	raise NotImplementedError
+end
+
+def crt(n, mod)
+	raise NotImplementedError
+end
+
+def continued_fraction(a, b, a_, b_)
+	raise NotImplementedError
+end
+
+def kronecker_symbol(n, m)
+	raise NotImplementedError
+end
+
 # Integer Square Root
 # Param::  positive integer n
 # Return:: integer part of the square root of n
@@ -94,4 +114,20 @@ def isqrt(n)
 	end
 
 	return x
+end
+
+def iroot(n, pow)
+	raise NotImplementedError
+end
+
+def square?(n)
+	raise NotImplementedError
+end
+
+def prime_power?(n)
+	raise NotImplementedError
+end
+
+def power_detection(n)
+	raise NotImplementedError
 end
