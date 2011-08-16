@@ -38,3 +38,5 @@ require path + 'prime'
 require path + 'rational'
 require path + 'sequence'
 require path + 'vector'
+
+require path + 'pe'
