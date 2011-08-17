@@ -100,24 +100,40 @@ end
 # Integer Square Root
 # Param::  positive integer n
 # Return:: integer part of the square root of n
-#  i.e. the number m s.t. m^2 <= n < (m+1)^2
+#  i.e. the number m s.t. m ** 2 <= n < (m + 1) ** 2
 def isqrt(n)
 	x = n
 
 	loop do
 		# Newtonian step
-		y = (x + n / x) >> 1
+		next_x = (x + n / x) >> 1
 
-		break if x <= y
+		break if x <= next_x
 
-		x = y
+		x = next_x
 	end
 
 	return x
 end
 
+# Integer Power Root
+# Param::  positive integer n
+#          positive integer pow
+# Return:: integer part of the power root of n
+#  i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
 def iroot(n, pow)
-	raise NotImplementedError
+	x = n
+
+	loop do
+		# Newtonian step
+		next_x = ((pow - 1) * x + n / power(x, pow - 1)) / pow
+
+		break if x <= next_x
+
+		x = next_x
+	end
+
+	return x
 end
 
 # Test whether a given number is a square number or not

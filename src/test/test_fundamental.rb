@@ -48,6 +48,33 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
+	def test_iroot
+		assert_equal(1, iroot(1, 2))
+		assert_equal(1, iroot(2, 2))
+		assert_equal(1, iroot(3, 2))
+		assert_equal(2, iroot(4, 2))
+
+		assert_equal(1, iroot(1, 3))
+		assert_equal(1, iroot(2, 3))
+		assert_equal(1, iroot(7, 3))
+		assert_equal(2, iroot(8, 3))
+		assert_equal(2, iroot(26, 3))
+		assert_equal(3, iroot(27, 3))
+
+		assert_equal(1, iroot(1, 4))
+		assert_equal(1, iroot(15, 4))
+		assert_equal(2, iroot(16, 4))
+		assert_equal(2, iroot(80, 4))
+		assert_equal(3, iroot(81, 4))
+
+		5.times do
+			n = rand(10 ** 10) + 1
+			pow = rand(40) + 1
+			proot = iroot(n, pow)
+			assert(proot ** pow <= n && n < (proot + 1) ** pow)
+		end
+	end
+
 	def test_square?
 		assert_equal(1, square?(1))
 		assert_equal(false, square?(2))
