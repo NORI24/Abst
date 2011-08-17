@@ -2,7 +2,7 @@
 # The first ten triangle numbers are:
 #     1, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...
 def triangle?(n)
-	return false unless r = square?(n << 3 + 1) and 0 == (-1 + r)[0]
+	return false unless r = square?((n << 3) + 1) and 0 == (-1 + r)[0]
 	return true
 end
 
@@ -18,6 +18,6 @@ end
 # The first ten hexagonal numbers are:
 #     1, 6, 15, 28, 45, 66, 91, 120, 153, 190, ...
 def hexagonal?(n)
-	return false unless r = square?(n << 3 + 1) and 0 == (1 + r)[0]
+	return false unless r = square?((n << 3) + 1) and 0 == (1 + r) & 3
 	return true
 end
