@@ -61,10 +61,10 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(2, iroot(26, 3))
 		assert_equal(3, iroot(27, 3))
 
-		assert_equal(1, iroot(1, 4))
-		assert_equal(1, iroot(15, 4))
-		assert_equal(2, iroot(16, 4))
-		assert_equal(2, iroot(80, 4))
+		assert_equal([1, 1], iroot(1, 4, true))
+		assert_equal([1, 1], iroot(15, 4, true))
+		assert_equal([2, 16], iroot(16, 4, true))
+		assert_equal([2, 16], iroot(80, 4, true))
 		assert_equal(3, iroot(81, 4))
 
 		5.times do

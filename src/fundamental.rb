@@ -121,18 +121,27 @@ end
 #          positive integer pow
 # Return:: integer part of the power root of n
 #  i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
-def iroot(n, pow)
+def iroot(n, pow, return_power = false)
 	x = n
+	z = x ** (pow - 1)
+	q = n / z
+
+# #
+#	bsize = n.bit_size
+#	exp = (bsize - 1) / k + 1	# == Rational(bs, k).ceil
+#	x = 1 << exp
+#	q = n >> (exp * (pow - 1))	# == n / x ** (pow -  1)
 
 	loop do
 		# Newtonian step
-		next_x = ((pow - 1) * x + n / power(x, pow - 1)) / pow
+		x += (q - x) / pow
+		z = x ** (pow - 1)
+		q = n / z
 
-		break if x <= next_x
-
-		x = next_x
+		break if x <= q
 	end
 
+	return x, x * z if return_power
 	return x
 end
 
