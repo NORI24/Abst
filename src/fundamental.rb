@@ -1,7 +1,7 @@
-# Param::  g is a element of a group
-#          n is a Integer
-#          mod is a element of a Euclidean domain
-# Return:: gcd of a and b
+# Param::  group element g
+#          Integer n
+#          Euclidean domain element mod
+# Return:: g ** n % mod
 def power(g, n, mod = nil)
 	return g.class.one if 0 == n
 
@@ -11,9 +11,7 @@ def power(g, n, mod = nil)
 	end
 
 	g %= mod if mod
-
-	# get integer e s.t. 2 ** e <= n < 2 ** (e + 1)
-	e = n.bit_size - 1
+	e = ilog2(n)
 
 	rslt = g
 	while 0 != e
@@ -123,7 +121,7 @@ end
 #  i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
 def iroot(n, pow, return_power = false)
 	# get integer e s.t. (2 ** (e - 1)) ** pow <= n < (2 ** e) ** pow
-	e = (n.bit_size - 1) / pow + 1	# == Rational(n.bit_size, pow).ceil
+	e = ilog2(n) / pow + 1		# == Rational(n.bit_size, pow).ceil
 
 	x = 1 << e					# == 2 ** e
 	z = nil
@@ -174,4 +172,12 @@ end
 
 def power_detection(n)
 	raise NotImplementedError
+end
+
+def ilog2(n)
+# #
+	#return Math.log2(self).floor
+
+	rslt = (n.size - BASE_BYTE) << 3
+	return rslt + Math.log2(n >> rslt).floor
 end

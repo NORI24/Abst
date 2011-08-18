@@ -2,10 +2,10 @@
 PRIME_CACHE_LIMIT = 10_000_000
 
 # System cache files will be created in this directory
-DATA_DIR = File.dirname(__FILE__) + '/data/'
+DATA_DIR = ABST_ROOT + 'data/'
 
 # User cache files will be created in this directory
-CACHE_DIR = File.dirname(__FILE__) + '/cache/'
+CACHE_DIR = ABST_ROOT + 'cache/'
 
 # Cache primes
-PRIMES_LIST = DATA_DIR + '/primes_list'
+PRIMES_LIST = DATA_DIR + 'primes_list'

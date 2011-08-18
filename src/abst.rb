@@ -1,4 +1,7 @@
-path = File.dirname(__FILE__) + '/'
+ABST_ROOT = File.dirname(__FILE__) + '/'
+
+# Integer block byte size
+BASE_BYTE = 1.size
 
 # extension
 class Integer
@@ -11,8 +14,7 @@ class Integer
 	end
 
 	def bit_size
-# #
-		return Math.log2(self).floor + 1
+		return ilog2(self) + 1
 	end
 end
 
@@ -30,18 +32,18 @@ class Float
 	end
 end
 
-require path + 'config'
+require ABST_ROOT + 'config'
 
-require path + 'cache'
+require ABST_ROOT + 'cache'
 
-require path + 'combination'
-require path + 'prime'
-require path + 'fundamental'
-require path + 'matrix'
-require path + 'polynomial'
-require path + 'prime'
-require path + 'rational'
-require path + 'sequence'
-require path + 'vector'
+require ABST_ROOT + 'combination'
+require ABST_ROOT + 'prime'
+require ABST_ROOT + 'fundamental'
+require ABST_ROOT + 'matrix'
+require ABST_ROOT + 'polynomial'
+require ABST_ROOT + 'prime'
+require ABST_ROOT + 'rational'
+require ABST_ROOT + 'sequence'
+require ABST_ROOT + 'vector'
 
-require path + 'pe'
+require ABST_ROOT + 'pe'
