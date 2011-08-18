@@ -26,10 +26,6 @@ class Float
 	def self.zero
 		return 0.0
 	end
-
-	def inverse
-		return 1.0 / self
-	end
 end
 
 require ABST_ROOT + 'config'

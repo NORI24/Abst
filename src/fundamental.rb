@@ -57,15 +57,15 @@ def binary_gcd(a, b)
 	b >>= k
 
 	# 3. Remove initial power of 2
-	a >>= 1 while 0 == a[0]
-	b >>= 1 while 0 == b[0]
+	a >>= 1 while a.even?
+	b >>= 1 while b.even?
 
 	loop do
 		# 4. Subtract (Here a and b are both odd.)
 		t = (a - b) >> 1
 		return 2 ** k * a if 0 == t
 
-		t >>= 1 if 0 == t[0]
+		t >>= 1 if t.even?
 
 		if 0 < t
 			a = t

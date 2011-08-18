@@ -71,7 +71,7 @@ end
 # Return:: a proper divisor of n if found out else nil
 def trial_division(n, limit = nil)
 	return nil if n <= 3
-	return 2 if n[0] == 0
+	return 2 if n.even?
 
 	limit = isqrt(n) unless limit
 	3.step(limit, 2) do |d|
@@ -196,7 +196,7 @@ end
 def next_prime(n)
 	return 2 if n < 2
 
-	n += n[0] + 1
+	n += 1 + n[0]
 	n += 2 until prime?(n)
 
 	return n
