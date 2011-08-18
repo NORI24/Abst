@@ -47,21 +47,25 @@ module Bisect
 
 	# Find rightmost value less than item
 	def find_lt(list, item)
-		raise NotImplementedError
+		i = bisect_left(list, item)
+		return list[i - 1] unless 0 == i
 	end
 
 	# Find rightmost value less than or equal to item
 	def find_le(list, item)
-		raise NotImplementedError
+		i = bisect_right(list, item)
+		return list[i - 1] unless 0 == i
 	end
 
 	# Find leftmost value greater than item
 	def find_gt(list, item)
-		raise NotImplementedError
+		i = bisect_right(list, item)
+		return list[i] unless list.size == i
 	end
 
 	# Find leftmost item greater than or equal to item
 	def find_ge(list, item)
-		raise NotImplementedError
+		i = bisect_left(list, item)
+		return list[i] unless list.size == i
 	end
 end
