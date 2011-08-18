@@ -18,9 +18,9 @@ def load_precomputed_primes
 	open(PRIMES_LIST) {|io| return io.read.split("\n").map {|line| line.to_i}}
 end
 
-$primes = []
+$primes = nil
 def primes_list
-	return $primes unless $primes.empty?
+	return $primes if $primes
 
 	# precomputed?
 	if FileTest.exist?(PRIMES_LIST)
