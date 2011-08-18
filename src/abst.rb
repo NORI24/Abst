@@ -9,6 +9,11 @@ class Integer
 	def self.zero
 		return 0
 	end
+
+	def bit_size
+# #
+		return Math.log2(self).floor + 1
+	end
 end
 
 class Float

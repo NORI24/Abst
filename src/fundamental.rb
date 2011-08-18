@@ -12,8 +12,8 @@ def power(g, n, mod = nil)
 
 	g %= mod if mod
 
-	# get integer e s.t. 2^e <= n < 2^(e+1)
-	e = Math.log2(n).floor
+	# get integer e s.t. 2 ** e <= n < 2 ** (e + 1)
+	e = n.bit_size - 1
 
 	rslt = g
 	while 0 != e
@@ -122,15 +122,12 @@ end
 # Return:: integer part of the power root of n
 #  i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
 def iroot(n, pow, return_power = false)
-	x = n
-	z = x ** (pow - 1)
-	q = n / z
+	# get integer e s.t. (2 ** (e - 1)) ** pow <= n < (2 ** e) ** pow
+	e = (n.bit_size - 1) / pow + 1	# == Rational(n.bit_size, pow).ceil
 
-# #
-#	bsize = n.bit_size
-#	exp = (bsize - 1) / k + 1	# == Rational(bs, k).ceil
-#	x = 1 << exp
-#	q = n >> (exp * (pow - 1))	# == n / x ** (pow -  1)
+	x = 1 << e					# == 2 ** e
+	z = nil
+	q = n >> (e * (pow - 1))	# == n / (x ** (pow -  1))
 
 	loop do
 		# Newtonian step
