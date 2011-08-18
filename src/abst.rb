@@ -30,6 +30,7 @@ end
 
 require ABST_ROOT + 'config'
 
+require ABST_ROOT + 'bisect'
 require ABST_ROOT + 'cache'
 
 require ABST_ROOT + 'combination'

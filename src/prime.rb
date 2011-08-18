@@ -34,30 +34,8 @@ def primes_list
 		raise CacheAccessError, "Primes cache is Read Only"
 	end
 
-	# Binary search the index of n
-	# Param::  integer n
-	# Return:: the index of n if exist else nil
-	def $primes.index_of(n)
-		a = 0
-		b = size - 1
-
-		while a <= b
-			t = (a + b) >> 1
-
-			if n < $primes[t]
-				b = t - 1
-			elsif n == $primes[t]
-				return t
-			else
-				a = t + 1
-			end
-		end
-
-		return nil
-	end
-
 	def $primes.include?(n)
-		return index_of(n)
+		return Bisect.index(self, n)
 	end
 
 	return $primes

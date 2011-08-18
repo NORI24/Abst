@@ -175,9 +175,18 @@ def power_detection(n)
 end
 
 def ilog2(n)
-# #
-	#return Math.log2(self).floor
+	bits = (n.size - BASE_BYTE) << 3
+	return bits + Bisect.bisect_right(powers_of_2, n >> bits) - 1
+end
 
-	rslt = (n.size - BASE_BYTE) << 3
-	return rslt + Math.log2(n >> rslt).floor
+$powers_of_2 = nil
+def powers_of_2
+	unless $powers_of_2
+		$powers_of_2 = [1]
+		(BASE_BYTE << 3).times do |i|
+			$powers_of_2[i + 1] = $powers_of_2[i] << 1
+		end
+	end
+
+	return $powers_of_2
 end
