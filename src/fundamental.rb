@@ -279,7 +279,7 @@ end
 # Param::  positive integer n
 #          positive integer pow
 # Return:: integer part of the power root of n
-#  i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
+#          i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
 def iroot(n, pow, return_power = false)
 	# get integer e s.t. (2 ** (e - 1)) ** pow <= n < (2 ** e) ** pow
 	e = ilog2(n) / pow + 1		# == Rational(n.bit_size, pow).ceil
@@ -313,16 +313,15 @@ def power_detection(n)
 	raise NotImplementedError
 end
 
-# Param::
-# Return::
+# Param::  positive integer n
+# Return:: integer e s.t. 2 ** e <= n < 2 ** (e + 1)
 def ilog2(n)
 	bits = (n.size - BASE_BYTE) << 3
 	return bits + Bisect.bisect_right(powers_of_2, n >> bits) - 1
 end
 
 $powers_of_2 = nil
-# Param::
-# Return::
+# Return:: array power of 2 s.t. [1, 2, 4, 8, 16, 32, ...]
 def powers_of_2
 	unless $powers_of_2
 		$powers_of_2 = [1]
