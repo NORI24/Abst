@@ -41,18 +41,16 @@ end
 def binary_gcd(a, b)
 	a, b = b, a if a < b
 
-	return a if (0 == b)
+	return a if 0 == b
 
 	# Reduce size once
 	a, b = b, a % b
 
-	return a if (0 == b)
+	return a if 0 == b
 
 	# Compute powers of 2
 	k = 0
-	while (0 == a[k] and 0 == b[k])
-		k += 1
-	end
+	k += 1 while 0 == a[k] and 0 == b[k]
 	a >>= k
 	b >>= k
 
