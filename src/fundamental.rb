@@ -1,8 +1,14 @@
+# Right-Left Binary Power
+def right_left_power(g, n)
+	raise NotImplementedError
+end
+
+# Left-Right Binary Power
 # Param::  group element g
 #          Integer n
 #          Euclidean domain element mod
 # Return:: g ** n % mod
-def power(g, n, mod = nil)
+def left_right_power(g, n, mod = nil)
 	return g.class.one if 0 == n
 
 	if n < 0
@@ -23,6 +29,12 @@ def power(g, n, mod = nil)
 
 	return rslt
 end
+alias :power :left_right_power
+
+# Left-Right Base 2**k Power
+def left_right_base2k_power(g, n)
+	raise NotImplementedError
+end
 
 # GCD
 # Param::  a and b are member of a Euclidean domain
@@ -33,6 +45,10 @@ def gcd(a, b)
 	end
 
 	return a
+end
+
+def lehmer_gcd(a, b)
+	raise NotImplementedError
 end
 
 # Binary GCD
@@ -74,6 +90,10 @@ def binary_gcd(a, b)
 end
 
 def extended_gcd(a, b)
+	raise NotImplementedError
+end
+
+def extended_lehmer_gcd(a, b)
 	raise NotImplementedError
 end
 
