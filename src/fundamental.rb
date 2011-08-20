@@ -101,15 +101,36 @@ def extended_binary_gcd(a, b)
 	raise NotImplementedError
 end
 
-def crt(n, mod)
+def chinese_remainder_theorem(n, mod)
 	raise NotImplementedError
 end
+
+def inductive_chinese_remainder_theorem(n, mod)
+	raise NotImplementedError
+end
+alias :crt :inductive_chinese_remainder_theorem
 
 def continued_fraction(a, b, a_, b_)
 	raise NotImplementedError
 end
 
 def kronecker_symbol(n, m)
+	raise NotImplementedError
+end
+
+def mod_square_root(n, p)
+	raise NotImplementedError
+end
+
+def cornacchia()
+	raise NotImplementedError
+end
+
+def modified_cornacchia()
+	raise NotImplementedError
+end
+
+def root_mod_p
 	raise NotImplementedError
 end
 
