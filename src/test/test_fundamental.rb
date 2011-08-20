@@ -2,18 +2,28 @@ require 'test/unit'
 require 'abst'
 
 class TC_Fundamental < Test::Unit::TestCase
-	def test_power
-		test_cases = [
-			[5, 0, 1],
-			[2, 10, 1024],
-			[2.0, -10, 1.0/1024],
-		]
+	def test_right_left_power
+		assert_equal(1, right_left_power(5, 0))
+		assert_equal(1024, right_left_power(2, 10))
+		assert_equal(24, right_left_power(2, 10, 100))
+		assert_equal(1.0 / 1024, right_left_power(2.0, -10))
+	end
 
-		test_cases.each do |g, n, expect|
-			rslt = power(g, n)
+	def test_left_right_power
+		assert_equal(1, left_right_power(5, 0))
+		assert_equal(1024, left_right_power(2, 10))
+		assert_equal(24, left_right_power(2, 10, 100))
+		assert_equal(1.0 / 1024, left_right_power(2.0, -10))
+	end
 
-			assert_equal(expect, rslt)
-		end
+	def test_left_right_base2k_power
+		assert_equal(1, left_right_base2k_power(5, 0))
+		assert_equal(1024, left_right_base2k_power(2, 10))
+		assert_equal(24, left_right_base2k_power(2, 10, 100))
+		assert_equal(24, left_right_base2k_power(2, 10, 100, 1))
+		assert_equal(8212890625, left_right_base2k_power(5, 2 ** 100, 10 ** 10))
+		assert_equal(1.0 / 1024, left_right_base2k_power(2.0, -10))
+		assert_equal(1.0 / 1024, left_right_base2k_power(2.0, -10, nil, 2))
 	end
 
 	def test_gcd

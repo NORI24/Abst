@@ -1,11 +1,34 @@
 # Right-Left Binary Power
-def right_left_power(g, n)
-	raise NotImplementedError
+# Param::  group element g
+#          integer n
+#          Euclidean domain element mod
+# Return:: g ** n % mod
+def right_left_power(g, n, mod = nil)
+	rslt = g.class.one
+	return rslt if 0 == n
+
+	if n < 0
+		n = -n
+		g = g ** (-1)
+	end
+
+	g %= mod if mod
+
+	loop do
+		rslt *= g if n.odd?
+		rslt %= mod if mod
+		n >>= 1
+		break if 0 == n
+		g *= g
+		g %= mod if mod
+	end
+
+	return rslt
 end
 
 # Left-Right Binary Power
 # Param::  group element g
-#          Integer n
+#          integer n
 #          Euclidean domain element mod
 # Return:: g ** n % mod
 def left_right_power(g, n, mod = nil)
@@ -22,7 +45,7 @@ def left_right_power(g, n, mod = nil)
 	rslt = g
 	while 0 != e
 		e -= 1
-		rslt **= 2
+		rslt *= rslt
 		rslt *= g if 1 == n[e]
 		rslt %= mod if mod
 	end
@@ -32,8 +55,78 @@ end
 alias :power :left_right_power
 
 # Left-Right Base 2**k Power
-def left_right_base2k_power(g, n)
-	raise NotImplementedError
+# Param::  group element g
+#          integer n
+#          Euclidean domain element mod
+#          base bit size k
+# Return:: g ** n % mod
+def left_right_base2k_power(g, n, mod = nil, k = nil)
+	rslt = g.class.one
+	return rslt if 0 == n
+
+	# Initialize
+	if n < 0
+		n = -n
+		g = g ** (-1)
+	end
+
+	unless k
+		e = ilog2(n)
+		optim = [0, 8, 24, 69, 196, 538, 1433, 3714]
+
+		if e <= optim.last
+			k = Bisect.bisect_left(optim, e)
+		else
+			k = optim.size
+			k += 1 until e <= k * (k + 1) * (1 << (k << 1)) / ((1 << (k + 1)) - k - 2)
+		end
+	end
+
+	g %= mod if mod
+
+	# convert n into base 2**k
+	digits = []
+	mask = (1 << k) - 1
+	until 0 == n
+		digits.unshift(n & mask)
+		n >>= k
+	end
+
+	# Precomputations
+	z_powers = [nil, g]
+	g_square = g * g
+	g_square %= mod if mod
+	3.step((1 << k) - 1, 2) do |i|
+		z_powers[i] = z_powers[i - 2] * g_square
+		z_powers[i] %= mod if mod
+	end
+
+	digits.each do |a|
+		# Multiply
+		if 0 == a
+			k.times do
+				rslt *= rslt
+				rslt %= mod if mod
+			end
+		else
+			t = 0
+			t += 1 while 0 == a[t]
+			a >>= t if 0 < t
+
+			(k - t).times do
+				rslt *= rslt
+				rslt %= mod if mod
+			end
+			rslt *= z_powers[a]
+			rslt %= mod if mod
+			t.times do
+				rslt *= rslt
+				rslt %= mod if mod
+			end
+		end
+	end
+
+	return rslt
 end
 
 # GCD
@@ -47,6 +140,8 @@ def gcd(a, b)
 	return a
 end
 
+# Param::
+# Return::
 def lehmer_gcd(a, b)
 	raise NotImplementedError
 end
@@ -89,47 +184,69 @@ def binary_gcd(a, b)
 	end
 end
 
+# Param::
+# Return::
 def extended_gcd(a, b)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def extended_lehmer_gcd(a, b)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def extended_binary_gcd(a, b)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def chinese_remainder_theorem(n, mod)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def inductive_chinese_remainder_theorem(n, mod)
 	raise NotImplementedError
 end
 alias :crt :inductive_chinese_remainder_theorem
 
+# Param::
+# Return::
 def continued_fraction(a, b, a_, b_)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def kronecker_symbol(n, m)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def mod_square_root(n, p)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def cornacchia()
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def modified_cornacchia()
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def root_mod_p
 	raise NotImplementedError
 end
@@ -179,20 +296,28 @@ def iroot(n, pow, return_power = false)
 	return x
 end
 
+# Param::
+# Return::
 def prime_power?(n)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def power_detection(n)
 	raise NotImplementedError
 end
 
+# Param::
+# Return::
 def ilog2(n)
 	bits = (n.size - BASE_BYTE) << 3
 	return bits + Bisect.bisect_right(powers_of_2, n >> bits) - 1
 end
 
 $powers_of_2 = nil
+# Param::
+# Return::
 def powers_of_2
 	unless $powers_of_2
 		$powers_of_2 = [1]
