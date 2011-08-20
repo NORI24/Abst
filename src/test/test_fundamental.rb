@@ -33,6 +33,9 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(32, binary_gcd(1024, 32))
 	end
 
+	def test_lehmer_gcd
+	end
+
 	def test_binary_gcd
 		assert_equal(1, binary_gcd(3, 4))
 		assert_equal(7, binary_gcd(14, 21))

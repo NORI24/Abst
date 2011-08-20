@@ -77,6 +77,8 @@ def left_right_base2k_power(g, n, mod = nil, k = nil)
 		g **= (-1)
 	end
 
+	g %= mod if mod
+
 	unless k
 		e = ilog2(n)
 		optim = [0, 8, 24, 69, 196, 538, 1433, 3714]
@@ -88,8 +90,6 @@ def left_right_base2k_power(g, n, mod = nil, k = nil)
 			k += 1 until e <= k * (k + 1) * (1 << (k << 1)) / ((1 << (k + 1)) - k - 2)
 		end
 	end
-
-	g %= mod if mod
 
 	# convert n into base 2**k
 	digits = []
@@ -158,12 +158,10 @@ end
 # Return:: gcd of a and b
 def binary_gcd(a, b)
 	a, b = b, a if a < b
-
 	return a if 0 == b
 
 	# Reduce size once
 	a, b = b, a % b
-
 	return a if 0 == b
 
 	# Compute powers of 2
