@@ -2,6 +2,11 @@ require 'test/unit'
 require 'abst'
 
 class TC_Prime < Test::Unit::TestCase
+	def test_primes_list
+		list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+		assert_equal(list, primes_list[0...10])
+	end
+
 	def test_trial_division
 		assert_equal(nil, trial_division(1))
 		assert_equal(nil, trial_division(2))
@@ -40,8 +45,16 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal([[2, 10]], factorize(1024))
 	end
 
+	def test_eratosthenes_sieve
+		assert_equal([2, 3, 5, 7], eratosthenes_sieve(10).to_a)
+		assert_equal([2, 3, 5, 7, 11], eratosthenes_sieve(11).to_a)
+		assert_equal([2, 3, 5, 7, 11], eratosthenes_sieve(12).to_a)
+		assert_equal([2, 3, 5, 7, 11, 13, 17, 19], eratosthenes_sieve(20).to_a)
+	end
+
 	def test_next_prime
 		assert_equal(2, next_prime(-5))
+		assert_equal(2, next_prime(0))
 		assert_equal(2, next_prime(1))
 		assert_equal(3, next_prime(2))
 		assert_equal(5, next_prime(3))
@@ -57,5 +70,6 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal([2, 3, 5, 7], (0..10).each_prime.to_a)
 		assert_equal([11, 13, 17, 19], (11..20).each_prime.to_a)
 		assert_equal([23, 29, 31, 37], (21...41).each_prime.to_a)
+		assert_equal([23, 29, 31, 37, 41], (21..41).each_prime.to_a)
 	end
 end

@@ -17,26 +17,15 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_gcd
-		test_cases = [
-			[3, 4, 1],
-			[14, 21, 7],
-		]
-
-		test_cases.each do |a, b, g|
-			assert_equal(g, gcd(a, b))
-		end
+		assert_equal(1, gcd(3, 4))
+		assert_equal(7, gcd(14, 21))
+		assert_equal(32, binary_gcd(1024, 32))
 	end
 
 	def test_binary_gcd
-		test_cases = [
-			[3, 4, 1],
-			[14, 21, 7],
-			[1024, 32, 32],
-		]
-
-		test_cases.each do |a, b, g|
-			assert_equal(g, binary_gcd(a, b))
-		end
+		assert_equal(1, binary_gcd(3, 4))
+		assert_equal(7, binary_gcd(14, 21))
+		assert_equal(32, binary_gcd(1024, 32))
 	end
 
 	def test_isqrt
@@ -73,5 +62,26 @@ class TC_Fundamental < Test::Unit::TestCase
 			proot = iroot(n, pow)
 			assert(proot ** pow <= n && n < (proot + 1) ** pow)
 		end
+	end
+
+	def test_ilog2
+		assert_equal(0, ilog2(1))
+		assert_equal(1, ilog2(2))
+		assert_equal(1, ilog2(3))
+		assert_equal(2, ilog2(4))
+		assert_equal(2, ilog2(5))
+		assert_equal(7, ilog2(2 ** 8 - 1))
+		assert_equal(8, ilog2(2 ** 8))
+		assert_equal(31, ilog2(2 ** 32 - 1))
+		assert_equal(32, ilog2(2 ** 32))
+		assert_equal(63, ilog2(2 ** 64 - 1))
+		assert_equal(64, ilog2(2 ** 64))
+	end
+
+	def test_powers_of_2
+		list = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+
+		assert_equal(list, powers_of_2[0..8])
+		assert_equal(BASE_BYTE * 8, powers_of_2.size)
 	end
 end

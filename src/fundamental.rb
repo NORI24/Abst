@@ -157,7 +157,7 @@ $powers_of_2 = nil
 def powers_of_2
 	unless $powers_of_2
 		$powers_of_2 = [1]
-		(BASE_BYTE << 3).times do |i|
+		((BASE_BYTE << 3) - 1).times do |i|
 			$powers_of_2[i + 1] = $powers_of_2[i] << 1
 		end
 	end
