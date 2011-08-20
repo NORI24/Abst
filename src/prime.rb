@@ -27,11 +27,11 @@ def primes_list
 		$primes = precompute_primes
 	end
 
-	$primes.freeze
-
 	def $primes.include?(n)
 		return Bisect.index(self, n)
 	end
+
+	$primes.freeze
 
 	return $primes
 end
