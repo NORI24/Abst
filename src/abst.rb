@@ -28,5 +28,3 @@ require ABST_ROOT + 'prime'
 require ABST_ROOT + 'rational'
 require ABST_ROOT + 'sequence'
 require ABST_ROOT + 'vector'
-
-require ABST_ROOT + 'pe'
