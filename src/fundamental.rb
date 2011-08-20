@@ -9,7 +9,7 @@ def right_left_power(g, n, mod = nil)
 
 	if n < 0
 		n = -n
-		g = g ** (-1)
+		g **= (-1)
 	end
 
 	g %= mod if mod
@@ -17,8 +17,10 @@ def right_left_power(g, n, mod = nil)
 	loop do
 		rslt *= g if n.odd?
 		rslt %= mod if mod
+
 		n >>= 1
 		break if 0 == n
+
 		g *= g
 		g %= mod if mod
 	end
@@ -36,7 +38,7 @@ def left_right_power(g, n, mod = nil)
 
 	if n < 0
 		n = -n
-		g = g ** (-1)
+		g **= (-1)
 	end
 
 	g %= mod if mod
@@ -45,9 +47,14 @@ def left_right_power(g, n, mod = nil)
 	rslt = g
 	while 0 != e
 		e -= 1
+
 		rslt *= rslt
-		rslt *= g if 1 == n[e]
 		rslt %= mod if mod
+
+		if 1 == n[e]
+			rslt *= g
+			rslt %= mod if mod
+		end
 	end
 
 	return rslt
@@ -67,7 +74,7 @@ def left_right_base2k_power(g, n, mod = nil, k = nil)
 	# Initialize
 	if n < 0
 		n = -n
-		g = g ** (-1)
+		g **= (-1)
 	end
 
 	unless k
