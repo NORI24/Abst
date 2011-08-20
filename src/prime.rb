@@ -84,18 +84,21 @@ def factorize(n)
 	limit = isqrt(n)
 	(2..limit).each_prime do |d|
 		break if limit < d
+		next unless 0 == n % d
 
-		count = 0
-		while n % d == 0
-			n /= d
-			count += 1
+		n /= d
+		div_count = 1
+		loop do
+			q, r = n.divmod(d)
+			break unless 0 == r
+
+			n = q
+			div_count += 1
 		end
 
-		if 1 <= count
-			rslt.push([d, count])
-			break if 1 == n
-			limit = isqrt(n)
-		end
+		rslt.push([d, div_count])
+		limit = isqrt(n)
+		break if limit <= d
 	end
 
 	rslt.push([n, 1]) if 1 < n
