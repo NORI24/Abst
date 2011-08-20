@@ -19,12 +19,14 @@ class TC_Fundamental < Test::Unit::TestCase
 	def test_gcd
 		assert_equal(1, gcd(3, 4))
 		assert_equal(7, gcd(14, 21))
+		assert_equal(2, binary_gcd(150, 376))
 		assert_equal(32, binary_gcd(1024, 32))
 	end
 
 	def test_binary_gcd
 		assert_equal(1, binary_gcd(3, 4))
 		assert_equal(7, binary_gcd(14, 21))
+		assert_equal(2, binary_gcd(150, 376))
 		assert_equal(32, binary_gcd(1024, 32))
 	end
 
