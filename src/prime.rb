@@ -2,8 +2,6 @@
 # Cache
 #
 
-class CacheAccessError < Exception; end
-
 # precompute primes by eratosthenes
 def precompute_primes
 	primes = eratosthenes_sieve(PRIME_CACHE_LIMIT).to_a
@@ -29,10 +27,7 @@ def primes_list
 		$primes = precompute_primes
 	end
 
-	# set read only
-	def $primes.[]=(index, value)
-		raise CacheAccessError, "Primes cache is Read Only"
-	end
+	$primes.freeze
 
 	def $primes.include?(n)
 		return Bisect.index(self, n)
