@@ -44,11 +44,20 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_isqrt
-		tc = [1, 2, 3, 13, 16, 50, 97, 2412342342347]
+		assert_equal(1, isqrt(1))
+		assert_equal(1, isqrt(2))
+		assert_equal(1, isqrt(3))
+		assert_equal(2, isqrt(4))
+		assert_equal(3, isqrt(15))
+		assert_equal(4, isqrt(16))
+		assert_equal(7, isqrt(50))
+		assert_equal(9, isqrt(97))
+		assert_equal(1553171, isqrt(2412342342347))
 
-		tc.each do |i|
-			sroot = isqrt(i)
-			assert(sroot ** 2 <= i && i < (sroot + 1) ** 2)
+		10.times do
+			n = rand(10 ** 20) + 1
+			sroot = isqrt(n)
+			assert(sroot ** 2 <= n && n < (sroot + 1) ** 2)
 		end
 	end
 
@@ -72,7 +81,7 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(3, iroot(81, 4))
 
 		10.times do
-			n = rand(10 ** 10) + 1
+			n = rand(10 ** 20) + 1
 			pow = rand(40) + 1
 			proot = iroot(n, pow)
 			assert(proot ** pow <= n && n < (proot + 1) ** pow)
