@@ -161,35 +161,35 @@ def lehmer_gcd(a, b)
 		a_ = a >> shift_size
 		b_ = b >> shift_size
 
-		u0 = 1
-		v0 = 0	# a_ = msd(a) * u0 + msd(b) * v0
-		u1 = 0
-		v1 = 1	# b_ = msd(a) * u1 + msd(b) * v1
+		_A = 1
+		_B = 0	# a_ == msd(a) * _A + msd(b) * _B
+		_C = 0
+		_D = 1	# b_ == msd(a) * _C + msd(b) * _D
 
 		# Always
-		# a_ + v0 <= msd(a * u0 + b * v0) < a_ + u0 AND
-		# b_ + u1 <= msd(a * u1 + b * v1) < a_ + v1
+		# a_ + _B <= msd(a * _A + b * _B) < a_ + _A AND
+		# b_ + _C <= msd(a * _C + b * _D) < a_ + _D
 		# OR
-		# a_ + v0 > msd(a * u0 + b * v0) >= a_ + u0 AND
-		# b_ + u1 > msd(a * u1 + b * v1) >= a_ + v1
+		# a_ + _B > msd(a * _A + b * _B) >= a_ + _A AND
+		# b_ + _C > msd(a * _C + b * _D) >= a_ + _D
 
 		# Test quotient
-		until 0 == b_ + u1 or 0 == b_ + v1
-			q1 = (a_ + u0) / (b_ + u1)
-			q2 = (a_ + v0) / (b_ + v1)
+		until 0 == b_ + _C or 0 == b_ + _D
+			q1 = (a_ + _A) / (b_ + _C)
+			q2 = (a_ + _B) / (b_ + _D)
 			break if q1 != q2
 
 			# Euclidean step
-			u0, u1 = u1, u0 - q1 * u1
-			v0, v1 = v1, v0 - q1 * v1
+			_A, _C = _C, _A - q1 * _C
+			_B, _D = _D, _B - q1 * _D
 			a_, b_ = b_, a_ - q1 * b_
 		end
 
 		# Multi-precision step
-		if 0 == v0
+		if 0 == _B
 			a, b = b, a % b
 		else
-			a, b = a * u0 + b * v0, a * u1 + b * v1
+			a, b = a * _A + b * _B, a * _C + b * _D
 		end
 	end
 
@@ -261,8 +261,8 @@ def extended_lehmer_gcd(a, b)
 	a0 = a
 	b0 = b
 
-	uu0 = 1	# a = uu0 * a0 + v0 * b0
-	uu1 = 0	# b = uu1 * a0 + v1 * b0
+	u0 = 1	# a = u0 * a0 + v0 * b0
+	u1 = 0	# b = u1 * a0 + v1 * b0
 
 	a_ = b_ = nil
 	loop do
@@ -270,11 +270,11 @@ def extended_lehmer_gcd(a, b)
 			u_, v_, d = extended_gcd(a, b)
 
 			# here
-			# d = u_ * a + v_ * b
-			# a = uu0 * a0 + v0 * b0
-			# b = uu1 * a0 + v1 * b0
+			# d == u_ * a + v_ * b
+			# a == u0 * a0 + v0 * b0
+			# b == u1 * a0 + v1 * b0
 
-			u = u_ * uu0 + v_ * uu1
+			u = u_ * u0 + v_ * u1
 			v = (d - u * a0) / b0
 
 			return u, v, d
@@ -287,14 +287,12 @@ def extended_lehmer_gcd(a, b)
 
 		# Initialize (Here a_ and b_ are next value of a, b)
 		_A = 1
-		_B = 0	# _A * a + _B * b = a_
+		_B = 0	# a_ == msd(a) * _A + msd(b) * _B
 		_C = 0
-		_D = 1	# _C * a + _D * b = b_
+		_D = 1	# b_ == msd(a) * _C + msd(b) * _D
 
 		# Test Quotient
-		loop do
-			break if 0 == b_ + _C or 0 == b_ + _D
-
+		until 0 == b_ + _C or 0 == b_ + _D
 			q1 = (a_ + _B) / (b_ + _D)
 			q2 = (a_ + _A) / (b_ + _C)
 			break if q1 != q2
@@ -307,12 +305,12 @@ def extended_lehmer_gcd(a, b)
 
 		# Multi-precision step
 		if 0 == _B
-			q = a / b
-			a, b  = b , a - q * b
-			uu0, uu1 = uu1, uu0 - q * uu1
+			q, r = a.divmod(b)
+			a, b  = b, r
+			u0, u1 = u1, u0 - q * u1
 		else
-			a, b  = _A * a + _B * b , _C * a + _D * b
-			uu0, uu1 = _A * uu0 + _B * uu1, _C * uu0 + _D * uu1
+			a, b  = a * _A + b * _B, a * _C + b * _D
+			u0, u1 =u0 *  _A + u1 * _B, u0 * _C + u1 * _D
 		end
 	end
 end
