@@ -101,8 +101,8 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal([0, 1, 32], extended_lehmer_gcd(1024, 32))
 
 		10.times do
-			a = rand(10 ** 15)
-			b = rand(10 ** 15)
+			a = rand(1 << (BASE_BYTE << 5))
+			b = rand(1 << (BASE_BYTE << 5))
 
 			u, v, d = extended_lehmer_gcd(a, b)
 			assert_equal(gcd(a, b), d)
