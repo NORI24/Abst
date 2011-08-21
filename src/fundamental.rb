@@ -244,15 +244,17 @@ def extended_gcd(a, b)
 	u1 = a.class.zero
 	v1 = a.class.one	# b = a * u1 + b * v1
 
-	until b.zero?
+	return u0, v0, a if b.zero?
+
+	loop do
 		q, r = a.divmod(b)
+
+		return u1, v1, b if r.zero?
 
 		a, b = b, r
 		u0, u1 = u1, u0 - q * u1
 		v0, v1 = v1, v0 - q * v1
 	end
-
-	return u0, v0, a
 end
 
 # Param::
