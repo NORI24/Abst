@@ -28,4 +28,33 @@ class TC_Fundamental < Test::Unit::TestCase
 			assert_equal(false, (square + 1).square?)
 		end
 	end
+
+	def test_triangle?
+		assert_equal(1, 1.triangle?)
+		assert_equal(false, 2.triangle?)
+		assert_equal(2, 3.triangle?)
+		assert_equal(false, 4.triangle?)
+		assert_equal(false, 5.triangle?)
+		assert_equal(3, 6.triangle?)
+		assert_equal(false, 7.triangle?)
+	end
+
+	def test_pentagonal?
+		assert_equal(1, 1.pentagonal?)
+		assert_equal(false, 2.pentagonal?)
+		assert_equal(false, 3.pentagonal?)
+		assert_equal(false, 4.pentagonal?)
+		assert_equal(2, 5.pentagonal?)
+		assert_equal(false, 6.pentagonal?)
+	end
+
+	def test_hexagonal?
+		assert_equal(1, 1.hexagonal?)
+		assert_equal(false, 2.hexagonal?)
+		assert_equal(false, 3.hexagonal?)
+		assert_equal(false, 4.hexagonal?)
+		assert_equal(false, 5.hexagonal?)
+		assert_equal(2, 6.hexagonal?)
+		assert_equal(false, 7.hexagonal?)
+	end
 end
