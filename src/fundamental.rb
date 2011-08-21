@@ -152,18 +152,14 @@ end
 def lehmer_gcd(a, b)
 	a, b = b, a if a < b
 
-	return gcd(a, b) if b.instance_of?(Fixnum)
-
 	a_ = b_ = nil
-	while 0 != b
+	until 0 == b
+		return gcd(a, b) if b.instance_of?(Fixnum)
+
 		# Get most significant digits of a and b
 		shift_size = (a < b ? b : a).bit_size - FIXNUM_BIT_SIZE
-		if 0 < shift_size
-			a_ = a >> shift_size
-			b_ = b >> shift_size
-		else
-			return gcd(a, b)
-		end
+		a_ = a >> shift_size
+		b_ = b >> shift_size
 
 		u0 = 1
 		v0 = 0	# a_ = msd(a) * u0 + msd(b) * v0
@@ -244,15 +240,16 @@ def extended_gcd(a, b)
 
 	return u0, u1, a if b.zero?
 
-	d0 = a
-	d1 = b
+	# Keep first value of a and b
+	a0 = a
+	b0 = b
 
 	loop do
-		q, r = d0.divmod(d1)
+		q, r = a.divmod(b)
 
-		return u1, (d1 - a * u1) / b, d1 if r.zero?
+		return u1, (b - a0 * u1) / b0, b if r.zero?
 
-		d0, d1 = d1, r
+		a, b = b, r
 		u0, u1 = u1, u0 - q * u1
 	end
 end
@@ -260,7 +257,65 @@ end
 # Param::  non-negative integer a, b
 # Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_lehmer_gcd(a, b)
-	raise NotImplementedErrorend
+	# Keep first value of a and b
+	a0 = a
+	b0 = b
+
+	uu0 = 1	# a = uu0 * a0 + v0 * b0
+	uu1 = 0	# b = uu1 * a0 + v1 * b0
+
+	a_ = b_ = nil
+	loop do
+		if b.instance_of?(Fixnum)
+			u_, v_, d = extended_gcd(a, b)
+
+			# here
+			# d = u_ * a + v_ * b
+			# a = uu0 * a0 + v0 * b0
+			# b = uu1 * a0 + v1 * b0
+
+			u = u_ * uu0 + v_ * uu1
+			v = (d - u * a0) / b0
+
+			return u, v, d
+		end
+
+		# Get most significant digits of a and b
+		shift_size = (a < b ? b : a).bit_size - FIXNUM_BIT_SIZE
+		a_ = a >> shift_size
+		b_ = b >> shift_size
+
+		# Initialize (Here a_ and b_ are next value of a, b)
+		_A = 1
+		_B = 0	# _A * a + _B * b = a_
+		_C = 0
+		_D = 1	# _C * a + _D * b = b_
+
+		# Test Quotient
+		loop do
+			break if 0 == b_ + _C or 0 == b_ + _D
+
+			q1 = (a_ + _B) / (b_ + _D)
+			q2 = (a_ + _A) / (b_ + _C)
+			break if q1 != q2
+
+			# Euclidean step
+			_A, _C = _C, _A - q1 * _C
+			_B, _D = _D, _B - q1 * _D
+			a_, b_ = b_, a_ - q1 * b_
+		end
+
+		# Multi-precision step
+		if 0 == _B
+			q = a / b
+			a, b  = b , a - q * b
+			uu0, uu1 = uu1, uu0 - q * uu1
+		else
+			a, b  = _A * a + _B * b , _C * a + _D * b
+			uu0, uu1 = _A * uu0 + _B * uu1, _C * uu0 + _D * uu1
+		end
+	end
+end
 
 # Param::  non-negative integer a, b
 # Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
