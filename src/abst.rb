@@ -9,6 +9,7 @@ require ABST_ROOT + 'bisect'
 require ABST_ROOT + 'cache'
 
 require ABST_ROOT + 'combination'
+require ABST_ROOT + 'complex'
 require ABST_ROOT + 'float'
 require ABST_ROOT + 'fundamental'
 require ABST_ROOT + 'integer'

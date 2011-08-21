@@ -1,4 +1,12 @@
 class Rational
+	def self.one
+		return Rational(1, 1)
+	end
+
+	def self.zero
+		return Rational(0, 1)
+	end
+
 	def to_decimal_s(base = 10)
 		raise ArgumentError, "invalid radix #{base}" if base < 2 or 36 < base
 
