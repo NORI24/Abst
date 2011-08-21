@@ -267,14 +267,14 @@ def extended_lehmer_gcd(a, b)
 	a_ = b_ = nil
 	loop do
 		if b.instance_of?(Fixnum)
-			u_, v_, d = extended_gcd(a, b)
+			_u, _v, d = extended_gcd(a, b)
 
 			# here
-			# d == u_ * a + v_ * b
+			# d == _u * a + _v * b
 			# a == u0 * a0 + v0 * b0
 			# b == u1 * a0 + v1 * b0
 
-			u = u_ * u0 + v_ * u1
+			u = _u * u0 + _v * u1
 			v = (d - u * a0) / b0
 
 			return u, v, d
