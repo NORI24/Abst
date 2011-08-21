@@ -239,30 +239,31 @@ end
 # Param::  a and b are member of a Euclidean domain
 # Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_gcd(a, b)
-	u0 = v1 = a.class.one	# a = a * u0 + b * v0
-	u1 = v0 = a.class.zero	# b = a * u1 + b * v1
+	u0 = a.class.one	# d0 = a * u0 + b * v0
+	u1 = a.class.zero	# d1 = a * u1 + b * v1
 
-	return u0, v0, a if b.zero?
+	return u0, u1, a if b.zero?
+
+	d0 = a
+	d1 = b
 
 	loop do
-		q, r = a.divmod(b)
+		q, r = d0.divmod(d1)
 
-		return u1, v1, b if r.zero?
+		return u1, (d1 - a * u1) / b, d1 if r.zero?
 
-		a, b = b, r
+		d0, d1 = d1, r
 		u0, u1 = u1, u0 - q * u1
-		v0, v1 = v1, v0 - q * v1
 	end
 end
 
-# Param::
-# Return::
+# Param::  non-negative integer a, b
+# Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_lehmer_gcd(a, b)
-	raise NotImplementedError
-end
+	raise NotImplementedErrorend
 
-# Param::
-# Return::
+# Param::  non-negative integer a, b
+# Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_binary_gcd(a, b)
 	raise NotImplementedError
 end
