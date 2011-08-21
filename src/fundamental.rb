@@ -147,10 +147,57 @@ def gcd(a, b)
 	return a
 end
 
-# Param::
-# Return::
+# Param::  non-negative integer a, b
+# Return:: gcd of a and b
 def lehmer_gcd(a, b)
-	raise NotImplementedError
+	a, b = b, a if a < b
+
+	return gcd(a, b) if b.instance_of?(Fixnum)
+
+	a_ = b_ = nil
+	while 0 != b
+		# Get most significant digits of a and b
+		shift_size = [a, b].max.bit_size - FIXNUM_BIT_SIZE
+		if 0 < shift_size
+			a_ = a >> shift_size
+			b_ = b >> shift_size
+		else
+			return gcd(a, b)
+		end
+
+		u0 = 1
+		v0 = 0	# a_ = msd(a) * u0 + msd(b) * v0
+		u1 = 0
+		v1 = 1	# b_ = msd(a) * u1 + msd(b) * v1
+
+		# Always
+		# a_ + v0 <= msd(a * u0 + b * v0) < a_ + u0 AND
+		# b_ + u1 <= msd(a * u1 + b * v1) < a_ + v1
+		# OR
+		# a_ + v0 > msd(a * u0 + b * v0) >= a_ + u0 AND
+		# b_ + u1 > msd(a * u1 + b * v1) >= a_ + v1
+
+		# Test quotient
+		until 0 == b_ + u1 or 0 == b_ + v1
+			q1 = (a_ + u0) / (b_ + u1)
+			q2 = (a_ + v0) / (b_ + v1)
+			break if q1 != q2
+
+			# Euclidean step
+			u0, u1 = u1, u0 - q1 * u1
+			v0, v1 = v1, v0 - q1 * v1
+			a_, b_ = b_, a_ - q1 * b_
+		end
+
+		# Multi-precision step
+		if 0 == v0
+			a, b = b, a % b
+		else
+			a, b = a * u0 + b * v0, a * u1 + b * v1
+		end
+	end
+
+	return a
 end
 
 # Binary GCD
@@ -279,7 +326,7 @@ end
 # Param::  positive integer n
 #          positive integer pow
 # Return:: integer part of the power root of n
-#          i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
+#         i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
 def iroot(n, pow, return_power = false)
 	# get integer e s.t. (2 ** (e - 1)) ** pow <= n < (2 ** e) ** pow
 	e = ilog2(n) / pow + 1		# == Rational(n.bit_size, pow).ceil

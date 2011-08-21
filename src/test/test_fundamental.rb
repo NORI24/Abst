@@ -34,6 +34,14 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_lehmer_gcd
+		assert_equal(7, lehmer_gcd(14, 21))
+		assert_equal(4294967311, lehmer_gcd(4294967311 * 2, 4294967311 * 3))
+
+		10.times do
+			a = rand(1 << (BASE_BYTE << 5))
+			b = rand(1 << (BASE_BYTE << 5))
+			assert_equal(gcd(a, b), lehmer_gcd(a, b))
+		end
 	end
 
 	def test_binary_gcd
