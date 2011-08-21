@@ -51,6 +51,22 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(32, binary_gcd(1024, 32))
 	end
 
+	def test_extended_gcd
+		assert_equal([-1, 1, 1], extended_gcd(3, 4))
+		assert_equal([-1, 1, 7], extended_gcd(14, 21))
+		assert_equal([-5, 2, 2], extended_gcd(150, 376))
+		assert_equal([0, 1, 32], extended_gcd(1024, 32))
+
+		10.times do
+			a = rand(10 ** 15)
+			b = rand(10 ** 15)
+
+			u, v, d = extended_gcd(a, b)
+			assert_equal(gcd(a, b), d)
+			assert_equal(d, a * u + b * v)
+		end
+	end
+
 	def test_isqrt
 		assert_equal(1, isqrt(1))
 		assert_equal(1, isqrt(2))

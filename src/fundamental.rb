@@ -236,10 +236,23 @@ def binary_gcd(a, b)
 	end
 end
 
-# Param::
-# Return::
+# Param::  a and b are member of a Euclidean domain
+# Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_gcd(a, b)
-	raise NotImplementedError
+	u0 = a.class.one
+	v0 = a.class.zero	# a = a * u0 + b * v0
+	u1 = a.class.zero
+	v1 = a.class.one	# b = a * u1 + b * v1
+
+	until b.zero?
+		q, r = a.divmod(b)
+
+		a, b = b, r
+		u0, u1 = u1, u0 - q * u1
+		v0, v1 = v1, v0 - q * v1
+	end
+
+	return u0, v0, a
 end
 
 # Param::

@@ -3,23 +3,13 @@ ABST_ROOT = File.dirname(__FILE__) + '/'
 # Integer block byte size
 BASE_BYTE = 1.size
 
-# extension
-class Float
-	def self.one
-		return 1.0
-	end
-
-	def self.zero
-		return 0.0
-	end
-end
-
 require ABST_ROOT + 'config'
 
 require ABST_ROOT + 'bisect'
 require ABST_ROOT + 'cache'
 
 require ABST_ROOT + 'combination'
+require ABST_ROOT + 'float'
 require ABST_ROOT + 'fundamental'
 require ABST_ROOT + 'integer'
 require ABST_ROOT + 'matrix'

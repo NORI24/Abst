@@ -1,5 +1,5 @@
 # Precompute primes under the value
-PRIME_CACHE_LIMIT = 10_000_000
+PRIME_CACHE_LIMIT = 1_000_000
 
 # System cache files will be created in this directory
 DATA_DIR = ABST_ROOT + 'data/'
