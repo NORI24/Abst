@@ -157,7 +157,7 @@ def lehmer_gcd(a, b)
 	a_ = b_ = nil
 	while 0 != b
 		# Get most significant digits of a and b
-		shift_size = [a, b].max.bit_size - FIXNUM_BIT_SIZE
+		shift_size = (a < b ? b : a).bit_size - FIXNUM_BIT_SIZE
 		if 0 < shift_size
 			a_ = a >> shift_size
 			b_ = b >> shift_size
