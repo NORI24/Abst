@@ -318,7 +318,92 @@ end
 # Param::  non-negative integer a, b
 # Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_binary_gcd(a, b)
-	raise NotImplementedError
+	if a < b
+		a, b = b, a
+		exchange_flag_1 = true
+	end
+
+	if 0 == b
+		return 0, 1, a if exchange_flag_1
+		return 1, 0, a
+	end
+
+	# Reduce size once
+	_Q, r = a.divmod(b)
+	if 0 == r
+		return 1, 0, b if exchange_flag_1
+		return 0, 1, b
+	end
+	a, b = b, r
+
+	# Compute power of 2
+	_K = 0
+	_K += 1 while 0 == a[_K] and 0 == b[_K]
+	a >>= _K
+	b >>= _K
+
+	# Initialize
+	if 0 == b[0]
+		a, b = b, a
+		exchange_flag_2 = true
+	end
+
+	u = 1
+	d = a	# v  <- 0, u *a + v *b = d
+	u_ = 0
+	d_ = b	# v_ <- 1, u_*a + v_*b = d_
+
+	# Remove intial power of 2
+	while 0 == d[0]
+		d >>= 1
+		if 0 == u[0]
+			u >>= 1
+		else
+			u = (u + b) >> 1
+		end
+	end
+
+	loop do
+		# Substract
+		t1 = u - u_
+		t3 = d - d_		# t2 <- v - v_, t1*a + t2*b = t3
+		if t1 < 0
+			t1 += b
+		end
+
+		# Finish?
+		break if 0 == t3
+
+		# Remove powers of 2
+		while 0 == t3[0]
+			t3 >>= 1
+			if 0 == t1[0]
+				# This case, t2 is even becaulse b is odd.
+				t1 >>= 1
+			else
+				t1 = (t1 + b) >> 1
+			end
+		end
+
+		# Loop
+		if 0 < t3
+			u = t1
+			d = t3
+		else
+			u_ = b - t1
+			d_ = -t3
+		end
+	end
+
+	# Terminate
+	v = (d - a * u) / b
+
+	u, v = v, u if exchange_flag_2
+	d <<= _K
+	u, v = v, u - v * _Q
+
+	u, v = v, u if exchange_flag_1
+	return u, v, d
 end
 
 # Param::

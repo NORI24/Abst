@@ -110,6 +110,25 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
+	def test_extended_binary_gcd
+		test_cases = [[3, 4, 1], [14, 21, 7], [150, 376, 2], [1024, 32, 32]]
+
+		test_cases.each do |a, b, gcd|
+			u, v, d = extended_binary_gcd(a, b)
+			assert_equal(gcd, d)
+			assert_equal(d, a * u + b * v)
+		end
+
+		10.times do
+			a = rand(1 << (BASE_BYTE << 5))
+			b = rand(1 << (BASE_BYTE << 5))
+
+			u, v, d = extended_binary_gcd(a, b)
+			assert_equal(gcd(a, b), d)
+			assert_equal(d, a * u + b * v)
+		end
+	end
+
 	def test_isqrt
 		assert_equal(1, isqrt(1))
 		assert_equal(1, isqrt(2))
