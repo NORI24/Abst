@@ -7,6 +7,24 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(list, primes_list[0...10])
 	end
 
+	def test_pseudo_prime_test
+		assert_equal(true, pseudoprime?(3, 2))
+		assert_equal(true, pseudoprime?(5, 3))
+		assert_equal(true, pseudoprime?(7, 4))
+		assert_equal(false, pseudoprime?(4, 3))
+		assert_equal(false, pseudoprime?(15, 8))
+	end
+
+	def test_strong_pseudo_prime_test
+		assert_equal(true, strong_pseudoprime?(3, 2))
+		assert_equal(true, strong_pseudoprime?(5, 3))
+		assert_equal(true, strong_pseudoprime?(7, 4))
+		assert_equal(false, strong_pseudoprime?(12, 5))
+	end
+
+	def test_miller_rabin
+	end
+
 	def test_trial_division
 		assert_equal(nil, trial_division(1))
 		assert_equal(nil, trial_division(2))

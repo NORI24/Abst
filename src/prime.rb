@@ -41,6 +41,44 @@ end
 #
 
 # Param::  positive integer n
+#          positive integer base coprime to n
+# Return:: boolean whether n is pseudoprime or not
+def pseudoprime?(n, base)
+	return power(base, n - 1, n) == 1
+end
+
+# Param::  positive odd integer n
+#          positive integer base coprime to n
+#          integer s and t s.t. n = 2 ** s * t and t is odd.
+# Return:: boolean whether n is a strong pseudoprime or not
+def strong_pseudoprime?(n, base, s = nil, t = nil)
+	n_minus_1 = n - 1
+
+	unless s
+		s = 0
+		s += 1 while 0 == n_minus_1[s]
+		t = n_minus_1 >> s
+	end
+
+	z = power(base, t, n)
+
+	return true if 1 == z or n_minus_1 == z
+	(s - 1).times do
+		z = z ** 2 % n
+		return true if z == n_minus_1
+	end
+
+	return false
+end
+
+# Miller-Rabin pseudo-primality test
+# Param::  odd integer n >= 3
+# Return:: boolean whether n is pseudo prime or composite
+#          integer witness (or nil) if return_witness
+def miller_rabin(n, times = 20, return_witness = false)
+end
+
+# Param::  positive integer n
 # Return:: a proper divisor of n if found out else nil
 def trial_division(n, limit = nil)
 	return nil if n <= 3
@@ -172,7 +210,7 @@ end
 def next_prime(n)
 	return 2 if n < 2
 
-	n += 1 + n[0]
+	n += (n.even? ? 1 : 2)
 	n += 2 until prime?(n)
 
 	return n
