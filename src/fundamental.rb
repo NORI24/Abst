@@ -210,8 +210,10 @@ def binary_gcd(a, b)
 	# Compute powers of 2
 	k = 0
 	k += 1 while 0 == a[k] and 0 == b[k]
-	a >>= k
-	b >>= k
+	if 0 < k
+		a >>= k
+		b >>= k
+	end
 
 	# Remove initial power of 2
 	a >>= 1 while a.even?
@@ -339,71 +341,64 @@ def extended_binary_gcd(a, b)
 	# Compute power of 2
 	_K = 0
 	_K += 1 while 0 == a[_K] and 0 == b[_K]
-	a >>= _K
-	b >>= _K
+	if 0 < _K
+		a >>= _K
+		b >>= _K
+	end
 
-	# Initialize
-	if 0 == b[0]
+	if b.even?
 		a, b = b, a
 		exchange_flag_2 = true
 	end
 
-	u = 1
-	d = a	# v  <- 0, u *a + v *b = d
-	u_ = 0
-	d_ = b	# v_ <- 1, u_*a + v_*b = d_
+	# Initialize
+	u0 = 1
+	d0 = a	# d0 == a * u0 + b * v0, (v0 = 0)
+	u1 = 0
+	d1 = b	# d1 == a * u1 + b * v1, (v1 = 1)
 
 	# Remove intial power of 2
-	while 0 == d[0]
-		d >>= 1
-		if 0 == u[0]
-			u >>= 1
-		else
-			u = (u + b) >> 1
-		end
+	while d0.even?
+		d0 >>= 1
+		u0 += b if u0.odd?
+		u0 >>= 1
 	end
 
 	loop do
 		# Substract
-		t1 = u - u_
-		t3 = d - d_		# t2 <- v - v_, t1*a + t2*b = t3
-		if t1 < 0
-			t1 += b
-		end
+		next_u = u0 - u1
+		next_d = d0 - d1	# next_d == a * next_u + b * next_v
+		next_u += b if next_u < 0
 
 		# Finish?
-		break if 0 == t3
+		break if 0 == next_d
 
 		# Remove powers of 2
-		while 0 == t3[0]
-			t3 >>= 1
-			if 0 == t1[0]
-				# This case, t2 is even becaulse b is odd.
-				t1 >>= 1
-			else
-				t1 = (t1 + b) >> 1
-			end
+		while next_d.even?
+			next_d >>= 1
+			next_u += b if next_u.odd?
+			next_u >>= 1
 		end
 
 		# Loop
-		if 0 < t3
-			u = t1
-			d = t3
+		if 0 < next_d
+			u0 = next_u
+			d0 = next_d
 		else
-			u_ = b - t1
-			d_ = -t3
+			u1 = b - next_u
+			d1 = -next_d
 		end
 	end
 
 	# Terminate
-	v = (d - a * u) / b
+	v0 = (d0 - a * u0) / b
 
-	u, v = v, u if exchange_flag_2
-	d <<= _K
-	u, v = v, u - v * _Q
+	u0, v0 = v0, u0 if exchange_flag_2
+	d0 <<= _K
+	u0, v0 = v0, u0 - v0 * _Q
+	u0, v0 = v0, u0 if exchange_flag_1
 
-	u, v = v, u if exchange_flag_1
-	return u, v, d
+	return u0, v0, d0
 end
 
 # Param::
