@@ -152,7 +152,6 @@ end
 def lehmer_gcd(a, b)
 	a, b = b, a if a < b
 
-	a_ = b_ = nil
 	until 0 == b
 		return gcd(a, b) if b.instance_of?(Fixnum)
 
@@ -237,21 +236,20 @@ end
 # Param::  a and b are member of a Euclidean domain
 # Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_gcd(a, b)
-	u0 = a.class.one	# d0 = a * u0 + b * v0
-	u1 = a.class.zero	# d1 = a * u1 + b * v1
+	u0 = a.class.one
+	u1 = a.class.zero
 
 	return u0, u1, a if b.zero?
 
-	# Keep first value of a and b
-	a0 = a
-	b0 = b
+	d0 = a	# d0 = a * u0 + b * v0
+	d1 = b	# d1 = a * u1 + b * v1
 
 	loop do
-		q, r = a.divmod(b)
+		q, r = d0.divmod(d1)
 
-		return u1, (b - a0 * u1) / b0, b if r.zero?
+		return u1, (d1 - a * u1) / b, d1 if r.zero?
 
-		a, b = b, r
+		d0, d1 = d1, r
 		u0, u1 = u1, u0 - q * u1
 	end
 end
@@ -259,39 +257,36 @@ end
 # Param::  non-negative integer a, b
 # Return:: (u, v, d) s.t. a*u + b*v = gcd(a, b) = d
 def extended_lehmer_gcd(a, b)
-	# Keep first value of a and b
-	a0 = a
-	b0 = b
+	d0 = a
+	u0 = 1	# d0 = a * u0 + b * v0
+	d1 = b
+	u1 = 0	# d1 = a * u1 + b * v1
 
-	u0 = 1	# a = u0 * a0 + v0 * b0
-	u1 = 0	# b = u1 * a0 + v1 * b0
-
-	a_ = b_ = nil
 	loop do
-		if b.instance_of?(Fixnum)
-			_u, _v, d = extended_gcd(a, b)
+		if d1.instance_of?(Fixnum)
+			_u, _v, d = extended_gcd(d0, d1)
 
 			# here
-			# d == _u * a + _v * b
-			# a == u0 * a0 + v0 * b0
-			# b == u1 * a0 + v1 * b0
+			# d == _u * d0 + _v * d1
+			# d0 == u0 * a + v0 * b
+			# d1 == u1 * a + v1 * b
 
 			u = _u * u0 + _v * u1
-			v = (d - u * a0) / b0
+			v = (d - u * a) / b
 
 			return u, v, d
 		end
 
-		# Get most significant digits of a and b
-		shift_size = (a < b ? b : a).bit_size - FIXNUM_BIT_SIZE
-		a_ = a >> shift_size
-		b_ = b >> shift_size
+		# Get most significant digits of d0 and d1
+		shift_size = (d0 < d1 ? d1 : d0).bit_size - FIXNUM_BIT_SIZE
+		a_ = d0 >> shift_size
+		b_ = d1 >> shift_size
 
-		# Initialize (Here a_ and b_ are next value of a, b)
+		# Initialize (Here a_ and b_ are next value of d0, d1)
 		_A = 1
-		_B = 0	# a_ == msd(a) * _A + msd(b) * _B
+		_B = 0	# a_ == msd(d0) * _A + msd(d1) * _B
 		_C = 0
-		_D = 1	# b_ == msd(a) * _C + msd(b) * _D
+		_D = 1	# b_ == msd(d0) * _C + msd(d1) * _D
 
 		# Test Quotient
 		until 0 == b_ + _C or 0 == b_ + _D
@@ -307,11 +302,11 @@ def extended_lehmer_gcd(a, b)
 
 		# Multi-precision step
 		if 0 == _B
-			q, r = a.divmod(b)
-			a, b  = b, r
+			q, r = d0.divmod(d1)
+			d0, d1  = d1, r
 			u0, u1 = u1, u0 - q * u1
 		else
-			a, b  = a * _A + b * _B, a * _C + b * _D
+			d0, d1  = d0 * _A + d1 * _B, d0 * _C + d1 * _D
 			u0, u1 =u0 *  _A + u1 * _B, u0 * _C + u1 * _D
 		end
 	end
@@ -367,7 +362,7 @@ def extended_binary_gcd(a, b)
 	loop do
 		# Substract
 		next_u = u - u_
-		next_d = d - d_	# next_d == a * next_u + b * next_v
+		next_d = d - d_		# next_d == a * next_u + b * next_v
 		next_u += b if next_u < 0
 
 		# Finish?
