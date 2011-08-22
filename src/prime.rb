@@ -41,29 +41,33 @@ end
 #
 
 # Param::  positive integer n
-#          positive integer base coprime to n
-# Return:: boolean whether n is pseudoprime or not
-def pseudoprime?(n, base)
+#          positive integer base
+# Return:: boolean whether n passes a pseudoprime test or not
+#          When n and base are not relatively prime, this algorithm
+#          may judge a prime number n to be a composite number
+def pseudoprime_test(n, base)
 	return power(base, n - 1, n) == 1
 end
 
 # Param::  positive odd integer n
-#          positive integer base coprime to n
-#          integer s and t s.t. n = 2 ** s * t and t is odd.
-# Return:: boolean whether n is a strong pseudoprime or not
-def strong_pseudoprime?(n, base, s = nil, t = nil)
+#          positive integer base
+#          integer e and k s.t. n = 2 ** e * k and k is odd.
+# Return:: boolean whether n passes a strong pseudoprime test or not
+#          When n and base are not relatively prime, this algorithm
+#          may judge a prime number n to be a composite number
+def strong_pseudoprime_test(n, base, e = nil, k = nil)
 	n_minus_1 = n - 1
 
-	unless s
-		s = 0
-		s += 1 while 0 == n_minus_1[s]
-		t = n_minus_1 >> s
+	unless e
+		e = 0
+		e += 1 while 0 == n_minus_1[e]
+		k = n_minus_1 >> e
 	end
 
-	z = power(base, t, n)
+	z = power(base, k, n)
 
 	return true if 1 == z or n_minus_1 == z
-	(s - 1).times do
+	(e - 1).times do
 		z = z ** 2 % n
 		return true if z == n_minus_1
 	end
@@ -73,9 +77,23 @@ end
 
 # Miller-Rabin pseudo-primality test
 # Param::  odd integer n >= 3
-# Return:: boolean whether n is pseudo prime or composite
+# Return:: boolean whether n passes trials times random base strong pseudoprime test or not
 #          integer witness (or nil) if return_witness
-def miller_rabin(n, times = 20, return_witness = false)
+def miller_rabin(n, trials = 20, return_witness = false)
+	# Precomputation
+	n_minus_1 = n - 1
+	e = 0
+	e += 1 while 0 == n_minus_1[e]
+	k = n_minus_1 >> e
+
+	trials.times do
+		base = rand(n - 2) + 2
+		unless strong_pseudoprime_test(n, base, e, k)
+			return return_witness ? [false, base] : false
+		end
+	end
+
+	return return_witness ? [true, nil] : true
 end
 
 # Param::  positive integer n

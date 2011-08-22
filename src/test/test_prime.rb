@@ -7,22 +7,28 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(list, primes_list[0...10])
 	end
 
-	def test_pseudo_prime_test
-		assert_equal(true, pseudoprime?(3, 2))
-		assert_equal(true, pseudoprime?(5, 3))
-		assert_equal(true, pseudoprime?(7, 4))
-		assert_equal(false, pseudoprime?(4, 3))
-		assert_equal(false, pseudoprime?(15, 8))
+	def test_pseudoprime_test
+		assert_equal(true, pseudoprime_test(3, 2))
+		assert_equal(true, pseudoprime_test(5, 3))
+		assert_equal(true, pseudoprime_test(7, 4))
+		assert_equal(false, pseudoprime_test(4, 3))
+		assert_equal(false, pseudoprime_test(15, 8))
 	end
 
-	def test_strong_pseudo_prime_test
-		assert_equal(true, strong_pseudoprime?(3, 2))
-		assert_equal(true, strong_pseudoprime?(5, 3))
-		assert_equal(true, strong_pseudoprime?(7, 4))
-		assert_equal(false, strong_pseudoprime?(12, 5))
+	def test_strong_pseudoprime_test
+		assert_equal(true, strong_pseudoprime_test(3, 2))
+		assert_equal(true, strong_pseudoprime_test(5, 3))
+		assert_equal(true, strong_pseudoprime_test(7, 4))
+		assert_equal(false, strong_pseudoprime_test(12, 5))
 	end
 
 	def test_miller_rabin
+		assert_equal(true, miller_rabin(3))
+		assert_equal(false, miller_rabin(4))
+		assert_equal(true, miller_rabin(5))
+		assert_equal(false, miller_rabin(6))
+		assert_equal(true, miller_rabin(11))
+		assert_equal(false, miller_rabin(169))
 	end
 
 	def test_trial_division
