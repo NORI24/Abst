@@ -352,22 +352,22 @@ def extended_binary_gcd(a, b)
 	end
 
 	# Initialize
-	u0 = 1
-	d0 = a	# d0 == a * u0 + b * v0, (v0 = 0)
-	u1 = 0
-	d1 = b	# d1 == a * u1 + b * v1, (v1 = 1)
+	u = 1
+	d = a	# d == a * u + b * v, (v = 0)
+	u_ = 0
+	d_ = b	# d_ == a * u_ + b * v_, (v_ = 1)
 
 	# Remove intial power of 2
-	while d0.even?
-		d0 >>= 1
-		u0 += b if u0.odd?
-		u0 >>= 1
+	while d.even?
+		d >>= 1
+		u += b if u.odd?
+		u >>= 1
 	end
 
 	loop do
 		# Substract
-		next_u = u0 - u1
-		next_d = d0 - d1	# next_d == a * next_u + b * next_v
+		next_u = u - u_
+		next_d = d - d_	# next_d == a * next_u + b * next_v
 		next_u += b if next_u < 0
 
 		# Finish?
@@ -382,23 +382,23 @@ def extended_binary_gcd(a, b)
 
 		# Loop
 		if 0 < next_d
-			u0 = next_u
-			d0 = next_d
+			u = next_u
+			d = next_d
 		else
-			u1 = b - next_u
-			d1 = -next_d
+			u_ = b - next_u
+			d_ = -next_d
 		end
 	end
 
 	# Terminate
-	v0 = (d0 - a * u0) / b
+	v = (d - a * u) / b
 
-	u0, v0 = v0, u0 if exchange_flag_2
-	d0 <<= _K
-	u0, v0 = v0, u0 - v0 * _Q
-	u0, v0 = v0, u0 if exchange_flag_1
+	u, v = v, u if exchange_flag_2
+	d <<= _K
+	u, v = v, u - v * _Q
+	u, v = v, u if exchange_flag_1
 
-	return u0, v0, d0
+	return u, v, d
 end
 
 # Param::
