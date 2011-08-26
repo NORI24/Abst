@@ -118,6 +118,8 @@ def prime?(n)
 		return true
 	end
 
+	return false unless miller_rabin(n)
+
 	return (not trial_division(n))
 end
 
@@ -242,21 +244,7 @@ class Range
 
 		max = last + (exclude_end? ? -1 : 0)
 		if (first <= primes.last)
-			a = 0
-			b = primes.size - 1
-			while a < b
-				t = (a + b) >> 1
-
-				if first < primes[t]
-					b = t
-				elsif first == primes[t]
-					a = t
-					break
-				else
-					a = t + 1
-				end
-			end
-
+			a = Bisect.bisect_left(primes, first)
 			(a..(primes.size - 1)).each do |i|
 				return if max < primes[i]
 				yield(primes[i])
@@ -269,4 +257,10 @@ class Range
 			yield(i) if prime?(i)
 		end
 	end
+end
+
+def phi(n)
+	return n - 1 if prime?(n)
+
+	return factorize(n).inject(1) {|r, i| r * i[0] ** (i[1] - 1) * (i[0] - 1)}
 end
