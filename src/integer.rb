@@ -17,6 +17,24 @@ class Integer
 		return (2..self).inject(1) {|r, i| r * i}
 	end
 
+	def combination(r)
+		r = self - r if self - r < r
+
+		if r <= 0
+			return 1 if 0 == r
+			return 0
+		end
+
+		rslt = self
+		(2..r).each do |i|
+			rslt = rslt * (self - i + 1) / i
+		end
+
+		return rslt
+	end
+	alias :C :combination
+
+
 	# Test whether a given number is a square number or not
 	# Param::  positive integer n
 	# Return:: root(n) if n is square else false

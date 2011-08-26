@@ -2,6 +2,18 @@ require 'test/unit'
 require 'abst'
 
 class TC_Fundamental < Test::Unit::TestCase
+	def test_bit_size
+		assert_equal(0, 0.bit_size)
+		assert_equal(1, 1.bit_size)
+		assert_equal(2, 2.bit_size)
+		assert_equal(2, 3.bit_size)
+		assert_equal(3, 4.bit_size)
+		assert_equal(3, 5.bit_size)
+		assert_equal(10, 1023.bit_size)
+		assert_equal(11, 1024.bit_size)
+		assert_equal(11, 1025.bit_size)
+	end
+
 	def test_factorial
 		assert_equal(1, 0.factorial)
 		assert_equal(1, 1.factorial)
@@ -10,6 +22,13 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(24, 4.factorial)
 		assert_equal(120, 5.factorial)
 		assert_equal(720, 6.factorial)
+	end
+
+	def test_combination
+		assert_equal(1, 1.combination(1))
+		assert_equal(1, 1.combination(0))
+		assert_equal(45, 10.combination(2))
+		assert_equal(120, 10.combination(7))
 	end
 
 	def test_square?
