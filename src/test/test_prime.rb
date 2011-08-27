@@ -98,6 +98,7 @@ class TC_Prime < Test::Unit::TestCase
 	end
 
 	def test_phi
+		assert_equal(1, phi(1))
 		assert_equal(1, phi(2))
 		assert_equal(2, phi(3))
 		assert_equal(2, phi(4))

@@ -260,6 +260,7 @@ class Range
 end
 
 def phi(n)
+	return 1 if 1 == n
 	return n - 1 if prime?(n)
 
 	return factorize(n).inject(1) {|r, i| r * i[0] ** (i[1] - 1) * (i[0] - 1)}
