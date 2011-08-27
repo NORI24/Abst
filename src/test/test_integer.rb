@@ -57,8 +57,8 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(true, 6.squarefree?)
 		assert_equal(true, 7.squarefree?)
 		assert_equal(false, 8.squarefree?)
-		assert_equal(false, 169.squarefree?)
-		assert_equal(true, 91.squarefree?)
+		assert_equal(true, (7 * 13).squarefree?)
+		assert_equal(false, (5 * 13 * 13).squarefree?)
 	end
 
 	def test_triangle?
@@ -88,5 +88,30 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(false, 5.hexagonal?)
 		assert_equal(2, 6.hexagonal?)
 		assert_equal(false, 7.hexagonal?)
+	end
+
+	def test_heptagonal?
+		assert_equal(1, 1.heptagonal?)
+		assert_equal(false, 2.heptagonal?)
+		assert_equal(false, 3.heptagonal?)
+		assert_equal(false, 4.heptagonal?)
+		assert_equal(false, 5.heptagonal?)
+		assert_equal(false, 6.heptagonal?)
+		assert_equal(2, 7.heptagonal?)
+		assert_equal(false, 8.heptagonal?)
+		assert_equal(3, 18.heptagonal?)
+	end
+
+	def test_octagonal?
+		assert_equal(1, 1.octagonal?)
+		assert_equal(false, 2.octagonal?)
+		assert_equal(false, 3.octagonal?)
+		assert_equal(false, 4.octagonal?)
+		assert_equal(false, 5.octagonal?)
+		assert_equal(false, 6.octagonal?)
+		assert_equal(false, 7.octagonal?)
+		assert_equal(2, 8.octagonal?)
+		assert_equal(false, 9.octagonal?)
+		assert_equal(3, 21.octagonal?)
 	end
 end
