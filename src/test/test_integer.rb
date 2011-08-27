@@ -48,6 +48,19 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
+	def test_squarefree?
+		assert_equal(true, 1.squarefree?)
+		assert_equal(true, 2.squarefree?)
+		assert_equal(true, 3.squarefree?)
+		assert_equal(false, 4.squarefree?)
+		assert_equal(true, 5.squarefree?)
+		assert_equal(true, 6.squarefree?)
+		assert_equal(true, 7.squarefree?)
+		assert_equal(false, 8.squarefree?)
+		assert_equal(false, 169.squarefree?)
+		assert_equal(true, 91.squarefree?)
+	end
+
 	def test_triangle?
 		assert_equal(1, 1.triangle?)
 		assert_equal(false, 2.triangle?)
