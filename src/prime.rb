@@ -245,7 +245,7 @@ class Range
 		max = last + (exclude_end? ? -1 : 0)
 		if (first <= primes.last)
 			a = Bisect.bisect_left(primes, first)
-			(a..(primes.size - 1)).each do |i|
+			(a...primes.size).each do |i|
 				return if max < primes[i]
 				yield(primes[i])
 			end
