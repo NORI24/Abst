@@ -129,6 +129,14 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
+	def test_chinese_remainder_theorem
+		assert_equal(23, chinese_remainder_theorem([[1, 2], [2, 3], [3, 5]]))
+	end
+
+	def test_inductive_chinese_remainder_theorem
+		assert_equal(23, inductive_chinese_remainder_theorem([[1, 2], [2, 3], [3, 5]]))
+	end
+
 	def test_isqrt
 		assert_equal(1, isqrt(1))
 		assert_equal(1, isqrt(2))
