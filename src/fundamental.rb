@@ -59,7 +59,7 @@ def left_right_power(g, n, mod = nil)
 
 	return rslt
 end
-alias :power :left_right_power
+alias power left_right_power
 
 # Left-Right Base 2**k Power
 # Param::  group element g
@@ -396,18 +396,26 @@ def extended_binary_gcd(a, b)
 	return u, v, d
 end
 
-# Param::
-# Return::
-def chinese_remainder_theorem(n, mod)
+# Chinese Remainder Theorem using Algorithm 1.3.11 of [CCANT]
+# Param::  array of pair integer s.t. [[x_1, m_1], [x_2, m_2], ... , [x_k, m_k]]
+#          m_i are pairwise coprime
+# Return:: integer x s.t. x = x_i (mod m_i) for all i
+#          and 0 <= x < m_1 * m_2 * ... * m_k
+# Example: chinese_remainder_theorem([(1,2),(2,3),(3,5)]) return 23
+def chinese_remainder_theorem(list)
 	raise NotImplementedError
 end
 
-# Param::
-# Return::
-def inductive_chinese_remainder_theorem(n, mod)
+# Chinese Remainder Theorem using Algorithm 1.3.12 of [CCANT]
+# Param::  array of pair integer s.t. [[x_1, m_1], [x_2, m_2], ... , [x_k, m_k]]
+#          m_i are pairwise coprime
+# Return:: integer x s.t. x = x_i (mod m_i) for all i
+#          and 0 <= x < m_1 * m_2 * ... * m_k
+# Example: chinese_remainder_theorem([(1,2),(2,3),(3,5)]) return 23
+def inductive_chinese_remainder_theorem(list)
 	raise NotImplementedError
 end
-alias :crt :inductive_chinese_remainder_theorem
+alias crt inductive_chinese_remainder_theorem
 
 # Param::
 # Return::
@@ -450,6 +458,7 @@ end
 # Return:: integer part of the square root of n
 #  i.e. the number m s.t. m ** 2 <= n < (m + 1) ** 2
 def isqrt(n)
+	# #
 	x = n
 
 	loop do
@@ -520,4 +529,35 @@ def powers_of_2
 	end
 
 	return $powers_of_2
+end
+
+
+def continued_fraction_of_sqrt(m)
+	if r = m.square?
+		return [r, []]
+	end
+
+	rslt = [isqrt(m), []]
+
+	a = 1
+	_B = b = -rslt[0]
+	c = 1
+
+	loop do
+		# inverse
+		a, b, c = a * c, -b * c, a**2 * m - b**2
+
+		# reduction
+		t = gcd(gcd(a, b), c)
+		a /= t
+		b /= t
+		c /= t
+
+		t = (isqrt(m * a ** 2) + b) / c
+		rslt[1].push(t)
+		b -= c * t
+
+		return rslt if 1 == a and _B == b and 1 == c
+	end
+
 end

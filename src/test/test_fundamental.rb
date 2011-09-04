@@ -202,4 +202,20 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(list, powers_of_2[0..8])
 		assert_equal(BASE_BYTE * 8, powers_of_2.size)
 	end
+
+	def test_continued_fraction_of_sqrt
+		assert_equal([1, []], continued_fraction_of_sqrt(1))
+		assert_equal([1, [2]], continued_fraction_of_sqrt(2))
+		assert_equal([1, [1, 2]], continued_fraction_of_sqrt(3))
+		assert_equal([2, []], continued_fraction_of_sqrt(4))
+		assert_equal([2, [4]], continued_fraction_of_sqrt(5))
+		assert_equal([2, [2, 4]], continued_fraction_of_sqrt(6))
+		assert_equal([2, [1, 1, 1, 4]], continued_fraction_of_sqrt(7))
+		assert_equal([2, [1, 4]], continued_fraction_of_sqrt(8))
+		assert_equal([3, []], continued_fraction_of_sqrt(9))
+		assert_equal([3, [6]], continued_fraction_of_sqrt(10))
+		assert_equal([3, [3, 6]], continued_fraction_of_sqrt(11))
+		assert_equal([3, [2, 6]], continued_fraction_of_sqrt(12))
+		assert_equal([3, [1, 1, 1, 1, 6]], continued_fraction_of_sqrt(13))
+	end
 end
