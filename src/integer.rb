@@ -1,9 +1,4 @@
 class Integer
-	# Return:: formatted string
-	def to_fs
-		return self.to_s.gsub(/(?<=\d)(?=(\d\d\d)+$)/, ' ')
-	end
-
 	def self.one
 		return 1
 	end
@@ -14,6 +9,11 @@ class Integer
 
 	def bit_size
 		return ilog2(self) + 1
+	end
+
+	# Return:: formatted string
+	def to_fs
+		return self.to_s.gsub(/(?<=\d)(?=(\d\d\d)+$)/, ' ')
 	end
 
 	# Param::  non-negative integer self

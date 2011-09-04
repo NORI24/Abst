@@ -1,4 +1,5 @@
 require 'test/test_combination'
+require 'test/test_float'
 require 'test/test_fundamental'
 require 'test/test_integer'
 require 'test/test_matrix'
