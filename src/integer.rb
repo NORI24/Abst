@@ -1,4 +1,9 @@
 class Integer
+	# Return:: formatted string
+	def to_fs
+		return self.to_s.gsub(/(?<=\d)(?=(\d\d\d)+$)/, ' ')
+	end
+
 	def self.one
 		return 1
 	end

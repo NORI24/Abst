@@ -2,6 +2,13 @@ require 'test/unit'
 require 'abst'
 
 class TC_Fundamental < Test::Unit::TestCase
+	def test_to_fs
+		assert_equal('0', 0.to_fs)
+		assert_equal('1', 1.to_fs)
+		assert_equal('123 456 789', 123456789.to_fs)
+		assert_equal('1 234 567 890', 1234567890.to_fs)
+	end
+
 	def test_bit_size
 		assert_equal(0, 0.bit_size)
 		assert_equal(1, 1.bit_size)
