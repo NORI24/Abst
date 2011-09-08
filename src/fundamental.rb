@@ -396,31 +396,28 @@ def extended_binary_gcd(a, b)
 	return u, v, d
 end
 
-# Chinese Remainder Theorem using Algorithm 1.3.11 of [CCANT]
-# Param::  array of pair integer s.t. [[x_1, m_1], [x_2, m_2], ... , [x_k, m_k]]
-#          m_i are pairwise coprime
-# Return:: integer x s.t. x = x_i (mod m_i) for all i
-#          and 0 <= x < m_1 * m_2 * ... * m_k
-# Example: chinese_remainder_theorem([(1,2),(2,3),(3,5)]) return 23
-def chinese_remainder_theorem(list)
-	raise NotImplementedError
-end
-
 # Chinese Remainder Theorem using Algorithm 1.3.12 of [CCANT]
 # Param::  array of pair integer s.t. [[x_1, m_1], [x_2, m_2], ... , [x_k, m_k]]
 #          m_i are pairwise coprime
 # Return:: integer x s.t. x = x_i (mod m_i) for all i
 #          and 0 <= x < m_1 * m_2 * ... * m_k
 # Example: chinese_remainder_theorem([(1,2),(2,3),(3,5)]) return 23
-def inductive_chinese_remainder_theorem(list)
-	raise NotImplementedError
+def chinese_remainder_theorem(list)
+	x, m = list.shift
+
+	list.each do |xi, mi|
+		u, v, d = extended_gcd(m, mi)
+		x = u * m * xi + v * mi * x
+		m *= mi
+		x %= m
+	end
+
+	return x
 end
-alias crt inductive_chinese_remainder_theorem
 
 # Param::
 # Return::
 def continued_fraction(a, b, a_, b_)
-	raise NotImplementedError
 end
 
 # Param::
@@ -531,12 +528,19 @@ def powers_of_2
 	return $powers_of_2
 end
 
-
+# Param::  positive integer m
+# Return:: continued fraction of sqrt m
+#          [n, [a_1, a_2, ..., a_i]] s.t. sqrt m = n + frac{1}{a1 + frac{1}{a2 + ...}}
+#          n is integer part and a_1...a_i are repeating part
+# Example::continued_fraction_of_sqrt(2) -> [1, [2]]
+#          continued_fraction_of_sqrt(3) -> [1, [1, 2]]
+#          continued_fraction_of_sqrt(4) -> [2, []]
 def continued_fraction_of_sqrt(m)
 	if r = m.square?
 		return [r, []]
 	end
 
+	# Initialize
 	rslt = [isqrt(m), []]
 
 	a = 1
