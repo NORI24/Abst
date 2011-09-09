@@ -421,7 +421,7 @@ def continued_fraction(a, b, a_, b_)
 end
 
 # Param::  integer n, m
-# Return:: kronecker symbol (n/m)
+# Return:: kronecker symbol (n|m)
 def kronecker_symbol(n, m)
 	if 0 == m
 		return (-1 == n or 1 == n) ? 1 : 0
@@ -438,9 +438,10 @@ def kronecker_symbol(n, m)
 	rslt = count.even? ? 1 : m8[n & 7]
 
 	if m < 0
-		m *= -1
-		rslt *= -1 if n < 0
+		m = -m
+		rslt = -rslt if n < 0
 	end
+	n %= m
 
 	until 0 == n
 		count = 0
@@ -449,12 +450,11 @@ def kronecker_symbol(n, m)
 		rslt *= m8[m & 7] if count.odd?
 
 		# Apply reciprocity
-		rslt *= -1 if 1 == n[1] and 1 == m[1]
-		n = n.abs
+		rslt = -rslt if 1 == n[1] and 1 == m[1]
 		n, m = m % n, n
 	end
 
-	return (1 < m) ? 0 : rslt
+	return (1 == m) ? rslt : 0
 end
 
 # Param::
