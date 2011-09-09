@@ -165,6 +165,23 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(0, kronecker_symbol(a, b))
 	end
 
+	def test_mod_sqrt
+		test = Proc.new do |n, p|
+			rslt = mod_sqrt(n, p)
+			if kronecker_symbol(n, p) == -1
+				assert_equal(nil, rslt)
+			else
+				assert_equal(n, rslt ** 2 % p)
+			end
+		end
+
+		test.call(2, 5)
+		test.call(2, 7)
+		test.call(2, 11)
+		test.call(2, 13)
+		test.call(2, 17)
+	end
+
 	def test_isqrt
 		assert_equal(1, isqrt(1))
 		assert_equal(1, isqrt(2))

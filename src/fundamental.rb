@@ -459,10 +459,51 @@ end
 alias legendre_symbol kronecker_symbol
 alias Jacobi_symbol kronecker_symbol
 
-# Param::
-# Return::
-def mod_square_root(n, p)
-	raise NotImplementedError
+# Param::  integer n
+#          odd prime p
+# Return:: the square root mod p of n if exists else nil
+def mod_sqrt(n, p)
+	# get q and e s.t. p - 1 == 2**e * q with q odd
+	e = 0
+	q = p - 1
+	e += 1 while 0 == q[e]
+	q >>= e
+
+	# Find generator
+	g = 2
+	g += 1 until -1 == kronecker_symbol(g, p)
+	z = power(g, q, p)	# |<z>| == 2 ** e
+
+	# Initialize
+	y = z
+	r = e
+
+	t = power(n, (q - 1) >> 1, p)
+	x = n * t % p	# n ** ((q + 1) / 2) mod p
+	b = x * t % p	# n ** q mod p
+
+	loop do
+		return x if 1 == b
+
+		# Find exponent
+		m = 0	# counter
+		b_ = b
+		while 1 != b_
+			b_ = b_ ** 2 % p
+			m += 1
+		end
+		return nil if m == r
+
+		# Reduce exponent
+		t = y
+		(r - m - 1).times { t = t ** 2 % p }	# t = power(y, 2 ** (r - m - 1), p)
+		y = t ** 2 % p
+
+		r = m % p
+
+		x = x * t % p
+		b = b * y % p
+	end
 end
 
 # Param::
