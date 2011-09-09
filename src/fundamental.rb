@@ -456,6 +456,8 @@ def kronecker_symbol(n, m)
 
 	return (1 == m) ? rslt : 0
 end
+alias legendre_symbol kronecker_symbol
+alias Jacobi_symbol kronecker_symbol
 
 # Param::
 # Return::
