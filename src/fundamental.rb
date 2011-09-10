@@ -147,9 +147,11 @@ def gcd(a, b)
 	return a
 end
 
-# Param::  non-negative integer a, b
+# Param::  integer a, b
 # Return:: gcd of a and b
 def lehmer_gcd(a, b)
+	a = -a if a < 0
+	b = -b if b < 0
 	a, b = b, a if a < b
 
 	until 0 == b
@@ -196,9 +198,11 @@ def lehmer_gcd(a, b)
 end
 
 # Binary GCD
-# Param::  non-negative integer a, b
+# Param::  integer a, b
 # Return:: gcd of a and b
 def binary_gcd(a, b)
+	a = -a if a < 0
+	b = -b if b < 0
 	a, b = b, a if a < b
 	return a if 0 == b
 
@@ -567,10 +571,26 @@ def iroot(n, pow, return_power = false)
 	return x
 end
 
-# Param::
-# Return::
+# Param::  positive integer n > 1
+# Return:: p if n is of the form p^k with p prime else false
 def prime_power?(n)
-	raise NotImplementedError
+	if n.even?
+		return n.power_of?(2) ? 2 : false
+	end
+
+	p = n
+	loop do
+		rslt, witness = miller_rabin(p, 10, true)
+		if rslt
+			# Final test
+			redo unless prime?(p)
+			return n.power_of?(p) ? p : false
+		end
+
+		d = binary_gcd(power(witness, p, p) - witness, p)
+		return false if 1 == d or d == p
+		p = d
+	end
 end
 
 # Param::

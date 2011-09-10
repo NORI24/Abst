@@ -227,6 +227,18 @@ class TC_Fundamental < Test::Unit::TestCase
 		end
 	end
 
+	def test_prime_power?
+		assert_equal(2, prime_power?(2))
+		assert_equal(3, prime_power?(3))
+		assert_equal(2, prime_power?(4))
+		assert_equal(false, prime_power?(6))
+		assert_equal(2, prime_power?(8))
+		assert_equal(17, prime_power?(17))
+		assert_equal(false, prime_power?(94))
+		assert_equal(13, prime_power?(169))
+		assert_equal(3, prime_power?(243))
+	end
+
 	def test_ilog2
 		assert_equal(0, ilog2(1))
 		assert_equal(1, ilog2(2))

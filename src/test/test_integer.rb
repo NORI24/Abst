@@ -38,6 +38,13 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(120, 10.combination(7))
 	end
 
+	def test_power_of?
+		assert_equal(true, 2.power_of?(2))
+		assert_equal(false, 3.power_of?(2))
+		assert_equal(true, 36.power_of?(6))
+		assert_equal(false, 100.power_of?(11))
+	end
+
 	def test_square?
 		assert_equal(1, 1.square?)
 		assert_equal(false, 2.square?)
