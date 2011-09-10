@@ -549,7 +549,8 @@ end
 # Param::  positive integer n
 #          positive integer pow
 # Return:: integer part of the power root of n
-#         i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
+#          i.e. the number m s.t. m ** pow <= n < (m + 1) ** pow
+#          if return_power is true then return n ** pow
 def iroot(n, pow, return_power = false)
 	# get integer e s.t. (2 ** (e - 1)) ** pow <= n < (2 ** e) ** pow
 	e = ilog2(n) / pow + 1		# == Rational(n.bit_size, pow).ceil
@@ -593,10 +594,31 @@ def prime_power?(n)
 	end
 end
 
-# Param::
-# Return::
-def power_detection(n)
-	raise NotImplementedError
+# Param::  positive integer n
+#          boolean largest_exp
+# Return:: integer x, k s.t. n == x ** k
+#          if n == 1 then x, k == 1, 1
+#          (2 <= k if exist else x, k == n, 1)
+#          if largest_exp is true then return largest k
+def power_detection(n, largest_exp = true)
+	x, k = n, 1
+
+	limit = ilog2(n)
+	(2..limit).each_prime do |exp|
+		break if limit < exp
+
+		root, pow = iroot(n, exp, true)
+		if pow == n
+			return x, exp unless largest_exp
+
+			n = x = root
+			k *= exp
+			limit = ilog2(n)
+			redo
+		end
+	end
+
+	return x, k
 end
 
 # Param::  positive integer n
