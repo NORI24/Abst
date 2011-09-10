@@ -422,6 +422,7 @@ end
 # Param::
 # Return::
 def continued_fraction(a, b, a_, b_)
+	raise NotImplementedError
 end
 
 # Param::  integer n, m
