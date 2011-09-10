@@ -475,34 +475,31 @@ def mod_sqrt(n, p)
 	z = power(g, q, p)	# |<z>| == 2 ** e
 
 	# Initialize
-	y = z
-	r = e
-
-	t = power(n, (q - 1) >> 1, p)
-	x = n * t % p	# n ** ((q + 1) / 2) mod p
-	b = x * t % p	# n ** q mod p
+	temp = power(n, (q - 1) >> 1, p)
+	x = n * temp % p	# n ** ((q + 1) / 2) mod p
+	b = x * temp % p	# n ** q mod p
 
 	loop do
+		# always
+		# n * b == x ** 2
+
 		return x if 1 == b
 
-		# Find exponent
-		m = 0	# counter
+		# Find exponent f s.t. b ** f == 1
+		f = 0
 		b_ = b
-		while 1 != b_
+		until 1 == b_
 			b_ = b_ ** 2 % p
-			m += 1
+			f += 1
 		end
-		return nil if m == r
+		return nil if f == e
 
 		# Reduce exponent
-		t = y
-		(r - m - 1).times { t = t ** 2 % p }	# t = power(y, 2 ** (r - m - 1), p)
-		y = t ** 2 % p
-
-		r = m % p
-
-		x = x * t % p
-		b = b * y % p
+		(e - f - 1).times { z = z ** 2 % p }
+		e = f
+		x = x * z % p
+		z = z ** 2 % p
+		b = b * z % p
 	end
 end
 
