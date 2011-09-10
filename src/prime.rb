@@ -50,12 +50,12 @@ def pseudoprime_test(n, base)
 end
 
 # Param::  positive odd integer n
-#          positive integer base
+#          positive integer b
 #          integer e and k s.t. n = 2 ** e * k and k is odd.
-# Return:: boolean whether n passes a strong pseudoprime test or not
-#          When n and base are not relatively prime, this algorithm
+# Return:: boolean whether n passes a strong pseudoprime test for the base b or not
+#          When n and b are not relatively prime, this algorithm
 #          may judge a prime number n to be a composite number
-def strong_pseudoprime_test(n, base, e = nil, k = nil)
+def strong_pseudoprime_test(n, b, e = nil, k = nil)
 	n_minus_1 = n - 1
 
 	unless e
@@ -64,7 +64,7 @@ def strong_pseudoprime_test(n, base, e = nil, k = nil)
 		k = n_minus_1 >> e
 	end
 
-	z = power(base, k, n)
+	z = power(b, k, n)
 
 	return true if 1 == z or n_minus_1 == z
 	(e - 1).times do
