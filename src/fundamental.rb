@@ -443,15 +443,12 @@ def continued_fraction(a, b, a_, b_)
 		a_, b_ = b_, r_
 	end
 
-	if 0 == b and 0 == b_
-		return rslt, []
+	if 0 == b
+		return rslt, [] if 0 == b_
+		return rslt, [a_ / b_, INFINITY]
 	end
 
-	if 0 == b
-		return rslt, [a_ / b_, INFINITY]
-	elsif 0 == b_
-		return rslt, [a / b, INFINITY]
-	end
+	return rslt, [a / b, INFINITY] if 0 == b_
 
 	q, q_ = q_, q if q > q_
 	return rslt, [q, q_]

@@ -137,6 +137,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 	p = nil
 	old_m = m
 	old_i = i = -1
+
 	loop do
 		i += 1
 		p = plist[i]
