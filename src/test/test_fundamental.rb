@@ -217,8 +217,10 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(2, isqrt(4))
 		assert_equal(3, isqrt(15))
 		assert_equal(4, isqrt(16))
+		assert_equal(5, isqrt(25))
 		assert_equal(7, isqrt(50))
 		assert_equal(9, isqrt(97))
+		assert_equal(10, isqrt(100))
 		assert_equal(1553171, isqrt(2412342342347))
 
 		10.times do

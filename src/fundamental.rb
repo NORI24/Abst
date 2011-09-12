@@ -582,8 +582,7 @@ end
 # Return:: integer part of the square root of n
 #  i.e. the number m s.t. m ** 2 <= n < (m + 1) ** 2
 def isqrt(n)
-	# #
-	x = n
+	x = 1 << ((ilog2(n) >> 1) + 1)
 
 	loop do
 		# Newtonian step
@@ -605,7 +604,7 @@ end
 #          if return_power is true then return n ** pow
 def iroot(n, pow, return_power = false)
 	# get integer e s.t. (2 ** (e - 1)) ** pow <= n < (2 ** e) ** pow
-	e = ilog2(n) / pow + 1		# == Rational(n.bit_size, pow).ceil
+	e = ilog2(n) / pow + 1		# == Rational(ilog2(n) + 1, pow).ceil
 
 	x = 1 << e					# == 2 ** e
 	z = nil
