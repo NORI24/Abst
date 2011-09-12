@@ -128,6 +128,68 @@ end
 #
 
 # Param::  positive integer n
+#          positive integer bound <= PRIME_CACHE_LIMIT
+#          positive integer m (2 <= m < n)
+# Return:: a factor f (1 < f < n) if found else nil
+def p_minus_1(n, bound = 10_000, m = 2)
+	plist = primes_list
+
+	p = nil
+	old_m = m
+	old_i = i = -1
+	loop do
+		i += 1
+		p = plist[i]
+		break if bound < p
+
+		# Compute power
+		p_pow = p
+		lim = bound / p
+		p_pow *= p while p_pow <= lim
+		m = power(m, p_pow, n)
+
+		next unless 15 == i & 15
+
+		# Compute GCD
+		g = binary_gcd(m - 1, n)
+		if 1 == g
+			old_m = m
+			old_i = i
+			next
+		end
+		return g unless n == g
+		break
+	end
+
+	if bound < p
+		return nil if 0 == i & 15
+
+		g = binary_gcd(m - 1, n)
+		return nil if 1 == g
+		return g unless n == g
+	end
+
+	# Backtrack
+	i = old_i
+	m = old_m
+
+	loop do
+		i += 1
+		p_pow = p = plist[i]
+
+		loop do
+			m = power(m, p, n)
+			g = binary_gcd(m - 1, n)
+			return nil if n == g
+			return g unless 1 == g
+
+			p_pow *= p
+			break if bound < p_pow
+		end
+	end
+end
+
+# Param::  positive integer n
 # Return:: factorization of n s.t. [[a, b], [c, d], ...], n = a**b * c**d * ...
 def factorize(n)
 	return [[1, 1]] if 1 == n

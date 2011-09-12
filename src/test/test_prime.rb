@@ -58,6 +58,16 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(true, prime?(13))
 	end
 
+	def test_p_minus_1
+		assert_equal(3, p_minus_1(6, 10_000, 2))
+		assert_equal(3292218043, p_minus_1(9530738504299322287, 10_000, 2))
+		assert_equal(6042787811, p_minus_1(23916353875143281737, 10_000, 2))
+		assert_equal(8228369521, p_minus_1(24559500716705748943, 10_000, 2))
+		assert_equal(7046628167, p_minus_1(43381522922949440477, 10_000, 2))
+		assert_equal(9571252001, p_minus_1(79670656009259581439, 10_000, 2))
+		assert_equal(6135173419, p_minus_1(19256936255213267029, 10_000, 2))
+	end
+
 	def test_factorize
 		assert_equal([[1, 1]], factorize(1))
 		assert_equal([[2, 1]], factorize(2))
