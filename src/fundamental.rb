@@ -419,10 +419,42 @@ def chinese_remainder_theorem(list)
 	return x
 end
 
-# Param::
-# Return::
+# Param::  integer a, b, a_, b_ s.t. (real number x s.t. a/b <= x <= a_/b_)
+# Return:: continueed fraction expansion of x
+#          and lower and upper bounds for this next partial quotient.
+#          Format: [[continueed fraction expansion...], [lower, upper]]
 def continued_fraction(a, b, a_, b_)
-	raise NotImplementedError
+	# Initialize
+	q = q_ = nil
+	rslt = []
+
+	until 0 == b or 0 == b_
+		# Euclidean step
+		q, r = a.divmod(b)
+
+		r_ = a_ - b_ * q
+		if r_ < 0 or b_ <= r_
+			q_ = a_ / b_
+			break
+		end
+
+		rslt.push(q)
+		a , b  = b , r
+		a_, b_ = b_, r_
+	end
+
+	if 0 == b and 0 == b_
+		return rslt, []
+	end
+
+	if 0 == b
+		return rslt, [a_ / b_, INFINITY]
+	elsif 0 == b_
+		return rslt, [a / b, INFINITY]
+	end
+
+	q, q_ = q_, q if q > q_
+	return rslt, [q, q_]
 end
 
 # Param::  integer n, m

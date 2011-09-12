@@ -131,6 +131,13 @@ class TC_Fundamental < Test::Unit::TestCase
 
 	def test_chinese_remainder_theorem
 		assert_equal(23, chinese_remainder_theorem([[1, 2], [2, 3], [3, 5]]))
+		assert_equal(48, chinese_remainder_theorem([[6, 7], [3, 9]]))
+	end
+
+	def test_continued_fraction
+		assert_equal([[0, 2], []], continued_fraction(1, 2, 1, 2))
+		assert_equal([[0], [2, 3]], continued_fraction(1, 2, 1, 3))
+		assert_equal([[0, 1], [5, 12]], continued_fraction(5, 6, 12, 13))
 	end
 
 	def test_kronecker_symbol
