@@ -140,7 +140,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 	loop do
 		i += 1
 		p = plist[i]
-		break if bound < p
+		break if nil == p or bound < p
 
 		# Compute power
 		p_pow = p
@@ -161,7 +161,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 		break
 	end
 
-	if bound < p
+	if nil == p or bound < p
 		return nil if 0 == i & 15
 
 		g = binary_gcd(m - 1, n)
