@@ -180,11 +180,13 @@ def p_minus_1(n, bound = 10_000, m = 2)
 		loop do
 			m = power(m, p, n)
 			g = binary_gcd(m - 1, n)
+			if 1 == g
+				p_pow *= p
+				break if bound < p_pow
+				next
+			end
 			return nil if n == g
 			return g unless 1 == g
-
-			p_pow *= p
-			break if bound < p_pow
 		end
 	end
 end
