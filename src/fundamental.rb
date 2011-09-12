@@ -537,10 +537,32 @@ def mod_sqrt(n, p)
 	end
 end
 
-# Param::
-# Return::
-def cornacchia()
-	raise NotImplementedError
+# Param::  prime number p
+#          integer d (0 < d < p)
+# Return:: integer pair (x, y) s.t. x ** 2 + dy ** 2 = p if exists else nil
+def cornacchia(d, p)
+	return nil if -1 == kronecker_symbol(-d, p)
+
+	# Compute square root
+	x0 = mod_sqrt(-d, p)
+	x0 = p - x0 if x0 <= p >> 1
+	a = p
+	b = x0
+	border = isqrt(p)
+
+	# Euclidean algorithm
+	while border < b
+		a, b = b, a % b
+	end
+
+	# Test solution
+	c, r = (p - b ** 2).divmod(d)
+	return nil if 0 != r
+
+	q = c.square?
+	return nil unless q
+
+	return [b, q]
 end
 
 # Param::

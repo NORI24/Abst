@@ -189,6 +189,27 @@ class TC_Fundamental < Test::Unit::TestCase
 		test.call(2, 17)
 	end
 
+	def test_cornacchia
+		test = Proc.new do |d, p, expect|
+			rslt = cornacchia(d, p)
+			if expect
+				assert(rslt)
+				x, y = rslt
+				assert_equal(p, x ** 2 + d * y ** 2)
+			else
+				assert(nil == rslt)
+			end
+		end
+
+		test.call(1, 5, true)
+		test.call(1, 13, true)
+		test.call(1, 17, true)
+		test.call(1, 29, true)
+		test.call(1, 53, true)
+		test.call(7, 53, true)
+		test.call(1, 19, false)
+	end
+
 	def test_isqrt
 		assert_equal(1, isqrt(1))
 		assert_equal(1, isqrt(2))
