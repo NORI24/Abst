@@ -588,12 +588,10 @@ def isqrt(n)
 		# Newtonian step
 		next_x = (x + n / x) >> 1
 
-		break if x <= next_x
+		return x if x <= next_x
 
 		x = next_x
 	end
-
-	return x
 end
 
 # Integer Power Root
