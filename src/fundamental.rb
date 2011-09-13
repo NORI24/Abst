@@ -537,8 +537,8 @@ def mod_sqrt(n, p)
 	end
 end
 
-# Param::  prime number p
-#          integer d (0 < d < p)
+# Param::  positive integer d
+#          prime number p (d < p)
 # Return:: integer pair (x, y) s.t. x ** 2 + dy ** 2 = p if exists else nil
 def cornacchia(d, p)
 	return nil if -1 == kronecker_symbol(-d, p)
