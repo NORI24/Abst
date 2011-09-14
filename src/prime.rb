@@ -128,9 +128,11 @@ end
 #
 
 # Param::  positive integer n
-#          integer c
+#          integer c which is used recurrence formula x ** 2 + c (mod n)
+#          integer s starting value of the recurrence formula
+#          integer max number of trials
 # Return:: a factor f (1 < f < n) if found else nil
-def pollard_rho(n, c = 1, s = 2, max = 10000)
+def pollard_rho(n, c = 1, s = 2, max = 10_000)
 	u = s
 	v = s ** 2 + c
 	range = 1

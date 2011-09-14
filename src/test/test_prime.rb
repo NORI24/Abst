@@ -58,6 +58,12 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(true, prime?(13))
 	end
 
+	def test_pollard_rho
+		assert_equal(155240783, pollard_rho(3876131431000528283))
+		assert_equal(2252849497, pollard_rho(5409492426475365797, 1, 2, 100_000))
+		assert_equal(1264621003, pollard_rho(11781814522941624827, 1, 2, 100_000))
+	end
+
 	def test_p_minus_1
 		assert_equal(3, p_minus_1(6, 10_000, 2))
 		assert_equal(3292218043, p_minus_1(9530738504299322287, 10_000, 2))
