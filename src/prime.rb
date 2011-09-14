@@ -128,6 +128,48 @@ end
 #
 
 # Param::  positive integer n
+#          integer c
+# Return:: a factor f (1 < f < n) if found else nil
+def pollard_rho(n, c = 1, s = 2, max = 10000)
+	u = s
+	v = s ** 2 + c
+	range = 1
+	product = 1
+	terms = 0
+
+	loop do
+		range.times do
+			v = (v ** 2 + c) % n
+			temp = product * (u - v) % n
+			if 0 == temp
+				g = binary_gcd(n, product)
+				return (1 < g) ? g : nil
+			end
+			product = temp
+			terms += 1
+
+			if terms & 1023 == 0
+				g = binary_gcd(n, product)
+				if 1 < g
+					return g if g < n
+
+					# Backtrack
+					# #
+					return  g
+				end
+
+				return nil if max <= terms
+			end
+		end
+
+		# reset
+		u = v
+		range <<= 1
+		range.times { v = (v ** 2 + c) % n }
+	end
+end
+
+# Param::  positive integer n
 #          positive integer bound <= PRIME_CACHE_LIMIT
 #          positive integer m (2 <= m < n)
 # Return:: a factor f (1 < f < n) if found else nil
