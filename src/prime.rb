@@ -128,6 +128,34 @@ end
 #
 
 # Param::  positive integer n
+# Return:: a factor f (1 < f < n) if found else nil
+def differences_of_squares(n, limit = 1_000_000)
+	sqrt = isqrt(n)
+	dx = (sqrt << 1) + 1
+	dy = 1
+	r = sqrt ** 2 - n
+	terms = 0
+
+	# find x and y s.t. x**2 - y**2 == n
+	loop do
+		while 0 < r
+			r -= dy
+			dy += 2
+		end
+
+		break if 0 == r
+
+		r += dx
+		dx += 2
+
+		terms += 1
+		return false if limit == terms
+	end
+
+	return (dx + dy - 2) >> 1, (dx - dy) >> 1
+end
+
+# Param::  positive integer n
 #          integer c which is used recurrence formula x ** 2 + c (mod n)
 #          integer s starting value of the recurrence formula
 #          integer max number of trials
