@@ -236,14 +236,7 @@ def pollard_rho(n, c = 1, s = 2, max = 10_000)
 
 			if terms & 1023 == 0
 				g = binary_gcd(n, product)
-				if 1 < g
-					return g if g < n
-
-					# Backtrack
-					# #
-					return  g
-				end
-
+				return g if 1 < g
 				return nil if max <= terms
 			end
 		end
@@ -344,28 +337,10 @@ def factorize(n)
 		end
 	end
 
-#	rslt = differences_of_squares(n)
-#	if rslt and 1 < rslt[0]
-#		g = binary_gcd(rslt[0], rslt[1])
-#		if 1 < g
-#			if g <= td_lim_square
-#				f = [[g, 2]]
-#			else
-#				f = factorize(g).map {|f| f[1] <<= 1}
-#			end
-#
-#			2.times do |i|
-#				rslt[i] /= g
-#			end
-#		end
-#		factor += (factorize(rslt[0]) + factorize(rslt[1])).sort_by {|a, b| a[0] <=> b[0]}
-#
-#		return factor
-#	end
-
 	# #pollard_rho
 	5.times do
-
+		c = rand()
+		s = rand()
 		rslt = pollard_rho(n)
 	end
 
