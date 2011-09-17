@@ -218,7 +218,7 @@ end
 # Return:: a factor f (1 < f < n) if found else nil
 def pollard_rho(n, c = 1, s = 2, max = 10_000)
 	u = s
-	v = s ** 2 + c
+	v = (v ** 2 + c) % n
 	range = 1
 	product = 1
 	terms = 0
