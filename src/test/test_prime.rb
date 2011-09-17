@@ -39,6 +39,8 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal([[[2, 1], [3, 1]], 1], trial_division(6))
 		assert_equal([[[11, 1]], 1], trial_division(11))
 		assert_equal([[[13, 2]], 1], trial_division(169))
+		assert_equal([[[2, 2], [231053, 1], [415039, 1]], 708806692316951],
+			trial_division(4 * 231053 * 415039 * 70_880_669_231_6951, 500_000))
 	end
 
 	def test_prime?
