@@ -7,13 +7,13 @@ def precompute_primes
 	primes = eratosthenes_sieve(PRIME_CACHE_LIMIT).to_a
 
 	Dir::mkdir(DATA_DIR) unless FileTest.exist?(DATA_DIR)
-	open(PRIMES_LIST, "w") {|io| io.write(primes.map {|p| p.to_s}.join("\n"))}
+	open(PRIMES_LIST, "w") {|io| io.write(primes.map(&:to_s).join("\n"))}
 
 	return primes
 end
 
 def load_precomputed_primes
-	open(PRIMES_LIST) {|io| return io.read.split("\n").map {|line| line.to_i}}
+	open(PRIMES_LIST) {|io| return io.read.split("\n").map(&:to_i)}
 end
 
 $primes = nil
@@ -96,18 +96,134 @@ def miller_rabin(n, trials = 20, return_witness = false)
 	return return_witness ? [true, nil] : true
 end
 
-# Param::  positive integer n
-# Return:: a proper divisor of n if found out else nil
-def trial_division(n, limit = nil)
+def trial_division_old(n, limit = nil)
 	return nil if n <= 3
 	return 2 if n.even?
 
-	limit = isqrt(n) unless limit
-	3.step(limit, 2) do |d|
+	limit = [limit, isqrt(n)].min
+	b = 0
+	list = [1, 7, 11, 13, 17, 19, 23, 29]
+	d = 1
+	loop do
+		b += 30
+		[1, 7, 11, 13, 17, 19, 23, 29].each do |i|
+			d = b + i
+			return d if n % d == 0
+		end
+	end
+
+	return nil
+end
+
+def trial_division_old2(n, limit = nil)
+	return nil if n <= 3
+	return 2 if n.even?
+
+	limit = [limit, isqrt(n)].min
+	d = 29
+	diff_list = [2, 6, 4, 2, 4, 2, 4, 6]
+	loop do
+		diff_list.each do |i|
+			d += i
+			return d if n % d == 0
+		end
+	end
+
+	return nil
+end
+
+
+def trial_division_old3(n, limit = nil)
+	return nil if n <= 3
+	return 2 if n.even?
+
+	limit = [limit, isqrt(n)].min
+	d = 29
+	diff_list = [2, 6, 4, 2, 4, 2, 4, 6]
+	loop do
+		d += 2
+		return d if n % d == 0
+		d += 6
+		return d if n % d == 0
+		d += 4
+		return d if n % d == 0
+		d += 2
+		return d if n % d == 0
+		d += 4
+		return d if n % d == 0
+		d += 2
+		return d if n % d == 0
+		d += 4
+		return d if n % d == 0
+		d += 6
 		return d if n % d == 0
 	end
 
 	return nil
+end
+
+# Param::  positive integer n >= 2
+#          positive integer limit
+# Return:: a proper divisor of n if found out else nil
+def trial_division(n, limit = INFINITY)
+	factor = []
+	lim = [limit, isqrt(n)].min
+
+	divide = Proc.new do |d|
+		n /= d
+		div_count = 1
+		loop do
+			q, r = n.divmod(d)
+			break unless 0 == r
+
+			n = q
+			div_count += 1
+		end
+
+		factor.push([d, div_count])
+		lim = [lim, isqrt(n)].min
+
+		break if lim < d
+	end
+
+	(plist = primes_list).each do |d|
+		break if lim < d
+		next unless 0 == n % d
+
+		divide.call(d)
+	end
+
+	if plist.last < lim
+		d = plist.last - plist.last % 30 - 1
+		loop do
+			break if lim < d
+
+			# [2, 6, 4, 2, 4, 2, 4, 6] are difference of [1, 7, 11, 13, 17, 19, 23, 29]
+			d += 2
+			divide.call(d) if 0 == n % d
+			d += 6
+			divide.call(d) if 0 == n % d
+			d += 4
+			divide.call(d) if 0 == n % d
+			d += 2
+			divide.call(d) if 0 == n % d
+			d += 4
+			divide.call(d) if 0 == n % d
+			d += 2
+			divide.call(d) if 0 == n % d
+			d += 4
+			divide.call(d) if 0 == n % d
+			d += 6
+			divide.call(d) if 0 == n % d
+		end
+	end
+
+	# n is prime?
+	if 1 < n and isqrt(n) <= lim
+		factor.push([n, 1])
+		n = 1
+	end
+	return factor, n
 end
 
 # Param::  positive integer n
@@ -120,7 +236,7 @@ def prime?(n)
 
 	return false unless miller_rabin(n)
 
-	return (not trial_division(n))
+	return n == trial_division(n)[0].last[0]
 end
 
 #

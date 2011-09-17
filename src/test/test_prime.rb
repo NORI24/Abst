@@ -32,14 +32,13 @@ class TC_Prime < Test::Unit::TestCase
 	end
 
 	def test_trial_division
-		assert_equal(nil, trial_division(1))
-		assert_equal(nil, trial_division(2))
-		assert_equal(nil, trial_division(3))
-		assert_equal(2, trial_division(4))
-		assert_equal(nil, trial_division(5))
-		assert_equal(2, trial_division(6))
-		assert_equal(nil, trial_division(11))
-		assert_equal(13, trial_division(169))
+		assert_equal([[[2, 1]], 1], trial_division(2))
+		assert_equal([[[3, 1]], 1], trial_division(3))
+		assert_equal([[[2, 2]], 1], trial_division(4))
+		assert_equal([[[5, 1]], 1], trial_division(5))
+		assert_equal([[[2, 1], [3, 1]], 1], trial_division(6))
+		assert_equal([[[11, 1]], 1], trial_division(11))
+		assert_equal([[[13, 2]], 1], trial_division(169))
 	end
 
 	def test_prime?
