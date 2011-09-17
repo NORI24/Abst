@@ -117,6 +117,7 @@ def trial_division(n, limit = INFINITY)
 		factor.push([d, div_count])
 		lim = [lim, isqrt(n)].min
 
+		# #
 		break if lim < d
 	end
 
@@ -163,10 +164,15 @@ end
 # Param::  positive integer n
 # Return:: boolean whether n is prime or not
 def prime?(n)
-	if n <= 3
-		return false if n <= 1
-		return true
-	end
+#	if n < 341_550_071_728_321
+		if n <= 3
+			return false if n <= 1
+			return true
+		end
+#		if n < 4_759_123_141
+#
+#		end
+#	end
 
 	return false unless miller_rabin(n)
 
@@ -178,7 +184,7 @@ end
 #
 
 # Param::  positive integer n
-# Return:: a factor f (1 < f < n) if found else nil
+# Return:: factor a and b (a <= b) if found else false
 def differences_of_squares(n, limit = 1_000_000)
 	sqrt = isqrt(n)
 	dx = (sqrt << 1) + 1
@@ -202,7 +208,7 @@ def differences_of_squares(n, limit = 1_000_000)
 		return false if limit == terms
 	end
 
-	return (dx + dy - 2) >> 1, (dx - dy) >> 1
+	return (dx - dy) >> 1, (dx + dy - 2) >> 1
 end
 
 # Param::  positive integer n
@@ -319,30 +325,53 @@ end
 def factorize(n)
 	return [[1, 1]] if 1 == n
 
-	rslt = []
+	factor, n = trial_division(n, td_lim = 1_000_000)
+	return factor if 1 == n
 
-	limit = isqrt(n)
-	(2..limit).each_prime do |d|
-		break if limit < d
-		next unless 0 == n % d
+	td_lim_square = td_lim ** 2
 
-		n /= d
-		div_count = 1
-		loop do
-			q, r = n.divmod(d)
-			break unless 0 == r
-
-			n = q
-			div_count += 1
+	merge = Proc.new do |f1, f2|
+		left = 0
+		temp = f1.map {|i| i[0]}
+		f2.each do |j|
+			left = Bisect.bisect_left(temp, j[0], left)
+			if f1[left][0] == j[0]
+				f1[left][1] += j[1]
+			else
+				f1.insert(left, j)
+			end
+			left += 1
 		end
-
-		rslt.push([d, div_count])
-		limit = isqrt(n)
-		break if limit <= d
 	end
 
-	rslt.push([n, 1]) if 1 < n
-	return rslt
+#	rslt = differences_of_squares(n)
+#	if rslt and 1 < rslt[0]
+#		g = binary_gcd(rslt[0], rslt[1])
+#		if 1 < g
+#			if g <= td_lim_square
+#				f = [[g, 2]]
+#			else
+#				f = factorize(g).map {|f| f[1] <<= 1}
+#			end
+#
+#			2.times do |i|
+#				rslt[i] /= g
+#			end
+#		end
+#		factor += (factorize(rslt[0]) + factorize(rslt[1])).sort_by {|a, b| a[0] <=> b[0]}
+#
+#		return factor
+#	end
+
+	# #pollard_rho
+	5.times do
+
+		rslt = pollard_rho(n)
+	end
+
+	# #p_minus_1
+
+	raise NotImplementedError
 end
 
 #

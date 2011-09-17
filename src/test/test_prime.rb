@@ -60,9 +60,9 @@ class TC_Prime < Test::Unit::TestCase
 	end
 
 	def test_differences_of_squares
-		assert_equal([2993579, 985109], differences_of_squares(2949001615111))
-		assert_equal([8192167, 6576439], differences_of_squares(53875286553313))
-		assert_equal([9553081, 4121987], differences_of_squares(39377675691947))
+		assert_equal([985109, 2993579], differences_of_squares(2949001615111))
+		assert_equal([6576439, 8192167], differences_of_squares(53875286553313))
+		assert_equal([4121987, 9553081], differences_of_squares(39377675691947))
 	end
 
 	def test_pollard_rho
