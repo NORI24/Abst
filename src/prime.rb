@@ -318,65 +318,92 @@ def factorize(n)
 	return [[1, 1]] if 1 == n
 
 	factor, n = trial_division(n, td_lim = 1_000_000)
-	return factor if 1 == n
-
 	td_lim_square = td_lim ** 2
 
-	divide = Proc.new do |f|
-		div_count = 1
-		loop do
-			q, r = n.divmod(d)
-			break unless 0 == r
-
-			n = q
-			div_count += 1
-		end
-
-		factor.push([d, div_count])
-		lim = [lim, isqrt(n)].min
-
-		break if lim < d
-	end
-
 	merge = Proc.new do |f1, f2|
-		left = 0
-		temp = f1.map {|i| i[0]}
-		f2.each do |j|
-			left = Bisect.bisect_left(temp, j[0], left)
-			if f1[left][0] == j[0]
-				f1[left][1] += j[1]
+		next f2 if f1.empty?
+
+		insert_pos = 0
+		until f2.empty?
+			d, e = f2.first
+			insert_pos = Bisect.bisect_left(f1.map(&:first), d, insert_pos)
+			break if f1.size <= insert_pos
+
+			if f1[insert_pos][0] == d
+				f1[insert_pos][1] += e
+				f2.shift
 			else
-				f1.insert(left, j)
+				f1.insert(insert_pos, f2.shift)
 			end
-			left += 1
+			insert_pos += 1
+		end
+
+		next f1 + f2
+	end
+
+	check_finish = Proc.new do
+		if n <= td_lim_square
+			return factor if 1 == n
+			return merge.call(factor, [[n, 1]])
 		end
 	end
 
-	# #pollard_rho
-	5.times do
+	divide = Proc.new do |f|
+		f.size.times do |i|
+			d = f[i][0]
+			loop do
+				q, r = n.divmod(d)
+				break unless 0 == r
+				n = q
+				f[i][1] += 1
+			end
+		end
+
+		next f
+	end
+
+	check_finish.call
+
+	# pollard_rho
+	10.times do
+		c = nil
 		loop do
 			c = rand(n - 3) + 1
 			break unless c.square?
 		end
 		s = rand(n)
-		f = pollard_rho(n, c, s)
+		f = pollard_rho(n, c, s, 100_000)
+		next unless f
 
 		# f is prime?
+		n /= f
 		if f <= td_lim_square or prime?(f)
-			n /= f
-			count = 1
-			loop do
-				q, r = n.divmod(f)
-				break unless 0 == r
-				n = q
-				count += 1
-			end
+			f = divide.call([[f, 1]])
 		else
-
+			f = divide.call(factorize(f))
 		end
+
+		factor = merge.call(factor, f)
+		check_finish.call
 	end
 
-	# #p_minus_1
+	# p_minus_1
+	5.times do
+		m = primes_list[rand(20)]
+		f = p_minus_1(n, 200_000)
+		next unless f
+
+		# f is prime?
+		n /= f
+		if f <= td_lim_square or prime?(f)
+			f = divide.call([[f, 1]])
+		else
+			f = divide.call(factorize(f))
+		end
+
+		factor = merge.call(factor, f)
+		check_finish.call
+	end
 
 	raise NotImplementedError
 end
