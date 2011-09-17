@@ -170,7 +170,7 @@ def prime?(n)
 
 	return false unless miller_rabin(n)
 
-	return n == trial_division(n)[0].last[0]
+	return n == trial_division(n)[0][0][0]
 end
 
 #
