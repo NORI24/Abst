@@ -117,7 +117,6 @@ def trial_division(n, limit = INFINITY)
 		factor.push([d, div_count])
 		lim = [lim, isqrt(n)].min
 
-		# #
 		break if lim < d
 	end
 
@@ -218,7 +217,7 @@ end
 # Return:: a factor f (1 < f < n) if found else nil
 def pollard_rho(n, c = 1, s = 2, max = 10_000)
 	u = s
-	v = (v ** 2 + c) % n
+	v = (s ** 2 + c) % n
 	range = 1
 	product = 1
 	terms = 0
@@ -323,6 +322,22 @@ def factorize(n)
 
 	td_lim_square = td_lim ** 2
 
+	divide = Proc.new do |f|
+		div_count = 1
+		loop do
+			q, r = n.divmod(d)
+			break unless 0 == r
+
+			n = q
+			div_count += 1
+		end
+
+		factor.push([d, div_count])
+		lim = [lim, isqrt(n)].min
+
+		break if lim < d
+	end
+
 	merge = Proc.new do |f1, f2|
 		left = 0
 		temp = f1.map {|i| i[0]}
@@ -339,9 +354,26 @@ def factorize(n)
 
 	# #pollard_rho
 	5.times do
-		c = rand()
-		s = rand()
-		rslt = pollard_rho(n)
+		loop do
+			c = rand(n - 3) + 1
+			break unless c.square?
+		end
+		s = rand(n)
+		f = pollard_rho(n, c, s)
+
+		# f is prime?
+		if f <= td_lim_square or prime?(f)
+			n /= f
+			count = 1
+			loop do
+				q, r = n.divmod(f)
+				break unless 0 == r
+				n = q
+				count += 1
+			end
+		else
+
+		end
 	end
 
 	# #p_minus_1
