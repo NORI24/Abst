@@ -163,15 +163,15 @@ end
 # Param::  positive integer n
 # Return:: boolean whether n is prime or not
 def prime?(n)
+	if n <= 3
+		return false if n <= 1
+		return true
+	end
+
+	factor = trial_division(n, 257, {:return_type=>list})[0]
+	return factor[0][0] == n unless factor.empty?
+
 	if n < 341_550_071_728_321
-		if n <= 3
-			return false if n <= 1
-			return true
-		end
-
-		factor = trial_division(n, 257)[0]
-		return factor[0][0] == n unless factor.empty?
-
 		[2, 3, 5, 7, 11, 13, 17].each do |i|
 			return false unless strong_pseudoprime_test(n, i)
 		end
@@ -179,7 +179,6 @@ def prime?(n)
 	end
 
 	return false unless miller_rabin(n)
-
 	return n == trial_division(n)[0][0][0]
 end
 
