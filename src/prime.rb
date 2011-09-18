@@ -168,7 +168,7 @@ def prime?(n)
 		return true
 	end
 
-	factor = trial_division(n, 257, {:return_type=>list})[0]
+	factor = trial_division(n, 257)[0]
 	return factor[0][0] == n unless factor.empty?
 
 	if n < 341_550_071_728_321
