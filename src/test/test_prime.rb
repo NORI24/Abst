@@ -57,6 +57,8 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(true, prime?(11))
 		assert_equal(false, prime?(12))
 		assert_equal(true, prime?(13))
+		assert_equal(true, prime?(17))
+		assert_equal(false, prime?(1_373_653))
 	end
 
 	def test_differences_of_squares
