@@ -409,7 +409,8 @@ def factorize(n)
 		check_finish.call
 	end
 
-	raise NotImplementedError
+	f, n = trial_division(n)
+	return merge.call(factor, f)
 end
 
 #
