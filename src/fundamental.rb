@@ -228,7 +228,7 @@ def binary_gcd(a, b)
 		return a << k if 0 == t
 
 		count = 0
-		count += 1 while t[count] == 0
+		count += 1 while 0 == t[count]
 		t >>= count
 
 		(0 < t) ? a = t : b = -t
@@ -593,7 +593,6 @@ def isqrt(n)
 	loop do
 		# Newtonian step
 		next_x = (x + n / x) >> 1
-
 		return x if x <= next_x
 
 		x = next_x
@@ -643,7 +642,7 @@ def prime_power?(n)
 			return n.power_of?(p) ? p : false
 		end
 
-		d = binary_gcd(power(witness, p, p) - witness, p)
+		d = lehmer_gcd(power(witness, p, p) - witness, p)
 		return false if 1 == d or d == p
 		p = d
 	end

@@ -231,14 +231,14 @@ def pollard_rho(n, c = 1, s = 2, max = 10_000)
 			v = (v ** 2 + c) % n
 			temp = product * (u - v) % n
 			if 0 == temp
-				g = binary_gcd(n, product)
+				g = lehmer_gcd(n, product)
 				return (1 < g) ? g : nil
 			end
 			product = temp
 			terms += 1
 
 			if terms & 1023 == 0
-				g = binary_gcd(n, product)
+				g = lehmer_gcd(n, product)
 				return g if 1 < g
 				return nil if max <= terms
 			end
@@ -276,7 +276,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 		next unless 15 == i & 15
 
 		# Compute GCD
-		g = binary_gcd(m - 1, n)
+		g = lehmer_gcd(m - 1, n)
 		if 1 == g
 			old_m = m
 			old_i = i
@@ -289,7 +289,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 	if nil == p or bound < p
 		return nil if 0 == i & 15
 
-		g = binary_gcd(m - 1, n)
+		g = lehmer_gcd(m - 1, n)
 		return nil if 1 == g
 		return g unless n == g
 	end
@@ -304,7 +304,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 
 		loop do
 			m = power(m, p, n)
-			g = binary_gcd(m - 1, n)
+			g = lehmer_gcd(m - 1, n)
 			if 1 == g
 				p_pow *= p
 				break if bound < p_pow
