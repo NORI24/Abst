@@ -497,6 +497,15 @@ alias Jacobi_symbol kronecker_symbol
 #          odd prime p
 # Return:: the square root mod p of n if exists else nil
 def mod_sqrt(n, p)
+	return nil if kronecker_symbol(n, p) == -1
+
+	if 0 < p & 6
+		return power(n, ((p - 3) >> 2) + 1, p) if p[1] == 1
+		k = (p - 5) >> 3
+		return power(n, k + 1, p) if power(n, (k << 1) + 1, p) == 1
+		return power(n << 2, k + 1, p) * ((p + 1) >> 1) % p
+	end
+
 	# get q and e s.t. p - 1 == 2**e * q with q odd
 	e = 0
 	q = p - 1
@@ -526,7 +535,6 @@ def mod_sqrt(n, p)
 			b_ = b_ ** 2 % p
 			f += 1
 		end
-		return nil if f == e
 
 		# Reduce exponent
 		(e - f - 1).times { z = z ** 2 % p }
