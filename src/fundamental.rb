@@ -524,13 +524,10 @@ def mod_sqrt(n, p)
 	x = n * temp % p	# n ** ((q + 1) / 2) mod p
 	b = x * temp % p	# n ** q mod p
 
-	loop do
-		# always
-		# n * b == x ** 2
-
-		return x if 1 == b
-
-		# Find exponent f s.t. b ** f == 1
+	# always
+	# n * b == x ** 2
+	until 1 == b
+		# Find exponent f s.t. b ** (2 ** f) == 1 (mod p)
 		f = 0
 		b_ = b
 		until 1 == b_
@@ -545,6 +542,8 @@ def mod_sqrt(n, p)
 		z = z ** 2 % p
 		b = b * z % p
 	end
+
+	return x
 end
 
 # Param::  positive integer d
