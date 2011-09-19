@@ -184,10 +184,12 @@ class TC_Fundamental < Test::Unit::TestCase
 
 		test.call(2, 5)
 		test.call(2, 7)
-		test.call(2, 11)
-		test.call(2, 13)
-		test.call(2, 17)
 		test.call(21, 7)
+		test.call(2, 11)
+		test.call(3, 11)
+		test.call(2, 13)
+		test.call(3, 13)
+		test.call(2, 17)
 		test.call(17 * 3, 17)
 	end
 

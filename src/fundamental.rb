@@ -501,10 +501,11 @@ def mod_sqrt(n, p)
 	end
 
 	if 0 < p & 6
-		return power(n, ((p - 3) >> 2) + 1, p) if p[1] == 1
-		k = (p - 5) >> 3
-		return power(n, k + 1, p) if power(n, (k << 1) + 1, p) == 1
-		return power(n << 2, k + 1, p) * ((p + 1) >> 1) % p
+		return power(n, (p >> 2) + 1, p) if p[1] == 1
+		n %= p
+		x = power(n, (p >> 3) + 1, p)
+		return x if x ** 2 % p == n
+		return x * power(2, p >> 2, p) % p
 	end
 
 	# get q and e s.t. p - 1 == 2**e * q with q odd
