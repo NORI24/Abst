@@ -178,7 +178,7 @@ class TC_Fundamental < Test::Unit::TestCase
 			if kronecker_symbol(n, p) == -1
 				assert_equal(nil, rslt)
 			else
-				assert_equal(n, rslt ** 2 % p)
+				assert_equal(n % p, rslt ** 2 % p)
 			end
 		end
 
@@ -187,6 +187,8 @@ class TC_Fundamental < Test::Unit::TestCase
 		test.call(2, 11)
 		test.call(2, 13)
 		test.call(2, 17)
+		test.call(21, 7)
+		test.call(17 * 3, 17)
 	end
 
 	def test_cornacchia
