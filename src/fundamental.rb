@@ -224,16 +224,14 @@ def binary_gcd(a, b)
 
 	loop do
 		# Subtract (Here a and b are both odd.)
-		t = (a - b) >> 1
+		t = a - b
 		return a << k if 0 == t
 
-		t >>= 1 while t.even?
+		count = 0
+		count += 1 while t[count] == 0
+		t >>= count
 
-		if 0 < t
-			a = t
-		else
-			b = -t
-		end
+		(0 < t) ? a = t : b = -t
 	end
 end
 
