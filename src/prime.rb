@@ -126,7 +126,7 @@ end
 #          positive integer limit
 # Return:: factorization up to limit and remainder of n i.e.
 #          [[[a, b], [c, d], ...], r] s.t.
-#          n == a**b * c**d * ... * r, (r have no factor less than or equal to limit)
+#          n == a**b * c**d * ... * r, (r have no factor less than or equal to limit ** 2)
 def trial_division(n, limit = INFINITY)
 	factor = []
 	lim = [limit, isqrt(n)].min
@@ -157,9 +157,7 @@ def trial_division(n, limit = INFINITY)
 
 	if plist.last < lim
 		d = plist.last - plist.last % 30 - 1
-		loop do
-			break if lim < d
-
+		while d <= lim
 			# [2, 6, 4, 2, 4, 2, 4, 6] are difference of [1, 7, 11, 13, 17, 19, 23, 29]
 			d += 2
 			divide.call(d) if 0 == n % d
