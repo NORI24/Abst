@@ -1,5 +1,7 @@
 ABST_ROOT = File.dirname(__FILE__) + '/'
 
+require ABST_ROOT + 'compatibility'
+
 # Integer block byte size
 BASE_BYTE = 1.size
 INFINITY = Float::INFINITY
