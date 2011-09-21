@@ -124,7 +124,9 @@ end
 
 # Param::  positive integer n >= 2
 #          positive integer limit
-# Return:: a proper divisor of n if found out else nil
+# Return:: factorization up to limit and remainder of n i.e.
+#          [[[a, b], [c, d], ...], r] s.t.
+#          n == a**b * c**d * ... * r, (r have no factor less than or equal to limit)
 def trial_division(n, limit = INFINITY)
 	factor = []
 	lim = [limit, isqrt(n)].min
@@ -317,7 +319,7 @@ def p_minus_1(n, bound = 10_000, m = 2)
 end
 
 # Param::  positive integer n
-# Return:: factorization of n s.t. [[a, b], [c, d], ...], n = a**b * c**d * ...
+# Return:: factorization of n s.t. [[a, b], [c, d], ...], n == a**b * c**d * ...
 def factorize(n)
 	return [[1, 1]] if 1 == n
 
