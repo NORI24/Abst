@@ -150,9 +150,7 @@ def trial_division(n, limit = INFINITY)
 
 	(plist = primes_list).each do |d|
 		break if lim < d
-		next unless 0 == n % d
-
-		divide.call(d)
+		divide.call(d) if 0 == n % d
 	end
 
 	if plist.last < lim
