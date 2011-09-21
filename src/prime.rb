@@ -96,6 +96,32 @@ def miller_rabin(n, trials = 20, return_witness = false)
 	return return_witness ? [true, nil] : true
 end
 
+# Param::  positive integer n
+# Return:: boolean whether n is prime or not
+def prime?(n)
+	if n <= 3
+		return false if n <= 1
+		return true
+	end
+
+	factor = trial_division(n, 257)[0]
+	return factor[0][0] == n unless factor.empty?
+
+	if n < 341_550_071_728_321
+		[2, 3, 5, 7, 11, 13, 17].each do |i|
+			return false unless strong_pseudoprime_test(n, i)
+		end
+		return true
+	end
+
+	return false unless miller_rabin(n)
+	return n == trial_division(n)[0][0][0]
+end
+
+#
+# factorization
+#
+
 # Param::  positive integer n >= 2
 #          positive integer limit
 # Return:: a proper divisor of n if found out else nil
@@ -159,32 +185,6 @@ def trial_division(n, limit = INFINITY)
 	end
 	return factor, n
 end
-
-# Param::  positive integer n
-# Return:: boolean whether n is prime or not
-def prime?(n)
-	if n <= 3
-		return false if n <= 1
-		return true
-	end
-
-	factor = trial_division(n, 257)[0]
-	return factor[0][0] == n unless factor.empty?
-
-	if n < 341_550_071_728_321
-		[2, 3, 5, 7, 11, 13, 17].each do |i|
-			return false unless strong_pseudoprime_test(n, i)
-		end
-		return true
-	end
-
-	return false unless miller_rabin(n)
-	return n == trial_division(n)[0][0][0]
-end
-
-#
-# factorization
-#
 
 # Param::  positive integer n
 # Return:: factor a and b (a <= b) if found else false
