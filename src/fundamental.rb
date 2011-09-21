@@ -367,7 +367,6 @@ def extended_binary_gcd(a, b)
 		next_d = d - d_		# next_d == a * next_u + b * next_v
 		next_u += b if next_u < 0
 
-		# Finish?
 		break if 0 == next_d
 
 		# Remove powers of 2
@@ -377,7 +376,6 @@ def extended_binary_gcd(a, b)
 			next_u >>= 1
 		end
 
-		# Loop
 		if 0 < next_d
 			u = next_u
 			d = next_d
@@ -387,7 +385,6 @@ def extended_binary_gcd(a, b)
 		end
 	end
 
-	# Terminate
 	v = (d - a * u) / b
 
 	u, v = v, u if exchange_flag_2
