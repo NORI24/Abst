@@ -490,8 +490,27 @@ alias Jacobi_symbol kronecker_symbol
 
 # Param::  integer n
 #          odd prime p
-# Return:: the square root mod p of n if exists else nil
-def mod_sqrt(n, p)
+#          positive integer exp
+#          (if 1 < exp then n must be relatively prime with p)
+# Return:: the square root of n mod (p ** exp) if exists else nil
+def mod_sqrt(n, p, exp = 1)
+	if 1 < exp
+		x = mod_sqrt(n, p)
+		return x unless x
+		raise ArgumentError, "if 1 < exp then n must be relatively prime with p" if 0 == x
+
+		p_power = p
+		z = extended_lehmer_gcd(x << 1, p)[0]
+		(exp - 1).times do
+			y = (n - x ** 2) / p_power * z % p
+			x += y * p_power
+			p_power *= p
+			x %= p_power
+		end
+
+		return x
+	end
+
 	unless (k = kronecker_symbol(n, p)) == 1
 		return nil if -1 == k
 		return 0
