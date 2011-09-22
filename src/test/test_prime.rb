@@ -84,6 +84,8 @@ class TC_Prime < Test::Unit::TestCase
 	end
 
 	def test_factorize
+		assert_equal([[-1, 1]], factorize(-1))
+		assert_equal([[0, 1]], factorize(0))
 		assert_equal([[1, 1]], factorize(1))
 		assert_equal([[2, 1]], factorize(2))
 		assert_equal([[3, 1]], factorize(3))
@@ -92,6 +94,7 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal([[2, 2], [3, 1]], factorize(12))
 		assert_equal([[3, 4]], factorize(81))
 		assert_equal([[2, 10]], factorize(1024))
+		assert_equal([[-1, 1], [3, 1], [5, 3]], factorize(-375))
 	end
 
 	def test_eratosthenes_sieve

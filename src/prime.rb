@@ -314,12 +314,22 @@ def p_minus_1(n, bound = 10_000, m = 2)
 	end
 end
 
-# Param::  positive integer n
+# Param::  integer n
 # Return:: factorization of n s.t. [[a, b], [c, d], ...], n == a**b * c**d * ...
+#          if n == -1 or 0 or 1 then return [[n, 1]].
+#          if n < 0 then [-1, 1] is added as a factor.
+#          otherwise find prime factors.
 def factorize(n)
-	return [[1, 1]] if 1 == n
+	if n <= 1
+		return [[n, 1]] if -1 <= n
+		n = -n
+		factor = [[-1, 1]]
+	else
+		factor = []
+	end
 
-	factor, n = trial_division(n, td_lim = 1_000_000)
+	f, n = trial_division(n, td_lim = 1_000_000)
+	factor += f
 	td_lim_square = td_lim ** 2
 
 	merge = Proc.new do |f1, f2|
