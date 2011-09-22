@@ -1,6 +1,9 @@
 def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	# Initialize
 # #decide factor_base_size and sieve_range
+	sqrt = isqrt(n)
+	range_limit = isqrt(n << 1) - sqrt
+	sieve_range = range_limit if range_limit < sieve_range
 
 	# Select factor base
 	factor_base = [-1, 2]
@@ -10,23 +13,19 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 			break if factor_base_size <= factor_base.size
 		end
 	end
+	factor_base_log = [nil] + factor_base[1..-1].map{|p| Math.log(p)}
 
-	# Sieve
-	sqrt = isqrt(n)
-	sqrt_half = sqrt >> 1
-	sieve_range = sqrt_half if sqrt_half < sieve_range
+	# Basic sieve
 	sieve = Array.new(sieve_range << 1)
-	lo = sqrt - sieve_range
+	lo = sqrt - sieve_range + 1
 	hi = sqrt + sieve_range
-	(lo...hi).each.with_index do |r, i|
-		t = r ** 2 - n
-		factorization = Array.new(factor_base_size, 0)
-		sieve[i] = [r, t.abs, factorization]
-	end
-
-	# -1
-	(0..sieve_range).each do |i|
-		sieve[i][2][0] = 1
+	s = (lo - 1) ** 2 - n
+	diff = (lo << 1) - 1
+	(lo..hi).each.with_index do |r, i|
+		s += diff
+		t = (0 < s) ? s : -s
+		diff += 2
+		sieve[i] = [r, t, s, Math.log(t)]
 	end
 
 	# 2
@@ -34,42 +33,45 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	s.step((sieve_range << 1) - 1, 2) do |i|
 		count = 1
 		count += 1 while sieve[i][1][count] == 0
-		sieve[i][2][1] = count
+#		sieve[i][2] -= factor_base_log(1) * count
 		sieve[i][1] >>= count
 	end
 
 	# 3, ...
 	(2...factor_base.size).each do |i|
 		p = factor_base[i]
-		(1..5).each do |e|
+		(1..15).each do |e|
 			sqrt = mod_sqrt(n, p, e)
 			[sqrt, p ** e - sqrt].each do |t|
 				s = (t - lo) % p ** e
 				s.step((sieve_range << 1) - 1, p ** e) do |j|
-					sieve[j][2][i] += 1
 					sieve[j][1] /= p
 				end
 			end
 		end
 	end
 
+	# MPQS
+
+
 	# Gaussian elimination
 	sieve = sieve.select{|i| 1 == i[1]}
 	return false if sieve.size <= factor_base.size
 
-	factorization = sieve.map(&:last).map(&:dup)
-	rslt = gaussian_elimination(factorization)
+	factorization = sieve.map do |r, z, s, l|
+		trial_division_on_factor_base(s, factor_base)
+	end
+	rslt = gaussian_elimination(factorization.map(&:reverse))
 
 	rslt.each do |row|
-		x = 1
+		x = y = 1
 		f = Array.new(factor_base_size, 0)
 		row.each.with_index do |b, i|
 			next if b == 0
 			x = x * sieve[i][0] % n
-			f = f.zip(sieve[i][2]).map{|a, b| a + b}
+			f = f.zip(factorization[i]).map{|a, b| a + b}
 		end
 
-		y = 1
 		factor_base_size.times do |i|
 			y = y * power(factor_base[i], f[i] >> 1, n) % n
 		end
@@ -124,4 +126,31 @@ def gaussian_elimination(m)
 	end
 
 	return rslt.pop(height - width)
+end
+
+def trial_division_on_factor_base(n, factor_base)
+	factor = Array.new(factor_base.size, 0)
+	if n < 0
+		factor[0] = 1
+		n = -n
+	end
+
+	factor_base[1..-1].each.with_index do |d, i|
+		q, r = n.divmod(d)
+		if 0 == r
+			n = q
+			div_count = 1
+			loop do
+				q, r = n.divmod(d)
+				break unless 0 == r
+
+				n = q
+				div_count += 1
+			end
+
+			factor[i + 1] = div_count
+		end
+	end
+
+	return factor
 end
