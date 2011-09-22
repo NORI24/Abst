@@ -1,17 +1,14 @@
 def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	# Initialize
+# #decide factor_base_size and sieve_range
 
 	# Select factor base
 	factor_base = [-1, 2]
-	i = 1
-	plist = primes_list
-	loop do
-		p = plist[i]
+	(3..INFINITY).each_prime do |p|
 		if 1 == kronecker_symbol(n, p)
 			factor_base.push(p)
 			break if factor_base_size <= factor_base.size
 		end
-		i += 1
 	end
 
 	# Sieve
@@ -58,6 +55,8 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 
 	# Gaussian elimination
 	sieve = sieve.select{|i| 1 == i[1]}
+	return false if sieve.size <= factor_base.size
+
 	factorization = sieve.map(&:last).map(&:dup)
 	rslt = gaussian_elimination(factorization)
 
@@ -76,10 +75,10 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 		end
 
 		z = gcd(x - y, n)
-		p z
-
 		return z if 1 < z and z < n
 	end
+
+	return false
 end
 
 def gaussian_elimination(m)
