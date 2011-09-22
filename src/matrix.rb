@@ -4,6 +4,20 @@ class Matrix < VectorCore
 
 		# vectorization each row
 		super(m.map{|row| self.class.coef_vector.new(row)})
+	rescue VectorSizeError
+		raise MatrixSizeError
+	end
+
+	def +(other)
+		return super(other)
+	rescue VectorSizeError
+		raise MatrixSizeError
+	end
+
+	def -(other)
+		return super(other)
+	rescue VectorSizeError
+		raise MatrixSizeError
 	end
 end
 
