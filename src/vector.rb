@@ -8,12 +8,16 @@ class VectorCore < Array
 		raise VectorSizeError unless self.size == other.size
 		return self.class.new(self.zip(other).map{|a, b| a - b})
 	end
+
+	def squared_length
+		return self.map{|i| i ** 2}.inject(&:+)
+	end
 end
 
 class Vector < VectorCore
 	def initialize(elems)
 		raise VectorSizeError unless elems.size == self.class.size
-		super(elems)
+		super
 	end
 end
 
