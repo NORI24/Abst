@@ -25,27 +25,27 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 		s += diff
 		t = (0 < s) ? s : -s
 		diff += 2
-		sieve[i] = [r, t, s, Math.log(t)]
+		sieve[i] = [r, 0, s]
 	end
 
 	# 2
-	s = sieve[0][1].even? ? 0 : 1
+	s = sieve[0][0].odd? ? 0 : 1
 	s.step((sieve_range << 1) - 1, 2) do |i|
 		count = 1
-		count += 1 while sieve[i][1][count] == 0
-#		sieve[i][2] -= factor_base_log(1) * count
-		sieve[i][1] >>= count
+		count += 1 while sieve[i][2][count] == 0
+		sieve[i][1] += factor_base_log[1] * count
 	end
 
 	# 3, ...
-	(2...factor_base.size).each do |i|
+	(2...factor_base_size).each do |i|
 		p = factor_base[i]
 		(1..15).each do |e|
 			sqrt = mod_sqrt(n, p, e)
 			[sqrt, p ** e - sqrt].each do |t|
+				# #
 				s = (t - lo) % p ** e
 				s.step((sieve_range << 1) - 1, p ** e) do |j|
-					sieve[j][1] /= p
+					sieve[j][1] += factor_base_log[i]
 				end
 			end
 		end
@@ -55,8 +55,13 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 
 
 	# Gaussian elimination
-	sieve = sieve.select{|i| 1 == i[1]}
-	return false if sieve.size <= factor_base.size
+	target = Math.log(n) / 2 + Math.log(sieve_range)
+	closenuf = 0.9 * Math.log(factor_base.last)
+	sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
+	return false if sieve.size <= factor_base_size
+	if factor_base_size + 10 < sieve.size
+		sieve = sieve[0...(factor_base_size + 10)]
+	end
 
 	factorization = sieve.map do |r, z, s, l|
 		trial_division_on_factor_base(s, factor_base)
