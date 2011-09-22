@@ -596,12 +596,6 @@ def modified_cornacchia()
 	raise NotImplementedError
 end
 
-# Param::
-# Return::
-def root_mod_p
-	raise NotImplementedError
-end
-
 # Integer Square Root
 # Param::  positive integer n
 # Return:: integer part of the square root of n
