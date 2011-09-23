@@ -70,19 +70,29 @@ end
 
 	# Gaussian elimination
 	target = Math.log(n) / 2 + Math.log(sieve_range)
-	closenuf = Math.log(factor_base.last)
+	closenuf = 1.5 * Math.log(factor_base.last)
 	sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
 p sieve.size
 	return false if sieve.size <= factor_base_size
 
 	factorization = []
 	r_list = []
+	big_prime = {}
+	big_prime_sup = []
 	sieve.map do |r, z, s, l|
-		rslt = trial_division_on_factor_base(s, factor_base)
 		f, re = trial_division_on_factor_base(s, factor_base)
 		if 1 == re
-			factorization.push(rslt[0])
+			factorization.push(f)
 			r_list.push(r)
+		else
+			unless big_prime[re]
+				big_prime[re] = [f, r]
+			else
+				r_list.push(r * big_prime[re][1] - n)
+				big_prime_sup[factorization.size] = re
+				big_prime[re][0]
+				factorization.push(big_prime[re][0].zip(f).map{|a, b| a + b})
+			end
 		end
 		break if factor_base_size + 10 < factorization.size
 	end
@@ -98,12 +108,16 @@ p factorization.size
 			next if b == 0
 			x = x * r_list[i] % n
 			f = f.zip(factorization[i]).map{|a, b| a + b}
+if big_prime_sup[i]
+	y = y * big_prime_sup[i] % n
+end
 		end
 
 		factor_base_size.times do |i|
 			y = y * power(factor_base[i], f[i] >> 1, n) % n
 		end
 
+raise "ERROR" unless 0 == (x ** 2 - y ** 2) % n
 		z = gcd(x - y, n)
 		if 1 < z and z < n and z != multiplier
 			q, r = z.divmod(multiplier)
