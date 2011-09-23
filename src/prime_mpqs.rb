@@ -1,4 +1,9 @@
 def mpqs(n, factor_base_size = nil, sieve_range = nil)
+	# multiplier
+	multiplier = 1
+#	multiplier = n & 7
+#	n *= multiplier if 1 < multiplier
+
 	# Initialize
 # #decide factor_base_size and sieve_range
 	sqrt = isqrt(n)
@@ -8,7 +13,8 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	# Select factor base
 	factor_base = [-1, 2]
 	(3..INFINITY).each_prime do |p|
-		if 1 == kronecker_symbol(n, p)
+#		next if multiplier == p
+		if multiplier == p or 1 == kronecker_symbol(n, p)
 			factor_base.push(p)
 			break if factor_base_size <= factor_base.size
 		end
@@ -39,16 +45,24 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	# 3, ...
 	(2...factor_base_size).each do |i|
 		p = factor_base[i]
-		(1..15).each do |e|
+if p == multiplier
+	t = 0
+	s = (t - lo) % p
+	s.step((sieve_range << 1) - 1, p) do |j|
+		sieve[j][1] += factor_base_log[i]
+	end
+else
+		max = (factor_base_log.last / factor_base_log[i]).ceil
+		(1..max).each do |e|
 			sqrt = mod_sqrt(n, p, e)
 			[sqrt, p ** e - sqrt].each do |t|
-				# #
 				s = (t - lo) % p ** e
 				s.step((sieve_range << 1) - 1, p ** e) do |j|
 					sieve[j][1] += factor_base_log[i]
 				end
 			end
 		end
+end
 	end
 
 	# MPQS
@@ -58,14 +72,21 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	target = Math.log(n) / 2 + Math.log(sieve_range)
 	closenuf = 0.9 * Math.log(factor_base.last)
 	sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
+p sieve.size
 	return false if sieve.size <= factor_base_size
-	if factor_base_size + 10 < sieve.size
-		sieve = sieve[0...(factor_base_size + 10)]
-	end
+#	if factor_base_size + 10 < sieve.size
+#		sieve = sieve[0...(factor_base_size + 10)]
+#	end
 
-	factorization = sieve.map do |r, z, s, l|
-		trial_division_on_factor_base(s, factor_base)
+	factorization = []
+	sieve.map do |r, z, s, l|
+		rslt = trial_division_on_factor_base(s, factor_base)
+		f, re = trial_division_on_factor_base(s, factor_base)
+		factorization.push(rslt[0]) if 1 == re
+		break if factor_base_size + 10 < factorization.size
 	end
+p factorization.size
+	return false if factorization.size <= factor_base_size
 	rslt = gaussian_elimination(factorization.map(&:reverse))
 
 	rslt.each do |row|
@@ -82,7 +103,10 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 		end
 
 		z = gcd(x - y, n)
-		return z if 1 < z and z < n
+		if 1 < z and z < n and z != multiplier
+			q, r = z.divmod(multiplier)
+			return (0 == r) ? q : z
+		end
 	end
 
 	return false
@@ -122,10 +146,10 @@ def gaussian_elimination(m)
 			next if m[i][j] == 0
 
 			((j + 1)...width).each do |j2|
-				m[i][j2] ^= m[j][j2]
+				m[i][j2] ^= 1 if 1 == m[j][j2]
 			end
 			height.times do |j2|
-				rslt[i][j2] ^= rslt[j][j2]
+				rslt[i][j2] ^= 1 if 1 == rslt[j][j2]
 			end
 		end
 	end
@@ -157,5 +181,5 @@ def trial_division_on_factor_base(n, factor_base)
 		end
 	end
 
-	return factor
+	return factor, n
 end
