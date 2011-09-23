@@ -8,7 +8,6 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 # #decide factor_base_size and sieve_range
 	sqrt = isqrt(n)
 	range_limit = isqrt(n << 1) - sqrt
-	sieve_range = range_limit if range_limit < sieve_range
 
 	# Select factor base
 	factor_base = [-1, 2]
@@ -21,17 +20,94 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	end
 	factor_base_log = [nil] + factor_base[1..-1].map{|p| Math.log(p)}
 
-	# Basic sieve
+#	# Basic sieve
+#	sieve = Array.new(sieve_range << 1)
+#	lo = sqrt - sieve_range + 1
+#	hi = sqrt + sieve_range
+#	s = (lo - 1) ** 2 - n
+#	diff = (lo << 1) - 1
+#	(lo..hi).each.with_index do |r, i|
+#		s += diff
+#		t = (0 < s) ? s : -s
+#		diff += 2
+#		sieve[i] = [r, 0, s]
+#	end
+#
+#	# 2
+#	s = sieve[0][0].odd? ? 0 : 1
+#	s.step((sieve_range << 1) - 1, 2) do |i|
+#		count = 1
+#		count += 1 while sieve[i][2][count] == 0
+#		sieve[i][1] += factor_base_log[1] * count
+#	end
+#
+#	# 3, ...
+#	(2...factor_base_size).each do |i|
+#		p = factor_base[i]
+#if p == multiplier
+#	t = 0
+#	s = (t - lo) % p
+#	s.step((sieve_range << 1) - 1, p) do |j|
+#		sieve[j][1] += factor_base_log[i]
+#	end
+#else
+#		max = (factor_base_log.last / factor_base_log[i]).ceil
+#		pe = 1
+#		(1..max).each do |e|
+#			pe *= p
+#			sqrt = mod_sqrt(n, p, e)
+#			[sqrt, pe - sqrt].each do |t|
+#				s = (t - lo) % pe
+#				s.step((sieve_range << 1) - 1, pe) do |j|
+#					sieve[j][1] += factor_base_log[i]
+#				end
+#			end
+#		end
+#end
+#	end
+#	# trial division on factor base
+#	target = Math.log(n) / 2 + Math.log(sieve_range)
+#	closenuf = 1.5 * Math.log(factor_base.last)
+#	sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
+#p sieve.size
+#	return false if sieve.size <= factor_base_size
+#
+#	factorization = []
+#	r_list = []
+#	big_prime = {}
+#	big_prime_sup = []
+#	sieve.map do |r, z, s|
+#		f, re = trial_division_on_factor_base(s, factor_base)
+#		if 1 == re
+#			factorization.push(f)
+#			r_list.push(r)
+#		else
+#			unless big_prime[re]
+#				big_prime[re] = [f, r]
+#			else
+#				r_list.push(r * big_prime[re][1] - n)
+#				big_prime_sup[factorization.size] = re
+#				factorization.push(big_prime[re][0].zip(f).map{|a, b| a + b})
+#			end
+#		end
+#		break if factor_base_size + 10 < factorization.size
+#	end
+#p factorization.size
+#	return false if factorization.size <= factor_base_size
+
+	# MPQS
+	# decide a, b, c
+	a = next_prime(isqrt(n << 1) / sieve_range)
+	a = next_prime(a) until b = mod_sqrt(n, a)
+	#c = (b ** 2 - n) / a
+
+	lo = -b / a - sieve_range + 1
+	hi = -b / a + sieve_range
+
 	sieve = Array.new(sieve_range << 1)
-	lo = sqrt - sieve_range + 1
-	hi = sqrt + sieve_range
-	s = (lo - 1) ** 2 - n
-	diff = (lo << 1) - 1
 	(lo..hi).each.with_index do |r, i|
-		s += diff
-		t = (0 < s) ? s : -s
-		diff += 2
-		sieve[i] = [r, 0, s]
+		t = a * r + b
+		sieve[i] = [t, 0, (t ** 2 - n) / a]
 	end
 
 	# 2
@@ -45,80 +121,83 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 	# 3, ...
 	(2...factor_base_size).each do |i|
 		p = factor_base[i]
-if p == multiplier
-	t = 0
-	s = (t - lo) % p
-	s.step((sieve_range << 1) - 1, p) do |j|
-		sieve[j][1] += factor_base_log[i]
-	end
-else
+		a_inverse = extended_lehmer_gcd(a, p)[0]
+#if p == multiplier
+#	t = 0
+#	s = (t - lo) % p
+#	s.step((sieve_range << 1) - 1, p) do |j|
+#		sieve[j][1] += factor_base_log[i]
+#	end
+#else
 		max = (factor_base_log.last / factor_base_log[i]).ceil
 		(1..max).each do |e|
 			sqrt = mod_sqrt(n, p, e)
 			[sqrt, p ** e - sqrt].each do |t|
-				s = (t - lo) % p ** e
+				s = ((t - b) * a_inverse - lo) % p ** e
 				s.step((sieve_range << 1) - 1, p ** e) do |j|
 					sieve[j][1] += factor_base_log[i]
 				end
 			end
 		end
-end
+#end
 	end
 
-	# MPQS
+#exit
 
-
-	# Gaussian elimination
-	target = Math.log(n) / 2 + Math.log(sieve_range)
+	# trial division on factor base
+	target = Math.log((a * sieve_range) ** 2 - n) - Math.log(a)
 	closenuf = 1.5 * Math.log(factor_base.last)
 	sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
 p sieve.size
-	return false if sieve.size <= factor_base_size
+#	return false if sieve.size <= factor_base_size
 
 	factorization = []
 	r_list = []
 	big_prime = {}
 	big_prime_sup = []
-	sieve.map do |r, z, s, l|
+	sieve.map do |r, z, s|
 		f, re = trial_division_on_factor_base(s, factor_base)
 		if 1 == re
-			factorization.push(f)
+			factorization.push([1] + f)
 			r_list.push(r)
 		else
+if re < 2000 ** 1.5
 			unless big_prime[re]
 				big_prime[re] = [f, r]
 			else
 				r_list.push(r * big_prime[re][1] - n)
 				big_prime_sup[factorization.size] = re
-				big_prime[re][0]
-				factorization.push(big_prime[re][0].zip(f).map{|a, b| a + b})
+				factorization.push([2] + big_prime[re][0].zip(f).map{|a, b| a + b})
 			end
+end
 		end
 		break if factor_base_size + 10 < factorization.size
 	end
+
 p factorization.size
 	return false if factorization.size <= factor_base_size
 
+	# Gaussian elimination
 	rslt = gaussian_elimination(factorization.map(&:reverse))
 
 	rslt.each do |row|
 		x = y = 1
-		f = Array.new(factor_base_size, 0)
+		f = Array.new(factor_base_size + 1, 0)
 		row.each.with_index do |b, i|
 			next if b == 0
 			x = x * r_list[i] % n
 			f = f.zip(factorization[i]).map{|a, b| a + b}
-if big_prime_sup[i]
-	y = y * big_prime_sup[i] % n
-end
+			y = y * big_prime_sup[i] % n if big_prime_sup[i]
 		end
 
+		y = y * power(a, f.shift >> 1, n) % n
 		factor_base_size.times do |i|
 			y = y * power(factor_base[i], f[i] >> 1, n) % n
 		end
 
-raise "ERROR" unless 0 == (x ** 2 - y ** 2) % n
-		z = gcd(x - y, n)
+		z = lehmer_gcd(x - y, n)
+raise if 1 == z and 1 == lehmer_gcd(x + y, n)
+
 		if 1 < z and z < n and z != multiplier
 			q, r = z.divmod(multiplier)
 			return (0 == r) ? q : z
@@ -199,3 +278,7 @@ def trial_division_on_factor_base(n, factor_base)
 
 	return factor, n
 end
+
+__END__
+mod_sqrtの結果をキャッシュ
+a の逆元をキャッシュ
