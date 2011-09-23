@@ -70,23 +70,25 @@ end
 
 	# Gaussian elimination
 	target = Math.log(n) / 2 + Math.log(sieve_range)
-	closenuf = 0.9 * Math.log(factor_base.last)
+	closenuf = Math.log(factor_base.last)
 	sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
 p sieve.size
 	return false if sieve.size <= factor_base_size
-#	if factor_base_size + 10 < sieve.size
-#		sieve = sieve[0...(factor_base_size + 10)]
-#	end
 
 	factorization = []
+	r_list = []
 	sieve.map do |r, z, s, l|
 		rslt = trial_division_on_factor_base(s, factor_base)
 		f, re = trial_division_on_factor_base(s, factor_base)
-		factorization.push(rslt[0]) if 1 == re
+		if 1 == re
+			factorization.push(rslt[0])
+			r_list.push(r)
+		end
 		break if factor_base_size + 10 < factorization.size
 	end
 p factorization.size
 	return false if factorization.size <= factor_base_size
+
 	rslt = gaussian_elimination(factorization.map(&:reverse))
 
 	rslt.each do |row|
@@ -94,7 +96,7 @@ p factorization.size
 		f = Array.new(factor_base_size, 0)
 		row.each.with_index do |b, i|
 			next if b == 0
-			x = x * sieve[i][0] % n
+			x = x * r_list[i] % n
 			f = f.zip(factorization[i]).map{|a, b| a + b}
 		end
 
