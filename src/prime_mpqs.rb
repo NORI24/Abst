@@ -61,7 +61,7 @@ class MPQS
 					factorization += f
 					r_list += r
 					big_prime_sup += big
-					break if factor_base.size + 9 < factorization.size
+					break if factor_base.size + 4 < factorization.size
 				end
 
 				a = next_prime(a)
@@ -145,7 +145,7 @@ class MPQS
 			[300,140], #23
 			[600,160], #24
 			[900,180], #25
-			[1200,200], #26
+			[1000,200], #26
 			[1000,220], #27
 			[2000,240], #28
 			[2000,260], #29
@@ -177,7 +177,7 @@ class MPQS
 		k = Math.log(n, 10).floor - 8
 		k = 0 if k < 0
 		t = parameters_for_mpqs[k].reverse
-		t[1] *= 20
+		t[1] *= 5
 		return t
 	end
 
