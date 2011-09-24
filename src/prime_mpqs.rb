@@ -56,7 +56,8 @@ class MPQS
 		if MAX_THREAD == 1
 			loop do
 				a = next_prime(a) until b = mod_sqrt(n, a)
-				f, r, big = mpqs_sieve(a, b)
+				c = (b ** 2 - n) / a
+				f, r, big = mpqs_sieve(a, b, c)
 				unless f.empty?
 					factorization += f
 					r_list += r
@@ -95,7 +96,6 @@ class MPQS
 				break if factor_base.size + 9 < factorization.size
 			end
 		end
-		factor_base = factor_base
 
 		# Gaussian elimination
 		rslt = gaussian_elimination(factorization)
@@ -181,20 +181,29 @@ class MPQS
 		return t
 	end
 
-	def mpqs_sieve(a, b)
+	def mpqs_sieve(a, b, c)
 		n = @n
 		factor_base_size = @factor_base_size
 		sieve_range = @sieve_range
 		factor_base = @factor_base
 		factor_base_log = @factor_base_log
 
-		lo = -b / a - sieve_range + 1
-		hi = -b / a + sieve_range
+		t = -b / a
+		lo = t - sieve_range + 1
+		hi = t + sieve_range
 
 		sieve = Array.new(sieve_range << 1)
+		lo_minus_1 = lo - 1
+		t = a * lo_minus_1 + b
+		b2 = b << 1
+		a2 = a << 1
+		t2 = (a * lo_minus_1 + b2) * lo_minus_1 + c
+		diff = a2 * lo - a + b2
 		(lo..hi).each.with_index do |r, i|
-			t = a * r + b
-			sieve[i] = [t, 0, (t ** 2 - n) / a]
+			t += a
+			t2 += diff
+			diff += a2
+			sieve[i] = [t, 0, t2]
 		end
 
 		# 2
@@ -451,3 +460,9 @@ factor_base の内容を逆順に
 next_probably_prime 導入
 
 IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信
+
+
+■有効だった改良
+・乗除算の削減（特にsieveの初期化）
+・a のeliminate
+・パラメータの調整
