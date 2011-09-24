@@ -328,7 +328,7 @@ def factorize(n)
 		factor = []
 	end
 
-	f, n = trial_division(n, td_lim = 1_000_000)
+	f, n = trial_division(n, td_lim = 100_000)
 	factor += f
 	td_lim_square = td_lim ** 2
 
@@ -354,7 +354,7 @@ def factorize(n)
 	end
 
 	check_finish = Proc.new do
-		if n <= td_lim_square
+		if n <= td_lim_square or prime?(n)
 			return factor if 1 == n
 			return merge.call(factor, [[n, 1]])
 		end
@@ -377,15 +377,15 @@ def factorize(n)
 	check_finish.call
 
 	# pollard_rho
-	10.times do
+	loop do
 		c = nil
 		loop do
 			c = rand(n - 3) + 1
 			break unless c.square?
 		end
 		s = rand(n)
-		f = pollard_rho(n, c, s, 100_000)
-		next unless f
+		f = pollard_rho(n, c, s, 10_000)
+		break unless f
 
 		# f is prime?
 		n /= f
@@ -400,10 +400,9 @@ def factorize(n)
 	end
 
 	# p_minus_1
-	5.times do
-		m = primes_list[rand(20)]
-		f = p_minus_1(n, 200_000)
-		next unless f
+	loop do
+		f = p_minus_1(n, 10_000)
+		break unless f
 
 		# f is prime?
 		n /= f
@@ -417,8 +416,24 @@ def factorize(n)
 		check_finish.call
 	end
 
-	f, n = trial_division(n)
-	return merge.call(factor, f)
+	# MPQS
+	loop do
+		f = mpqs(n)
+		break unless f
+
+		# f is prime?
+		n /= f
+		if f <= td_lim_square or prime?(f)
+			f = divide.call([[f, 1]])
+		else
+			f = divide.call(factorize(f))
+		end
+
+		factor = merge.call(factor, f)
+		check_finish.call
+	end
+
+	raise [factor, n].to_s
 end
 
 #

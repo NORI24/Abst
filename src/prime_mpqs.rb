@@ -24,7 +24,7 @@ class MPQS
 		# Select factor base
 		factor_base = [-1, 2]
 		(3..INFINITY).each_prime do |p|
-	#		next if multiplier == p
+			#next if multiplier == p
 			if multiplier == p or 1 == kronecker_symbol(n, p)
 				factor_base.push(p)
 				break if factor_base_size <= factor_base.size
@@ -334,7 +334,7 @@ class MPQS
 	end
 
 	def gaussian_elimination(m)
-		m.map!{|row| row.map{|i| i[0]}.reverse}
+		m.map!{|row| row.map{|i| i[0]}}
 
 		rslt = Array.new(m.size)
 		m.size.times do |i|
@@ -379,7 +379,7 @@ class MPQS
 	end
 
 	def trial_division_on_factor_base(n, factor_base)
-		factor = Array.new(factor_base.size, 0)
+		factor = Array.new(@factor_base_size, 0)
 		if n < 0
 			factor[0] = 1
 			n = -n
