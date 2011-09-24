@@ -30,8 +30,19 @@ class MPQS
 			end
 		end
 		factor_base_log = [nil] + factor_base[1..-1].map{|p| Math.log(p)}
+		mod_sqrt_cache = Array.new(factor_base_size - 1)
+		(2...factor_base_size).each do |i|
+			p = factor_base[i]
+			mod_sqrt_cache[i] = []
+			max = (factor_base_log.last / factor_base_log[i]).ceil
+			(1..max).each do |e|
+				mod_sqrt_cache[i][e] = mod_sqrt(n, p, e)
+			end
+		end
+
 		@factor_base = factor_base
 		@factor_base_log = factor_base_log
+		@mod_sqrt_cache = mod_sqrt_cache
 
 		# MPQS
 		factorization = []
@@ -42,23 +53,39 @@ class MPQS
 		loop_num = 1
 		a_list = []
 		loop do
-			a = next_prime(a) until b = mod_sqrt(n, a)
-			#c = (b ** 2 - n) / a
-			f, r, b = mpqs_sieve(a, b)
+			# parallelization
+			threads = Array.new(MAX_THREAD)
 
-			if 2 < f.size
-				a_list.unshift(a)
-				factorization.map!{|row| [0] + row}
-				f.map!{|row| row.insert(1, *([0] * (loop_num - 1)))} if 1 < loop_num
-				factorization += f
-				r_list += r
-				big_prime_sup += b
-				break if factor_base.size + loop_num + 9 < factorization.size
+			MAX_THREAD.times do |i|
+				a = next_prime(a) until b = mod_sqrt(n, a)
 
-				loop_num += 1
+				threads[i] = Thread.new(a) do |a|
+					mpqs_sieve(a, b)
+				end
+
+				a = next_prime(a)
 			end
 
-			a = next_prime(a)
+			MAX_THREAD.times do |i|
+				_a, f, r, b = threads[i].value
+
+				if 1 < f.size
+					a_list.unshift(_a)
+					factorization.map!{|row| [0] + row}
+					f.map!{|row| row.insert(1, *([0] * (loop_num - 1)))} if 1 < loop_num
+					factorization += f
+					r_list += r
+					big_prime_sup += b
+					break if factor_base.size + loop_num + 9 < factorization.size
+
+					loop_num += 1
+				end
+			end
+
+			break if factor_base.size + loop_num + 9 < factorization.size
+
+#p [_a, f, r, b]
+#sleep 0.3
 		end
 		factor_base = a_list + factor_base
 
@@ -80,7 +107,7 @@ class MPQS
 			end
 
 			z = lehmer_gcd(x - y, n)
-raise if 1 == z and 1 == lehmer_gcd(x + y, n)
+			raise if 1 == z and 1 == lehmer_gcd(x + y, n)# #
 
 			if 1 < z and z < n and z != multiplier
 				q, r = z.divmod(multiplier)
@@ -130,7 +157,7 @@ raise if 1 == z and 1 == lehmer_gcd(x + y, n)
 			pe = 1
 			(1..max).each do |e|
 				pe *= p
-				sqrt = mod_sqrt(n, p, e)
+				sqrt = @mod_sqrt_cache[i][e]
 				[sqrt, pe - sqrt].each do |t|
 					s = ((t - b) * a_inverse - lo) % pe
 					s.step((sieve_range << 1) - 1, pe) do |j|
@@ -172,7 +199,7 @@ raise if 1 == z and 1 == lehmer_gcd(x + y, n)
 
 #p factorization.size
 		big_prime_sup += [nil] * (factorization.size - big_prime_sup.size)
-		return factorization, r_list, big_prime_sup
+		return a, factorization, r_list, big_prime_sup
 	end
 
 	def qs_sieve
@@ -331,7 +358,4 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 end
 
 __END__
-モジュール化
-並列処理
-mod_sqrtの結果をキャッシュ
 a のeliminate まで並列化に含める
