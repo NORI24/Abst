@@ -1,8 +1,9 @@
 class MPQS
 	def initialize(n, factor_base_size = nil, sieve_range = nil)
 		@n = n
-		@factor_base_size = factor_base_size
-		@sieve_range = sieve_range
+		t = get_default_parameter(n)
+		@factor_base_size = factor_base_size || t[0]
+		@sieve_range = sieve_range || t[1]
 	end
 
 	def mpqs
@@ -118,6 +119,61 @@ class MPQS
 		return false
 	end
 
+	def get_default_parameter(n)
+		parameters_for_mpqs = [
+			[100,20], #9 -digits
+			[100,21], #10
+			[100,22], #11
+			[100,24], #12
+			[100,26], #13
+			[100,29], #14
+			[100,32], #15
+			[200,35], #16
+			[300,40], #17
+			[300,60], #18
+			[300,80], #19
+			[300,100], #20
+			[300,100], #21
+			[300,120], #22
+			[300,140], #23
+			[600,160], #24
+			[900,180], #25
+			[1200,200], #26
+			[1000,220], #27
+			[2000,240], #28
+			[2000,260], #29
+			[2000,325], #30
+			[2000,355], #31
+			[2000,375], #32
+			[3000,400], #33
+			[2000,425], #34
+			[2000,550], #35
+			[3000,650], #36
+			[5000,750], #37
+			[4000,850], #38
+			[4000,950], #39
+			[5000,1000], #40
+			[14000,1150], #41
+			[15000,1300], #42
+			[15000,1600], #43
+			[15000,1900], #44
+			[15000,2200], #45
+			[20000,2500], #46
+			[25000,2500], #47
+			[27500,2700], #48
+			[30000,2800], #49
+			[35000,2900], #50
+			[40000,3000], #51
+			[50000,3200], #52
+			[50000,3500]] #53
+
+		k = Math.log(n, 10).floor - 8
+		k = 0 if k < 0
+		t = parameters_for_mpqs[k].reverse
+		t[1] *= 20
+		return t
+	end
+
 	def mpqs_sieve(a, b)
 		n = @n
 		factor_base_size = @factor_base_size
@@ -184,7 +240,6 @@ class MPQS
 				factorization.push([1] + f)
 				r_list.push(r)
 			else
-	if re < 2000 ** 1.5
 				unless big_prime[re]
 					big_prime[re] = [f, r]
 				else
@@ -192,7 +247,6 @@ class MPQS
 					big_prime_sup[factorization.size] = re
 					factorization.push([2] + big_prime[re][0].zip(f).map{|a, b| a + b})
 				end
-	end
 			end
 			break if factor_base_size + 10 < factorization.size
 		end
@@ -359,3 +413,5 @@ end
 
 __END__
 a のeliminate まで並列化に含める
+
+IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信
