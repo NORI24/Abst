@@ -104,6 +104,10 @@ def prime?(n)
 		return true
 	end
 
+	if n <= primes_list.last
+		return Bisect.index(primes_list, n) ? true : false
+	end
+
 	factor = trial_division(n, 257)[0]
 	return factor[0][0] == n unless factor.empty?
 

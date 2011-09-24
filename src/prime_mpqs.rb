@@ -31,12 +31,13 @@ class MPQS
 			end
 		end
 		factor_base_log = [nil] + factor_base[1..-1].map{|p| Math.log(p)}
-		mod_sqrt_cache = Array.new(factor_base_size - 1)
+		mod_sqrt_cache = Array.new(factor_base_size)
+		power_limit = Array.new(factor_base_size)
 		(2...factor_base_size).each do |i|
 			p = factor_base[i]
 			mod_sqrt_cache[i] = []
-			max = (factor_base_log.last / factor_base_log[i]).ceil
-			(1..max).each do |e|
+			power_limit[i] = (factor_base_log.last / factor_base_log[i]).ceil
+			(1..power_limit[i]).each do |e|
 				mod_sqrt_cache[i][e] = mod_sqrt(n, p, e)
 			end
 		end
@@ -44,6 +45,7 @@ class MPQS
 		@factor_base = factor_base
 		@factor_base_log = factor_base_log
 		@mod_sqrt_cache = mod_sqrt_cache
+		@power_limit = power_limit
 
 		# MPQS
 		factorization = []
@@ -53,23 +55,10 @@ class MPQS
 		a = next_prime(isqrt(n << 1) / sieve_range)
 		loop_num = 1
 		a_list = []
-		loop do
-			# parallelization
-			threads = Array.new(MAX_THREAD)
-
-			MAX_THREAD.times do |i|
+		if MAX_THREAD == 1
+			loop do
 				a = next_prime(a) until b = mod_sqrt(n, a)
-
-				threads[i] = Thread.new(a) do |a|
-					mpqs_sieve(a, b)
-				end
-
-				a = next_prime(a)
-			end
-
-			MAX_THREAD.times do |i|
-				_a, f, r, b = threads[i].value
-
+				_a, f, r, b = mpqs_sieve(a, b)
 				if 1 < f.size
 					a_list.unshift(_a)
 					factorization.map!{|row| [0] + row}
@@ -81,12 +70,42 @@ class MPQS
 
 					loop_num += 1
 				end
+
+				a = next_prime(a)
 			end
+		else
+			loop do
+				# parallelization
+				threads = Array.new(MAX_THREAD)
 
-			break if factor_base.size + loop_num + 9 < factorization.size
+				MAX_THREAD.times do |i|
+					a = next_prime(a) until b = mod_sqrt(n, a)
 
-#p [_a, f, r, b]
-#sleep 0.3
+					threads[i] = Thread.new(a) do |a|
+						mpqs_sieve(a, b)
+					end
+
+					a = next_prime(a)
+				end
+
+				MAX_THREAD.times do |i|
+					_a, f, r, b = threads[i].value
+
+					if 1 < f.size
+						a_list.unshift(_a)
+						factorization.map!{|row| [0] + row}
+						f.map!{|row| row.insert(1, *([0] * (loop_num - 1)))} if 1 < loop_num
+						factorization += f
+						r_list += r
+						big_prime_sup += b
+						break if factor_base.size + loop_num + 9 < factorization.size
+
+						loop_num += 1
+					end
+				end
+
+				break if factor_base.size + loop_num + 9 < factorization.size
+			end
 		end
 		factor_base = a_list + factor_base
 
@@ -209,9 +228,8 @@ class MPQS
 	#		sieve[j][1] += factor_base_log[i]
 	#	end
 	#else
-			max = (factor_base_log.last / factor_base_log[i]).ceil
 			pe = 1
-			(1..max).each do |e|
+			(1..@power_limit[i]).each do |e|
 				pe *= p
 				sqrt = @mod_sqrt_cache[i][e]
 				[sqrt, pe - sqrt].each do |t|
@@ -288,9 +306,8 @@ class MPQS
 			sieve[j][1] += factor_base_log[i]
 		end
 	else
-			max = (factor_base_log.last / factor_base_log[i]).ceil
 			pe = 1
-			(1..max).each do |e|
+			(1..@power_limit[i]).each do |e|
 				pe *= p
 				sqrt = mod_sqrt(n, p, e)
 				[sqrt, pe - sqrt].each do |t|
@@ -412,6 +429,10 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 end
 
 __END__
+factor_base の内容を逆順に
+
+next_probably_prime 導入
+
 a のeliminate まで並列化に含める
 
 IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信

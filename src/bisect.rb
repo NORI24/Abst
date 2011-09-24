@@ -42,7 +42,7 @@ module Bisect
 	# Locate the leftmost value exactly equal to item
 	def index(list, item)
 		i = bisect_left(list, item)
-		return i if list[i] == item
+		return list[i] == item ? i : nil
 	end
 
 	# Find rightmost value less than item
