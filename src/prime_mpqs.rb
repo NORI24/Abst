@@ -53,22 +53,15 @@ class MPQS
 		big_prime_sup = []
 
 		a = next_prime(isqrt(n << 1) / sieve_range)
-		loop_num = 1
-		a_list = []
 		if MAX_THREAD == 1
 			loop do
 				a = next_prime(a) until b = mod_sqrt(n, a)
-				_a, f, r, b = mpqs_sieve(a, b)
-				if 1 < f.size
-					a_list.unshift(_a)
-					factorization.map!{|row| [0] + row}
-					f.map!{|row| row.insert(1, *([0] * (loop_num - 1)))} if 1 < loop_num
+				f, r, big = mpqs_sieve(a, b)
+				unless f.empty?
 					factorization += f
 					r_list += r
-					big_prime_sup += b
-					break if factor_base.size + loop_num + 9 < factorization.size
-
-					loop_num += 1
+					big_prime_sup += big
+					break if factor_base.size + 9 < factorization.size
 				end
 
 				a = next_prime(a)
@@ -89,45 +82,40 @@ class MPQS
 				end
 
 				MAX_THREAD.times do |i|
-					_a, f, r, b = threads[i].value
+					f, r, big = threads[i].value
 
 					if 1 < f.size
-						a_list.unshift(_a)
-						factorization.map!{|row| [0] + row}
-						f.map!{|row| row.insert(1, *([0] * (loop_num - 1)))} if 1 < loop_num
 						factorization += f
 						r_list += r
-						big_prime_sup += b
-						break if factor_base.size + loop_num + 9 < factorization.size
-
-						loop_num += 1
+						big_prime_sup += big
+						break if factor_base.size + 9 < factorization.size
 					end
 				end
 
-				break if factor_base.size + loop_num + 9 < factorization.size
+				break if factor_base.size + 9 < factorization.size
 			end
 		end
-		factor_base = a_list + factor_base
+		factor_base = factor_base
 
 		# Gaussian elimination
-		rslt = gaussian_elimination(factorization.map(&:reverse))
+		rslt = gaussian_elimination(factorization)
 
 		rslt.each do |row|
 			x = y = 1
-			f = Array.new(factor_base_size + loop_num, 0)
+			f = Array.new(factor_base_size, 0)
 			row.each.with_index do |b, i|
 				next if b == 0
 				x = x * r_list[i] % n
 				f = f.zip(factorization[i]).map{|a, b| a + b}
-				y = y * big_prime_sup[i] % n if big_prime_sup[i]
+				y = y * big_prime_sup[i] % n# # if big_prime_sup[i]
 			end
 
-			(factor_base_size + loop_num).times do |i|
+			(factor_base_size).times do |i|
 				y = y * power(factor_base[i], f[i] >> 1, n) % n
 			end
 
 			z = lehmer_gcd(x - y, n)
-			raise if 1 == z and 1 == lehmer_gcd(x + y, n)# #
+			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, n)# #
 
 			if 1 < z and z < n and z != multiplier
 				q, r = z.divmod(multiplier)
@@ -249,29 +237,46 @@ class MPQS
 #p sieve.size
 
 		factorization = []
+		factorization_2 = []
 		r_list = []
+		r_list_2 = []
 		big_prime = {}
 		big_prime_sup = []
 		sieve.map do |r, z, s|
 			f, re = trial_division_on_factor_base(s, factor_base)
 			if 1 == re
-				factorization.push([1] + f)
+				factorization.push(f)
 				r_list.push(r)
 			else
 				unless big_prime[re]
 					big_prime[re] = [f, r]
 				else
-					r_list.push(r * big_prime[re][1] - n)
-					big_prime_sup[factorization.size] = re
-					factorization.push([2] + big_prime[re][0].zip(f).map{|a, b| a + b})
+					r_list_2.push(r * big_prime[re][1])
+					big_prime_sup.push(re * a)
+					factorization_2.push(big_prime[re][0].zip(f).map{|a, b| a + b})
 				end
 			end
-			break if factor_base_size + 10 < factorization.size
 		end
 
-#p factorization.size
-		big_prime_sup += [nil] * (factorization.size - big_prime_sup.size)
-		return a, factorization, r_list, big_prime_sup
+		if factorization.size < 2
+			return factorization_2, r_list_2, big_prime_sup
+		end
+
+		# Eliminate 'a'
+		fa1 = factorization.shift
+		r = r_list.shift
+
+		r_list = r_list.map{|i| i * r - n} + r_list_2
+		big_prime_sup = Array.new(factorization.size, a) + big_prime_sup
+		factor_base_size.times do |j|
+			next if 0 == fa1[j]
+			factorization.size.times do |i|
+				factorization[i][j] += fa1[j]
+			end
+		end
+		factorization += factorization_2
+
+		return factorization, r_list, big_prime_sup
 	end
 
 	def qs_sieve
@@ -351,7 +356,7 @@ class MPQS
 	end
 
 	def gaussian_elimination(m)
-		m.map!{|row| row.map{|i| i[0]}}
+		m = m.map{|row| row.reverse_each.map{|i| i[0]}}
 
 		rslt = Array.new(m.size)
 		m.size.times do |i|
@@ -421,6 +426,14 @@ class MPQS
 
 		return factor, n
 	end
+
+	def compose(f)
+		rslt = 1
+		f.each.with_index do |e, i|
+			rslt *= @factor_base[i] ** e
+		end
+		return rslt
+	end
 end
 
 def mpqs(n, factor_base_size = nil, sieve_range = nil)
@@ -429,10 +442,12 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 end
 
 __END__
+a の取り方を 初期値の前後に拡張する
+
 factor_base の内容を逆順に
 
-next_probably_prime 導入
+素因数分解＆GCDのループ → 完全に分解できる数を最小限で済ませる。
 
-a のeliminate まで並列化に含める
+next_probably_prime 導入
 
 IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信
