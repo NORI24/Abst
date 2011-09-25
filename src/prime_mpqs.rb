@@ -1,9 +1,12 @@
 class MPQS
 	def initialize(n, factor_base_size = nil, sieve_range = nil)
 		@n = n
-		t = get_default_parameter(n)
+		t = get_default_parameter
+		# #decide factor_base_size and sieve_range
 		@factor_base_size = factor_base_size || t[0]
 		@sieve_range = sieve_range || t[1]
+		@sieve_range_2 = @sieve_range << 1
+
 	end
 
 	def mpqs
@@ -16,11 +19,6 @@ class MPQS
 	#	multiplier = n & 7
 	#	n *= multiplier if 1 < multiplier
 
-		# Initialize
-		# #decide factor_base_size and sieve_range
-		sqrt = isqrt(n)
-		range_limit = isqrt(n << 1) - sqrt
-
 		# Select factor base
 		factor_base = [-1, 2]
 		(3..INFINITY).each_prime do |p|
@@ -32,12 +30,14 @@ class MPQS
 		end
 		factor_base_log = [nil] + factor_base[1..-1].map{|p| Math.log(p)}
 		mod_sqrt_cache = Array.new(factor_base_size)
-		power_limit = Array.new(factor_base_size)
+		@power_limit = Array.new(factor_base_size)
 		(2...factor_base_size).each do |i|
 			p = factor_base[i]
 			mod_sqrt_cache[i] = []
-			power_limit[i] = (factor_base_log.last / factor_base_log[i]).ceil
-			(1..power_limit[i]).each do |e|
+			@power_limit[i] = (factor_base_log.last / factor_base_log[i]).ceil
+			#@power_limit[i] = (Math.log(@sieve_range_2, factor_base_log[i])).floor
+
+			(1..@power_limit[i]).each do |e|
 				mod_sqrt_cache[i][e] = mod_sqrt(n, p, e)
 			end
 		end
@@ -45,14 +45,15 @@ class MPQS
 		@factor_base = factor_base
 		@factor_base_log = factor_base_log
 		@mod_sqrt_cache = mod_sqrt_cache
-		@power_limit = power_limit
+		@closenuf = 1.5 * Math.log(factor_base.last)
+		a = next_prime(isqrt(n << 1) / sieve_range)
+		@target = Math.log((a * sieve_range) ** 2 - n) - Math.log(a)
 
 		# MPQS
 		factorization = []
 		r_list = []
 		big_prime_sup = []
 
-		a = next_prime(isqrt(n << 1) / sieve_range)
 		if MAX_THREAD == 1
 			loop do
 				a = next_prime(a) until b = mod_sqrt(n, a)
@@ -62,7 +63,7 @@ class MPQS
 					factorization += f
 					r_list += r
 					big_prime_sup += big
-					break if factor_base.size + 4 < factorization.size
+					break if @factor_base_size + 4 < factorization.size
 				end
 
 				a = next_prime(a)
@@ -89,11 +90,11 @@ class MPQS
 						factorization += f
 						r_list += r
 						big_prime_sup += big
-						break if factor_base.size + 9 < factorization.size
+						break if @factor_base_size + 9 < factorization.size
 					end
 				end
 
-				break if factor_base.size + 9 < factorization.size
+				break if @factor_base_size + 9 < factorization.size
 			end
 		end
 
@@ -110,23 +111,25 @@ class MPQS
 				y = y * big_prime_sup[i] % n# # if big_prime_sup[i]
 			end
 
-			(factor_base_size).times do |i|
+			(2...factor_base_size).each do |i|
 				y = y * power(factor_base[i], f[i] >> 1, n) % n
 			end
+			y = (y << (f[1] >> 1)) % n
+			y = -y if f[0][1] == 1
 
 			z = lehmer_gcd(x - y, n)
-			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, n)# #
+			#raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, n)# #
 
-			if 1 < z and z < n and z != multiplier
-				q, r = z.divmod(multiplier)
-				return (0 == r) ? q : z
-			end
+			return z if 1 < z and z < n #and z != multiplier
+			#	q, r = z.divmod(multiplier)
+			#	return (0 == r) ? q : z
+			#end
 		end
 
 		return false
 	end
 
-	def get_default_parameter(n)
+	def get_default_parameter
 		parameters_for_mpqs = [
 			[100,20], #9 -digits
 			[100,21], #10
@@ -174,7 +177,7 @@ class MPQS
 			[50000,3200], #52
 			[50000,3500]] #53
 
-		k = Math.log(n, 10).floor - 8
+		k = Math.log(@n, 10).floor - 8
 		k = 0 if k < 0
 		t = parameters_for_mpqs[k].reverse
 		t[1] *= 5
@@ -192,7 +195,7 @@ class MPQS
 		lo = t - sieve_range + 1
 		hi = t + sieve_range
 
-		sieve = Array.new(sieve_range << 1)
+		sieve = Array.new(@sieve_range_2)
 		lo_minus_1 = lo - 1
 		t = a * lo_minus_1 + b
 		b2 = b << 1
@@ -208,7 +211,7 @@ class MPQS
 
 		# 2
 		s = sieve[0][0].odd? ? 0 : 1
-		s.step((sieve_range << 1) - 1, 2) do |i|
+		s.step(@sieve_range_2 - 1, 2) do |i|
 			count = 1
 			count += 1 while sieve[i][2][count] == 0
 			sieve[i][1] += factor_base_log[1] * count
@@ -221,7 +224,7 @@ class MPQS
 	#if p == multiplier
 	#	t = 0
 	#	s = (t - lo) % p
-	#	s.step((sieve_range << 1) - 1, p) do |j|
+	#	s.step((@sieve_range_2) - 1, p) do |j|
 	#		sieve[j][1] += factor_base_log[i]
 	#	end
 	#else
@@ -231,7 +234,7 @@ class MPQS
 				sqrt = @mod_sqrt_cache[i][e]
 				[sqrt, pe - sqrt].each do |t|
 					s = ((t - b) * a_inverse - lo) % pe
-					s.step((sieve_range << 1) - 1, pe) do |j|
+					s.step(@sieve_range_2 - 1, pe) do |j|
 						sieve[j][1] += factor_base_log[i]
 					end
 				end
@@ -240,9 +243,7 @@ class MPQS
 		end
 
 		# trial division on factor base
-		target = Math.log((a * sieve_range) ** 2 - n) - Math.log(a)
-		closenuf = 1.5 * Math.log(factor_base.last)
-		sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
+		sieve = sieve.select{|i| (i[1] - @target).abs < @closenuf}
 #p sieve.size
 
 		factorization = []
@@ -279,8 +280,9 @@ class MPQS
 		big_prime_sup = Array.new(factorization.size, a) + big_prime_sup
 		factor_base_size.times do |j|
 			next if 0 == fa1[j]
+			t = fa1[j]
 			factorization.size.times do |i|
-				factorization[i][j] += fa1[j]
+				factorization[i][j] += t
 			end
 		end
 		factorization += factorization_2
@@ -290,7 +292,7 @@ class MPQS
 
 	def qs_sieve
 		#	# Basic sieve
-		sieve = Array.new(sieve_range << 1)
+		sieve = Array.new(sieve_range_2)
 		lo = sqrt - sieve_range + 1
 		hi = sqrt + sieve_range
 		s = (lo - 1) ** 2 - n
@@ -304,7 +306,7 @@ class MPQS
 
 		# 2
 		s = sieve[0][0].odd? ? 0 : 1
-		s.step((sieve_range << 1) - 1, 2) do |i|
+		s.step(sieve_range_2 - 1, 2) do |i|
 			count = 1
 			count += 1 while sieve[i][2][count] == 0
 			sieve[i][1] += factor_base_log[1] * count
@@ -316,7 +318,7 @@ class MPQS
 	if p == multiplier
 		t = 0
 		s = (t - lo) % p
-		s.step((sieve_range << 1) - 1, p) do |j|
+		s.step(sieve_range_2 - 1, p) do |j|
 			sieve[j][1] += factor_base_log[i]
 		end
 	else
@@ -326,7 +328,7 @@ class MPQS
 				sqrt = mod_sqrt(n, p, e)
 				[sqrt, pe - sqrt].each do |t|
 					s = (t - lo) % pe
-					s.step((sieve_range << 1) - 1, pe) do |j|
+					s.step(sieve_range_2 - 1, pe) do |j|
 						sieve[j][1] += factor_base_log[i]
 					end
 				end
@@ -393,15 +395,19 @@ class MPQS
 				rslt[row], rslt[j] = rslt[j], rslt[row]
 			end
 
+			m_j = m[j]
+			rslt_j = rslt[j]
 			# Eliminate
 			((j + 1)...height).each do |i|
 				next if m[i][j] == 0
 
+				m_i = m[i]
+				rslt_i = rslt[i]
 				((j + 1)...width).each do |j2|
-					m[i][j2] ^= 1 if 1 == m[j][j2]
+					m_i[j2] ^= 1 if 1 == m_j[j2]
 				end
 				height.times do |j2|
-					rslt[i][j2] ^= 1 if 1 == rslt[j][j2]
+					rslt_i[j2] ^= 1 if 1 == rslt_j[j2]
 				end
 			end
 		end
@@ -416,7 +422,9 @@ class MPQS
 			n = -n
 		end
 
-		factor_base[1..-1].each.with_index do |d, i|
+		i = 1
+		while i < @factor_base_size
+			d = factor_base[i]
 			q, r = n.divmod(d)
 			if 0 == r
 				n = q
@@ -429,8 +437,10 @@ class MPQS
 					div_count += 1
 				end
 
-				factor[i + 1] = div_count
+				factor[i] = div_count
 			end
+
+			i += 1
 		end
 
 		return factor, n
@@ -451,7 +461,9 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 end
 
 __END__
-a ‚ÌŽæ‚è•û‚ð ‰Šú’l‚Ì‘OŒã‚ÉŠg’£‚·‚é
+mod_sqrtŒvŽZ‚ÌŒø—¦‰»
+
+multiplier“±“ü
 
 factor_base ‚Ì“à—e‚ð‹t‡‚É
 
