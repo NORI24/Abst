@@ -6,7 +6,6 @@ class MPQS
 		@factor_base_size = factor_base_size || t[0]
 		@sieve_range = sieve_range || t[1]
 		@sieve_range_2 = @sieve_range << 1
-
 	end
 
 	def mpqs
@@ -14,16 +13,13 @@ class MPQS
 		factor_base_size = @factor_base_size
 		sieve_range = @sieve_range
 
-		# multiplier
-		multiplier = 1
-	#	multiplier = n & 7
-	#	n *= multiplier if 1 < multiplier
+		multiplier = n & 7
+		n *= multiplier if 1 < multiplier
 
 		# Select factor base
 		factor_base = [-1, 2]
 		(3..INFINITY).each_prime do |p|
-			#next if multiplier == p
-			if multiplier == p or 1 == kronecker_symbol(n, p)
+			if 1 == kronecker_symbol(n, p)
 				factor_base.push(p)
 				break if factor_base_size <= factor_base.size
 			end
@@ -37,17 +33,15 @@ class MPQS
 			@power_limit[i] = (factor_base_log.last / factor_base_log[i]).ceil
 			#@power_limit[i] = (Math.log(@sieve_range_2, factor_base_log[i])).floor
 
-			(1..@power_limit[i]).each do |e|
-				mod_sqrt_cache[i][e] = mod_sqrt(n, p, e)
-			end
+			mod_sqrt_cache[i] = [nil] + mod_sqrt(n, p, @power_limit[i], true)
 		end
 
 		@factor_base = factor_base
 		@factor_base_log = factor_base_log
 		@mod_sqrt_cache = mod_sqrt_cache
-		@closenuf = 1.5 * Math.log(factor_base.last)
 		a = next_prime(isqrt(n << 1) / sieve_range)
-		@target = Math.log((a * sieve_range) ** 2 - n) - Math.log(a)
+		target = Math.log((a * sieve_range) ** 2 - n) - Math.log(a)
+		@closenuf = target - 1.5 * Math.log(factor_base.last)
 
 		# MPQS
 		factorization = []
@@ -75,11 +69,9 @@ class MPQS
 
 				MAX_THREAD.times do |i|
 					a = next_prime(a) until b = mod_sqrt(n, a)
-
 					threads[i] = Thread.new(a) do |a|
 						mpqs_sieve(a, b)
 					end
-
 					a = next_prime(a)
 				end
 
@@ -118,12 +110,12 @@ class MPQS
 			y = -y if f[0][1] == 1
 
 			z = lehmer_gcd(x - y, n)
-			#raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, n)# #
+			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, n)# #
 
-			return z if 1 < z and z < n #and z != multiplier
-			#	q, r = z.divmod(multiplier)
-			#	return (0 == r) ? q : z
-			#end
+			if 1 < z and z < n and z != multiplier
+				q, r = z.divmod(multiplier)
+				return (0 == r) ? q : z
+			end
 		end
 
 		return false
@@ -212,7 +204,7 @@ class MPQS
 		# 2
 		s = sieve[0][0].odd? ? 0 : 1
 		s.step(@sieve_range_2 - 1, 2) do |i|
-			count = 1
+			count = 3
 			count += 1 while sieve[i][2][count] == 0
 			sieve[i][1] += factor_base_log[1] * count
 		end
@@ -243,7 +235,7 @@ class MPQS
 		end
 
 		# trial division on factor base
-		sieve = sieve.select{|i| (i[1] - @target).abs < @closenuf}
+		sieve = sieve.select{|i| @closenuf < i[1]}
 #p sieve.size
 
 		factorization = []
@@ -461,9 +453,11 @@ def mpqs(n, factor_base_size = nil, sieve_range = nil)
 end
 
 __END__
-mod_sqrt計算の効率化
-
 multiplier導入
+
+a,b,cの決め方
+
+dはpseudo primeで良い
 
 factor_base の内容を逆順に
 
@@ -472,6 +466,7 @@ factor_base の内容を逆順に
 next_probably_prime 導入
 
 IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信
+ → マルチスレッド＆マルチプロセス化
 
 
 ■有効だった改良
