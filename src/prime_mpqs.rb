@@ -2,7 +2,6 @@ class MPQS
 	def initialize(n, factor_base_size = nil, sieve_range = nil)
 		@old_n = @n = n
 		t = get_default_parameter
-		# #decide factor_base_size and sieve_range
 		@factor_base_size = factor_base_size || t[0]
 		@sieve_range = sieve_range || t[1]
 		@sieve_range_2 = @sieve_range << 1
@@ -167,7 +166,7 @@ class MPQS
 		k = Math.log(@n, 10).floor - 8
 		k = 0 if k < 0
 		t = parameters_for_mpqs[k].reverse
-		t[1] *= 5
+		t[1] *= 2
 		return t
 	end
 
@@ -220,9 +219,11 @@ class MPQS
 
 		b2 = b << 1
 		a2 = a << 1
-		t = a2 * lo_minus_1 + b
-		t2 = (a * lo_minus_1 + b) * lo_minus_1 + c
-		diff = a2 * lo - a + b
+		t = a * lo_minus_1
+		t2 = (t + b) * lo_minus_1 + c
+		t = t << 1
+		diff = t + a + b
+		t += b
 		(lo..hi).each.with_index do |r, i|
 			t += a2
 			t2 += diff
@@ -235,7 +236,7 @@ class MPQS
 		s.step(@sieve_range_2 - 1, 2) do |i|
 			count = 0
 			count += 1 while sieve[i][2][count] == 0
-			sieve[i][1] += factor_base_log[1] * (count + 2)
+			sieve[i][1] += factor_base_log[1] * count
 		end
 
 		# 3, ...
@@ -394,15 +395,11 @@ end
 __END__
 multiplier導入
 
-a,b,cの決め方
-
-dはpseudo primeで良い
+sieve多重配列を分割し、参照を高速化
 
 factor_base の内容を逆順に
 
 素因数分解＆GCDのループ → 完全に分解できる数を最小限で済ませる。
-
-next_probably_prime 導入
 
 IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信
  → マルチスレッド＆マルチプロセス化
