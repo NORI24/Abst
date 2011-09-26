@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<title>MPQSに関するメモ</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+<style type="text/css">
+body {width: 740px;}
+</style>
+</head>
+<body>
+<h1>素因数分解アルゴリズム MPQS に関する覚書</h1>
+
+<h2>\(f(x) = x^2 - n\) の場合</h2>
+\(x \approx \sqrt n\)<br />
+max \(f(x) \approx 2M \sqrt n + M^2\)<br />
+
+<h2>\(F(x) = ax^2 + 2bx + c\), \((n = b^2 - ac)\) の場合</h2>
+\(aF(x) = (ax + b)^2 - n\)<br />
+\(x \approx -\frac{b}{a}\)<br />
+max \(F(x) \approx \frac{M}{\sqrt 2} \sqrt n\)<br />
+
+<h2>\(F(x) = ax^2 + bx + c\), \((n = b^2 - 4ac)\) の場合</h2>
+\(4aF(x) = (2ax + b)^2 - n\)<br />
+\(x \approx -\frac{b}{2a}\)<br />
+max \(F(x) \approx \frac{M}{2 \sqrt 2} \sqrt n\)<br />
+
+</body>
+</html>
