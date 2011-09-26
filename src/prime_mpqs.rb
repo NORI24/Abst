@@ -13,7 +13,7 @@ class MPQS
 		factor_base_size = @factor_base_size
 
 		multiplier = n & 7
-		n *= multiplier if 1 < multiplier
+		n = @n *= multiplier if 1 < multiplier
 
 		# Select factor base
 		factor_base = [-1, 2]
@@ -38,8 +38,8 @@ class MPQS
 		@factor_base = factor_base
 		@factor_base_log = factor_base_log
 		@mod_sqrt_cache = mod_sqrt_cache
-		a = next_prime(isqrt(n << 1) / @sieve_range)
-		target = Math.log((a * @sieve_range) ** 2 - n) - Math.log(a)
+
+		target = Math.log(n) / 2 + Math.log(@sieve_range)
 		@closenuf = target - 1.5 * Math.log(factor_base.last)
 
 		# MPQS
@@ -47,10 +47,12 @@ class MPQS
 		r_list = []
 		big_prime_sup = []
 
+		a = next_prime(isqrt(n << 1) / @sieve_range)
 		if MAX_THREAD == 1
 			loop do
 				a = next_prime(a) until b = mod_sqrt(n, a)
 				c = (b ** 2 - n) / a
+#				a, b, c = next_poly
 				f, r, big = sieve(a, b, c)
 				unless f.empty?
 					factorization += f
@@ -190,7 +192,7 @@ class MPQS
 
 	def next_d
 		unless @d
-			@d = isqrt(isqrt((@n) >> 1) / @sieve_range)
+			@d = isqrt(isqrt(@n >> 1) / @sieve_range)
 			@d -= 1 + @d & 3
 		end
 
@@ -217,6 +219,7 @@ class MPQS
 		factor_base_log = @factor_base_log
 
 		t = -b / a
+#		t = -((b >> 1) / a)
 		lo = t - sieve_range + 1
 		hi = t + sieve_range
 
