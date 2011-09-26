@@ -1,18 +1,21 @@
 class MPQS
-	def initialize(n, factor_base_size = nil, sieve_range = nil)
-		@old_n = @n = n
-		t = get_default_parameter
-		@factor_base_size = factor_base_size || t[0]
-		@sieve_range = sieve_range || t[1]
+	@@kronecker_table = nil
+
+	def initialize(n)
+		@original_n = n
+
+		# Decide multiplier
+		t = [3, 5, 7, 11, 13].map {|p| kronecker_symbol(n, p)}
+		multiplier = self.class.kronecker_table[(n & 6) >> 1][t]
+		@n = n *= multiplier
+
+		@factor_base_size, @sieve_range = get_default_parameter
 		@sieve_range_2 = @sieve_range << 1
 	end
 
 	def mpqs
 		n = @n
 		factor_base_size = @factor_base_size
-
-		multiplier = n & 7
-		n = @n *= multiplier if 1 < multiplier
 
 		# Select factor base
 		factor_base = [-1, 2]
@@ -106,10 +109,10 @@ class MPQS
 			y = (y << (f[1] >> 1)) % n
 			y = -y if f[0][1] == 1
 
-			z = lehmer_gcd(x - y, @old_n)
-			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @old_n)# #
+			z = lehmer_gcd(x - y, @original_n)
+			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)# #
 
-			return z if 1 < z and z < @old_n
+			return z if 1 < z and z < @original_n
 		end
 
 		return false
@@ -378,6 +381,20 @@ class MPQS
 		return factor, n
 	end
 
+	def self.kronecker_table
+		unless @@kronecker_table
+			target = [3, 5, 7, 11, 13]
+			@@kronecker_table = 4.times.map{Hash.new}
+			(17..3583).each_prime do |p|
+				k = target.map {|b| kronecker_symbol(p, b)}
+				@@kronecker_table[(p & 6) >> 1][k] ||= p
+			end
+			@@kronecker_table[0][[1, 1, 1, 1, 1]] = 1
+		end
+
+		return @@kronecker_table
+	end
+
 	def compose(f)
 		rslt = 1
 		f.each.with_index do |e, i|
@@ -387,8 +404,8 @@ class MPQS
 	end
 end
 
-def mpqs(n, factor_base_size = nil, sieve_range = nil)
-	mpqs = MPQS.new(n, factor_base_size, sieve_range)
+def mpqs(n)
+	mpqs = MPQS.new(n)
 	return mpqs.mpqs
 end
 
