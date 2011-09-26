@@ -1,6 +1,6 @@
 class MPQS
 	def initialize(n, factor_base_size = nil, sieve_range = nil)
-		@n = n
+		@old_n = @n = n
 		t = get_default_parameter
 		# #decide factor_base_size and sieve_range
 		@factor_base_size = factor_base_size || t[0]
@@ -47,12 +47,9 @@ class MPQS
 		r_list = []
 		big_prime_sup = []
 
-		a = next_prime(isqrt(n << 1) / @sieve_range)
 		if MAX_THREAD == 1
 			loop do
-				a = next_prime(a) until b = mod_sqrt(n, a)
-				c = (b ** 2 - n) / a
-#				a, b, c = next_poly
+				a, b, c = next_poly
 				f, r, big = sieve(a, b, c)
 				unless f.empty?
 					factorization += f
@@ -101,7 +98,7 @@ class MPQS
 				next if b == 0
 				x = x * r_list[i] % n
 				f = f.zip(factorization[i]).map{|a, b| a + b}
-				y = y * big_prime_sup[i] % n# # if big_prime_sup[i]
+				y = y * big_prime_sup[i] % n
 			end
 
 			(2...factor_base_size).each do |i|
@@ -110,13 +107,10 @@ class MPQS
 			y = (y << (f[1] >> 1)) % n
 			y = -y if f[0][1] == 1
 
-			z = lehmer_gcd(x - y, n)
-			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, n)# #
+			z = lehmer_gcd(x - y, @old_n)
+			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @old_n)# #
 
-			if 1 < z and z < n and z != multiplier
-				q, r = z.divmod(multiplier)
-				return (0 == r) ? q : z
-			end
+			return z if 1 < z and z < @old_n
 		end
 
 		return false
@@ -214,24 +208,23 @@ class MPQS
 	def sieve(a, b, c)
 		n = @n
 		factor_base_size = @factor_base_size
-		sieve_range = @sieve_range
 		factor_base = @factor_base
 		factor_base_log = @factor_base_log
 
-		t = -b / a
-#		t = -((b >> 1) / a)
-		lo = t - sieve_range + 1
-		hi = t + sieve_range
+		t = -((b >> 1) / a)
+		lo = t - @sieve_range + 1
+		hi = t + @sieve_range
 
 		sieve = Array.new(@sieve_range_2)
 		lo_minus_1 = lo - 1
-		t = a * lo_minus_1 + b
+
 		b2 = b << 1
 		a2 = a << 1
-		t2 = (a * lo_minus_1 + b2) * lo_minus_1 + c
-		diff = a2 * lo - a + b2
+		t = a2 * lo_minus_1 + b
+		t2 = (a * lo_minus_1 + b) * lo_minus_1 + c
+		diff = a2 * lo - a + b
 		(lo..hi).each.with_index do |r, i|
-			t += a
+			t += a2
 			t2 += diff
 			diff += a2
 			sieve[i] = [t, 0, t2]
@@ -240,22 +233,15 @@ class MPQS
 		# 2
 		s = sieve[0][0].odd? ? 0 : 1
 		s.step(@sieve_range_2 - 1, 2) do |i|
-			count = 3
+			count = 0
 			count += 1 while sieve[i][2][count] == 0
-			sieve[i][1] += factor_base_log[1] * count
+			sieve[i][1] += factor_base_log[1] * (count + 2)
 		end
 
 		# 3, ...
 		(2...factor_base_size).each do |i|
 			p = factor_base[i]
-			a_inverse = extended_lehmer_gcd(a, p)[0]
-	#if p == multiplier
-	#	t = 0
-	#	s = (t - lo) % p
-	#	s.step((@sieve_range_2) - 1, p) do |j|
-	#		sieve[j][1] += factor_base_log[i]
-	#	end
-	#else
+			a_inverse = extended_lehmer_gcd(a2, p)[0]
 			pe = 1
 			(1..@power_limit[i]).each do |e|
 				pe *= p
@@ -267,7 +253,6 @@ class MPQS
 					end
 				end
 			end
-	#end
 		end
 
 		# trial division on factor base
@@ -283,6 +268,7 @@ class MPQS
 		sieve.map do |r, z, s|
 			f, re = trial_division_on_factor_base(s, factor_base)
 			if 1 == re
+				f[1] += 2
 				factorization.push(f)
 				r_list.push(r)
 			else
@@ -291,28 +277,21 @@ class MPQS
 				else
 					r_list_2.push(r * big_prime[re][1])
 					big_prime_sup.push(re * a)
-					factorization_2.push(big_prime[re][0].zip(f).map{|a, b| a + b})
+					t = big_prime[re][0].zip(f).map{|a, b| a + b}
+					t[1] += 4
+					factorization_2.push(t)
 				end
 			end
 		end
 
-		if factorization.size < 2
+#p [factorization.size, factorization_2.size]
+#sleep 0.2
+		if factorization.size < 1
 			return factorization_2, r_list_2, big_prime_sup
 		end
 
-		# Eliminate 'a'
-		fa1 = factorization.shift
-		r = r_list.shift
-
-		r_list = r_list.map{|i| i * r - n} + r_list_2
-		big_prime_sup = Array.new(factorization.size, a) + big_prime_sup
-		factor_base_size.times do |j|
-			next if 0 == fa1[j]
-			t = fa1[j]
-			factorization.size.times do |i|
-				factorization[i][j] += t
-			end
-		end
+		r_list += r_list_2
+		big_prime_sup = Array.new(factorization.size, @d) + big_prime_sup
 		factorization += factorization_2
 
 		return factorization, r_list, big_prime_sup
