@@ -11,7 +11,6 @@ class MPQS
 	def mpqs
 		n = @n
 		factor_base_size = @factor_base_size
-		sieve_range = @sieve_range
 
 		multiplier = n & 7
 		n *= multiplier if 1 < multiplier
@@ -39,8 +38,8 @@ class MPQS
 		@factor_base = factor_base
 		@factor_base_log = factor_base_log
 		@mod_sqrt_cache = mod_sqrt_cache
-		a = next_prime(isqrt(n << 1) / sieve_range)
-		target = Math.log((a * sieve_range) ** 2 - n) - Math.log(a)
+		a = next_prime(isqrt(n << 1) / @sieve_range)
+		target = Math.log((a * @sieve_range) ** 2 - n) - Math.log(a)
 		@closenuf = target - 1.5 * Math.log(factor_base.last)
 
 		# MPQS
@@ -52,12 +51,12 @@ class MPQS
 			loop do
 				a = next_prime(a) until b = mod_sqrt(n, a)
 				c = (b ** 2 - n) / a
-				f, r, big = mpqs_sieve(a, b, c)
+				f, r, big = sieve(a, b, c)
 				unless f.empty?
 					factorization += f
 					r_list += r
 					big_prime_sup += big
-					break if @factor_base_size + 4 < factorization.size
+					break if @factor_base_size + 5 < factorization.size
 				end
 
 				a = next_prime(a)
@@ -70,7 +69,7 @@ class MPQS
 				MAX_THREAD.times do |i|
 					a = next_prime(a) until b = mod_sqrt(n, a)
 					threads[i] = Thread.new(a) do |a|
-						mpqs_sieve(a, b)
+						sieve(a, b)
 					end
 					a = next_prime(a)
 				end
@@ -176,7 +175,41 @@ class MPQS
 		return t
 	end
 
-	def mpqs_sieve(a, b, c)
+	# Return:: a, b,c
+	def next_poly
+		@d = d = next_d
+		a = d ** 2
+		h1 = power(@n, (d >> 2) + 1, d)
+		h2 = ((@n - h1 ** 2) / d % d) * extended_lehmer_gcd(h1 << 1, d)[0] % d
+		b = h1 + h2 * d
+		b = a - b if b.even?
+		c = ((b ** 2 - @n) >> 2) / a
+
+		return [a, b, c]
+	end
+
+	def next_d
+		unless @d
+			@d = isqrt(isqrt((@n) >> 1) / @sieve_range)
+			@d -= 1 + @d & 3
+		end
+
+		d = @d + 4
+		if d < primes_list.last
+			plist = primes_list
+			(d..plist.last).each_prime do |p|
+				return p if p[1] == 1 and kronecker_symbol(@n, p) == 1
+			end
+			d += 4
+		end
+
+		loop do
+			return d if power(@n, d >> 1, d) == 1
+			d += 4
+		end
+	end
+
+	def sieve(a, b, c)
 		n = @n
 		factor_base_size = @factor_base_size
 		sieve_range = @sieve_range
@@ -280,82 +313,6 @@ class MPQS
 		factorization += factorization_2
 
 		return factorization, r_list, big_prime_sup
-	end
-
-	def qs_sieve
-		#	# Basic sieve
-		sieve = Array.new(sieve_range_2)
-		lo = sqrt - sieve_range + 1
-		hi = sqrt + sieve_range
-		s = (lo - 1) ** 2 - n
-		diff = (lo << 1) - 1
-		(lo..hi).each.with_index do |r, i|
-			s += diff
-			t = (0 < s) ? s : -s
-			diff += 2
-			sieve[i] = [r, 0, s]
-		end
-
-		# 2
-		s = sieve[0][0].odd? ? 0 : 1
-		s.step(sieve_range_2 - 1, 2) do |i|
-			count = 1
-			count += 1 while sieve[i][2][count] == 0
-			sieve[i][1] += factor_base_log[1] * count
-		end
-
-		# 3, ...
-		(2...factor_base_size).each do |i|
-			p = factor_base[i]
-	if p == multiplier
-		t = 0
-		s = (t - lo) % p
-		s.step(sieve_range_2 - 1, p) do |j|
-			sieve[j][1] += factor_base_log[i]
-		end
-	else
-			pe = 1
-			(1..@power_limit[i]).each do |e|
-				pe *= p
-				sqrt = mod_sqrt(n, p, e)
-				[sqrt, pe - sqrt].each do |t|
-					s = (t - lo) % pe
-					s.step(sieve_range_2 - 1, pe) do |j|
-						sieve[j][1] += factor_base_log[i]
-					end
-				end
-			end
-	end
-		end
-		# trial division on factor base
-		target = Math.log(n) / 2 + Math.log(sieve_range)
-		closenuf = 1.5 * Math.log(factor_base.last)
-		sieve = sieve.select{|i| (i[1] - target).abs < closenuf}
-	p sieve.size
-		return false if sieve.size <= factor_base_size
-
-		factorization = []
-		r_list = []
-		big_prime = {}
-		big_prime_sup = []
-		sieve.map do |r, z, s|
-			f, re = trial_division_on_factor_base(s, factor_base)
-			if 1 == re
-				factorization.push(f)
-				r_list.push(r)
-			else
-				unless big_prime[re]
-					big_prime[re] = [f, r]
-				else
-					r_list.push(r * big_prime[re][1] - n)
-					big_prime_sup[factorization.size] = re
-					factorization.push(big_prime[re][0].zip(f).map{|a, b| a + b})
-				end
-			end
-			break if factor_base_size + 10 < factorization.size
-		end
-	p factorization.size
-		return false if factorization.size <= factor_base_size
 	end
 
 	def gaussian_elimination(m)
