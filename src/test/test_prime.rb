@@ -116,6 +116,8 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(11, next_prime(7))
 		assert_equal(29, next_prime(23))
 		assert_equal(101, next_prime(100))
+		assert_equal(599993, next_prime(599983))
+		assert_equal(900001, next_prime(899981))
 	end
 
 	def test_each_prime

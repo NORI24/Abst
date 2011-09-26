@@ -285,8 +285,11 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal([2, 2], power_detection(4))
 		assert_equal([5, 1], power_detection(5))
 		assert_equal([2, 3], power_detection(8))
+		assert_equal([4, 2], power_detection(16, false))
 		assert_equal([2, 4], power_detection(16, true))
+		assert_equal([2 ** 21, 3], power_detection(2 ** 63, false))
 		assert_equal([2, 63], power_detection(2 ** 63, true))
+		assert_equal([9, 2], power_detection(81, false))
 		assert_equal([3, 4], power_detection(81, true))
 	end
 

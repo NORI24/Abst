@@ -493,12 +493,15 @@ alias Jacobi_symbol kronecker_symbol
 #          positive integer exp
 #          (if 1 < exp then n must be relatively prime with p)
 # Return:: the square root of n mod (p ** exp) if exists else nil
-def mod_sqrt(n, p, exp = 1)
-	if 1 < exp
+def mod_sqrt(n, p, exp = 1, return_list = false)
+	if 1 < exp or return_list
 		x = mod_sqrt(n, p)
 		return x unless x
 		raise ArgumentError, "if 1 < exp then n must be relatively prime with p" if 0 == x
 
+		return [x] if 1 == exp
+
+		rslt = [x]
 		p_power = p
 		z = extended_lehmer_gcd(x << 1, p)[0]
 		(exp - 1).times do
@@ -506,9 +509,10 @@ def mod_sqrt(n, p, exp = 1)
 			x += y * p_power
 			p_power *= p
 			x %= p_power
+			rslt.push(x)
 		end
 
-		return x
+		return return_list ? rslt : x
 	end
 
 	unless (k = kronecker_symbol(n, p)) == 1
@@ -676,7 +680,7 @@ def power_detection(n, largest_exp = true)
 
 		root, pow = iroot(n, exp, true)
 		if pow == n
-			return x, exp unless largest_exp
+			return root, exp unless largest_exp
 
 			n = x = root
 			k *= exp

@@ -510,7 +510,7 @@ end
 # Param::  integer n
 # Return:: The least prime greater than n
 def next_prime(n)
-	return 2 if n < 2
+	return Bisect.find_gt(primes_list, n) if n < primes_list.last
 
 	n += (n.even? ? 1 : 2)
 	n += 2 until prime?(n)
@@ -533,8 +533,7 @@ class Range
 			end
 		end
 
-		s = primes.last
-		s += 1 + s[0]
+		s = primes.last + 2
 		s.step(max, 2) do |i|
 			yield(i) if prime?(i)
 		end
