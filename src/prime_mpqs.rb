@@ -57,8 +57,6 @@ class MPQS
 					big_prime_sup += big
 					break if @factor_base_size + 5 < factorization.size
 				end
-
-				a = next_prime(a)
 			end
 		else
 			loop do
