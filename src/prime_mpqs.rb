@@ -172,7 +172,7 @@ raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)
 	def next_d
 		unless @d
 			@d = isqrt(isqrt(@n >> 1) / @sieve_range)
-			@d -= 1 + @d & 3
+			@d -= 1 + (@d & 3)
 		end
 
 		d = @d + 4
