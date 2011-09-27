@@ -11,6 +11,7 @@ class MPQS
 
 		@factor_base_size, @sieve_range = get_default_parameter
 		@sieve_range_2 = @sieve_range << 1
+		@big_prime = {}
 	end
 
 	def mpqs
@@ -28,7 +29,7 @@ class MPQS
 		(2...@factor_base_size).each do |i|
 			p = factor_base[i]
 			mod_sqrt_cache[i] = []
-			@power_limit[i] = (factor_base_log.last / factor_base_log[i]).ceil
+			@power_limit[i] = (factor_base_log.last / factor_base_log[i]).floor
 			#@power_limit[i] = (Math.log(@sieve_range_2, factor_base_log[i])).floor
 
 			mod_sqrt_cache[i] = [nil] + mod_sqrt(@n, p, @power_limit[i], true)
@@ -39,7 +40,7 @@ class MPQS
 		@mod_sqrt_cache = mod_sqrt_cache
 
 		target = Math.log(@n) / 2 + Math.log(@sieve_range) - 1
-		@closenuf = target - 1.5 * Math.log(factor_base.last)
+		@closenuf = target - 1.8 * Math.log(factor_base.last)
 
 		# MPQS
 		factorization = []
@@ -109,9 +110,9 @@ class MPQS
 			y = -y if f[0][1] == 1
 
 			z = lehmer_gcd(x - y, @original_n)
-			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)# #
-
 			return z if 1 < z and z < @original_n
+
+			raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)# #
 		end
 
 		return false
@@ -249,10 +250,6 @@ class MPQS
 					s = ((t - b) * a_inverse - lo) % pe
 					s.step(@sieve_range_2 - 1, pe) do |j|
 						sieve[j][1] += @factor_base_log[i]
-#if 3 == e
-#	p(sieve[j][2] % pe)
-#	sleep 0.1
-#end
 					end
 				end
 			end
@@ -265,7 +262,7 @@ class MPQS
 		factorization_2 = []
 		r_list = []
 		r_list_2 = []
-		big_prime = {}
+		big_prime_sup1 = []
 		big_prime_sup = []
 		sieve.map do |r, z, s|
 			f, re = trial_division_on_factor_base(s, @factor_base)
@@ -273,13 +270,16 @@ class MPQS
 				f[1] += 2
 				factorization.push(f)
 				r_list.push(r)
+				big_prime_sup1.push(@d)
 			else
-				unless big_prime[re]
-					big_prime[re] = [f, r]
+				unless @big_prime[re]
+					@big_prime[re] = [f, r, @d]
 				else
-					r_list_2.push(r * big_prime[re][1])
-					big_prime_sup.push(re * a)
-					t = big_prime[re][0].zip(f).map{|a, b| a + b}
+					r_list_2.push(r * @big_prime[re][1])
+					t = @big_prime[re][2]
+					t = (@d == t) ? a : @d * t
+					big_prime_sup.push(re * t)
+					t = @big_prime[re][0].zip(f).map{|a, b| a + b}
 					t[1] += 4
 					factorization_2.push(t)
 				end
@@ -289,11 +289,11 @@ class MPQS
 #p [sieve.size, factorization.size, factorization_2.size]
 #sleep 0.2
 		if factorization_2.size < 1
-			return factorization, r_list, Array.new(factorization.size, @d)
+			return factorization, r_list, big_prime_sup1
 		end
 
 		r_list += r_list_2
-		big_prime_sup = Array.new(factorization.size, @d) + big_prime_sup
+		big_prime_sup = big_prime_sup1 + big_prime_sup
 		factorization += factorization_2
 
 		return factorization, r_list, big_prime_sup
@@ -329,8 +329,8 @@ class MPQS
 				rslt[row], rslt[j] = rslt[j], rslt[row]
 			end
 
-			m_j = m[j]
 			# Eliminate
+			m_j = m[j]
 			((j + 1)...height).each do |i|
 				next if m[i][j] == 0
 

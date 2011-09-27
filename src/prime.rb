@@ -135,7 +135,7 @@ def trial_division(n, limit = INFINITY)
 	factor = []
 	lim = [limit, isqrt(n)].min
 
-	divide = Proc.new do |d|
+	divide = proc do |d|
 		n /= d
 		div_count = 1
 		loop do
@@ -336,7 +336,7 @@ def factorize(n)
 	factor += f
 	td_lim_square = td_lim ** 2
 
-	merge = Proc.new do |f1, f2|
+	merge = proc do |f1, f2|
 		next f2 if f1.empty?
 
 		insert_pos = 0
@@ -357,14 +357,14 @@ def factorize(n)
 		next f1 + f2
 	end
 
-	check_finish = Proc.new do
+	check_finish = proc do
 		if n <= td_lim_square or prime?(n)
 			return factor if 1 == n
 			return merge.call(factor, [[n, 1]])
 		end
 	end
 
-	divide = Proc.new do |f|
+	divide = proc do |f|
 		f.size.times do |i|
 			d = f[i][0]
 			loop do
