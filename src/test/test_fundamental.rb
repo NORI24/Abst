@@ -329,4 +329,14 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal([3, [2, 6]], continued_fraction_of_sqrt(12))
 		assert_equal([3, [1, 1, 1, 1, 6]], continued_fraction_of_sqrt(13))
 	end
+
+	def test_bhaskara_brouncker
+		assert_equal([1, 1], bhaskara_brouncker(2))
+		assert_equal([2, 1], bhaskara_brouncker(3))
+		assert_equal([2, 1], bhaskara_brouncker(5))
+		assert_equal([5, 2], bhaskara_brouncker(6))
+		assert_equal([8, 3], bhaskara_brouncker(7))
+		assert_equal([29718, 3805], bhaskara_brouncker(61))
+		assert_equal([8890182, 851525], bhaskara_brouncker(109))
+	end
 end
