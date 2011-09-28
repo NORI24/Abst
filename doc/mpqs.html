@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="default.css" type="text/css" />
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 <style type="text/css">
-body {width: 740px;}
+body { width: 740px; }
+h2 { border-width: 0 0 1px 3px; border-style: solid; border-color: black; padding-left: 3px; }
 </style>
 </head>
 <body>
@@ -29,6 +30,21 @@ body {width: 740px;}
 \(x \approx -\frac{b}{2a}\)<br />
 \(\max F(x) \approx \frac{M}{2 \sqrt 2} \sqrt n\)<br />
 \(\log{(\max F(x))} \approx \frac{\log{n}}{2} + \log{M}\)
+
+<h2>TODO</h2>
+素因数分解＆GCDのループ → 完全に分解できる数を最小限で済ませる。<br />
+sieve多重配列を分割し、参照を高速化<br />
+IO.popen のパイプによるRubyプロセス間でのバイナリデータの送受信<br />
+ → マルチスレッド＆マルチプロセス化<br />
+Gaussian elimination をSieveと並列に逐次処理する<br />
+
+<h2>有効だった改良</h2>
+・乗除算の削減（特にsieveの初期化）<br />
+・多項式の係数を工夫（aを平方数とする）<br />
+・パラメータの調整<br />
+・適切なmultiplierの使用<br />
+・2,3 での篩を行わない<br />
+・複数の多項式に跨る大きな素因数の利用<br />
 
 </body>
 </html>
