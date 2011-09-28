@@ -747,5 +747,24 @@ def continued_fraction_of_sqrt(m)
 
 		return rslt if 1 == a and _B == b and 1 == c
 	end
+end
 
+# Param::  positive integer n
+# Return:: positive integer a, b s.t. a**2 - n * b**2 == 1 or -1
+def bhaskara_brouncker(n)
+	t = sqrt = isqrt(n)
+	u, u1 = 0, sqrt
+	c, c1 = 1, n - sqrt ** 2
+	a, a1 = 1, sqrt
+	b, b1 = 0, 1
+
+	until 1 == c1
+		t = (sqrt + u1) / c1
+		u1, u = t * c1 - u1, u1
+		c1, c = c + t * (u - u1), c1
+		a1, a = a + t * a1, a1
+		b1, b = b + t * b1, b1
+	end
+
+	return a1, b1
 end
