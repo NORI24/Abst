@@ -49,16 +49,6 @@ class MPQS
 		[50000, 3200],	# 52
 		[50000, 3500]]	# 53
 
-	def initialize(n)
-		@original_n = n
-		@big_prime = {}
-
-		decide_multiplier(n)
-		decide_parameter
-		select_factor_base
-		some_precomputations
-	end
-
 	def self.kronecker_table
 		unless @@kronecker_table
 			target = [3, 5, 7, 11, 13]
@@ -71,6 +61,16 @@ class MPQS
 		end
 
 		return @@kronecker_table
+	end
+
+	def initialize(n)
+		@original_n = n
+		@big_prime = {}
+
+		decide_multiplier(n)
+		decide_parameter
+		select_factor_base
+		some_precomputations
 	end
 
 	def decide_multiplier(n)
