@@ -39,6 +39,11 @@ class Integer
 	end
 	alias :C :combination
 
+	def repeated_combination(r)
+		return (self + r - 1).combination(r)
+	end
+	alias :H :repeated_combination
+
 	# @param positive integer m > 1
 	# @return boolean whether self is power of m or not
 	def power_of?(m)
