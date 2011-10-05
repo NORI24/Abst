@@ -328,7 +328,7 @@ raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)
 
 			# Eliminate
 			m_j = m[j]
-			((j + 1)...height).each do |i|
+			((row + 1)...height).each do |i|
 				next if m[i][j] == 0
 
 				m_i = m[i]
