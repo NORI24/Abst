@@ -193,10 +193,9 @@ class MPQS
 	end
 
 	def sieve(a, b, c, d)
-		t = -((b >> 1) / a)
-		lo = t - @sieve_range + 1
-
 		a2 = a << 1
+		lo = -(b / a2) - @sieve_range + 1
+
 		sieve = Array.new(@sieve_range_2, 0)
 
 		# Sieve by 2
@@ -374,14 +373,6 @@ class MPQS
 		end
 
 		return factor, n
-	end
-# #
-	def compose(f)
-		rslt = 1
-		f.each.with_index do |e, i|
-			rslt *= @factor_base[i] ** e
-		end
-		return rslt
 	end
 end
 
