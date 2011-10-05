@@ -82,7 +82,7 @@ class MPQS
 	def decide_parameter
 		digit = Math.log(@n, 10).floor
 		parameter = @@mpqs_parameter_map[digit].dup
-		parameter[0] *= 2
+		parameter[0] = (parameter[0] * 2).floor
 		@sieve_range, @factor_base_size = parameter
 		@sieve_range_2 = @sieve_range << 1
 	end
@@ -114,46 +114,45 @@ class MPQS
 	end
 
 	def find_factor
-		# Sieve
 		r_list = []
 		factorization = []
 		big_prime_sup = []
+
 		loop do
+			# Create polynomial
 			a, b, c, d = next_poly
+
+			# Sieve
 			f, r, big = sieve(a, b, c, d)
-			unless f.empty?
-				factorization += f
-				r_list += r
-				big_prime_sup += big
-				break if @factor_base_size + 5 < factorization.size
-			end
-		end
+			next if f.empty?
 
-		# Gaussian elimination
-		rslt = gaussian_elimination(factorization)
-		rslt.each do |row|
-			x = y = 1
-			f = Array.new(@factor_base_size, 0)
-			factorization.size.times do |i|
-				next if row[i] == 0
-				x = x * r_list[i] % @n
-				f = f.zip(factorization[i]).map{|a, b| a + b}
-				y = y * big_prime_sup[i] % @n
-			end
+			# Gaussian elimination
+			factorization += f
+			r_list += r
+			big_prime_sup += big
+			
+			eliminated = gaussian_elimination(f)
+			eliminated.each do |row|
+				x = y = 1
+				f = Array.new(@factor_base_size, 0)
+				factorization.size.times do |i|
+					next if row[i] == 0
+					x = x * r_list[i] % @n
+					f = f.zip(factorization[i]).map{|a, b| a + b}
+					y = y * big_prime_sup[i] % @n
+				end
 
-			(2...@factor_base_size).each do |i|
-				y = y * power(@factor_base[i], f[i] >> 1, @n) % @n
-			end
-			y = (y << (f[1] >> 1)) % @n
-			y = -y if f[0][1] == 1
+				(2...@factor_base_size).each do |i|
+					y = y * power(@factor_base[i], f[i] >> 1, @n) % @n
+				end
+				y = (y << (f[1] >> 1)) % @n
 
-			z = lehmer_gcd(x - y, @original_n)
-			return z if 1 < z and z < @original_n
+				z = lehmer_gcd(x - y, @original_n)
+				return z if 1 < z and z < @original_n
 # #
-raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)
+				raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)
+			end
 		end
-
-		return false
 	end
 
 	# Return:: a, b,c
@@ -297,49 +296,67 @@ raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)
 	end
 
 	def gaussian_elimination(m)
-		m = m.map{|row| row.reverse_each.map{|i| i[0]}}
-
-		rslt = Array.new(m.size)
-		t = 1
-		m.size.times do |i|
-			rslt[i] = t
-			t <<= 1
+		unless @matrix_left
+			@matrix_left = []
+			@matrix_right = []
+			@mask = 1
+			@check_list = Array.new(@factor_base_size)
 		end
+		
+		elim_start = @matrix_left.size
+		temp = Array.new(m.size)
+		m.size.times do |i|
+			temp[i] = @mask
+			@mask <<= 1
+		end
+		rslt = @matrix_right += temp
+		m = @matrix_left += m.map{|row| row.reverse_each.map{|i| i[0]}}
 
 		height = m.size
 		width = m[0].size
 
+		i = 0
 		width.times do |j|
-			# Find non-zero entry
-			row = nil
-			(j...height).each do |i|
-				if 0 != m[i][j]
-					row = i
-					break
+			unless @check_list[j]
+				# Find non-zero entry
+				row = nil
+				(elim_start...height).each do |i2|
+					if 1 == m[i2][j]
+						row = i2
+						break
+					end
 				end
-			end
-			next unless row
+				next unless row
+				
+				@check_list[j] = row
 
-			# Swap?
-			if j < row
-				m[row], m[j] = m[j], m[row]
-				rslt[row], rslt[j] = rslt[j], rslt[row]
+				# Swap?
+				if i < row
+					m.insert(i, m.delete_at(row))
+					rslt.insert(i, rslt.delete_at(row))
+				end
+
+				elim_start += 1
 			end
 
 			# Eliminate
-			m_j = m[j]
-			((row + 1)...height).each do |i|
-				next if m[i][j] == 0
+			m_i = m[i]
+			((row ? (row + 1) : elim_start)...height).each do |i2|
+				next if m[i2][j] == 0
 
-				m_i = m[i]
+				m_i2 = m[i2]
 				((j + 1)...width).each do |j2|
-					m_i[j2] ^= 1 if 1 == m_j[j2]
+					m_i2[j2] ^= 1 if 1 == m_i[j2]
 				end
-				rslt[i] ^= rslt[j]
+				rslt[i2] ^= rslt[i]
 			end
+
+			i += 1
 		end
 
-		return rslt.pop(height - width)
+		t = height - i
+		m.pop(t)
+		return rslt.pop(t)
 	end
 
 	def trial_division_on_factor_base(n, factor_base)
@@ -372,7 +389,7 @@ raise "Modulo Error!" if 1 == z and 1 == lehmer_gcd(x + y, @original_n)
 
 		return factor, n
 	end
-
+# #
 	def compose(f)
 		rslt = 1
 		f.each.with_index do |e, i|
