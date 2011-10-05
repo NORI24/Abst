@@ -71,6 +71,14 @@ class MPQS
 		decide_parameter
 		select_factor_base
 		some_precomputations
+
+		@d = isqrt(isqrt(@n >> 1) / @sieve_range)
+		@d -= 1 + (@d & 3)
+
+		@matrix_left = []
+		@matrix_right = []
+		@mask = 1
+		@check_list = Array.new(@factor_base_size)
 	end
 
 	def decide_multiplier(n)
@@ -169,11 +177,6 @@ class MPQS
 	end
 
 	def next_d
-		unless @d
-			@d = isqrt(isqrt(@n >> 1) / @sieve_range)
-			@d -= 1 + (@d & 3)
-		end
-
 		d = @d + 4
 		if d < primes_list.last
 			plist = primes_list
@@ -296,13 +299,6 @@ class MPQS
 	end
 
 	def gaussian_elimination(m)
-		unless @matrix_left
-			@matrix_left = []
-			@matrix_right = []
-			@mask = 1
-			@check_list = Array.new(@factor_base_size)
-		end
-		
 		elim_start = @matrix_left.size
 		temp = Array.new(m.size)
 		m.size.times do |i|
