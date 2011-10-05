@@ -200,18 +200,12 @@ class MPQS
 		sieve = Array.new(@sieve_range_2)
 		lo_minus_1 = lo - 1
 
-		b2 = b << 1
 		a2 = a << 1
 		t = a * lo_minus_1
-		t2 = (t + b) * lo_minus_1 + c
-		t = t << 1
-		diff = t + a + b
-		t += b
+		t = (t << 1) + b
 		(lo..hi).each.with_index do |r, i|
 			t += a2
-			t2 += diff
-			diff += a2
-			sieve[i] = [t, 0, t2]
+			sieve[i] = [t, 0, r]
 		end
 
 		# Sieve by 2
@@ -256,6 +250,10 @@ class MPQS
 
 		# trial division on factor base
 		sieve = sieve.select{|i| @closenuf < i[1]}
+		sieve.each do |i|
+			x = i[2]
+			i[2] = ((a * x) + b) * x + c
+		end
 
 		factorization = []
 		factorization_2 = []
