@@ -204,13 +204,10 @@ class MPQS
 		t = a * lo_minus_1
 		t = (t << 1) + b
 		(lo..hi).each.with_index do |r, i|
-			t += a2
-			sieve[i] = [t, 0, r]
+			sieve[i] = [r, 0]
 		end
 
 		# Sieve by 2
-#		s = sieve[0][0].odd? ? 0 : 1
-#		s.step(@sieve_range_2 - 1, 2) do |i|
 #		(0...@sieve_range_2).each do |i|
 #			count = 1
 #			count += 1 while sieve[i][2][count] == 0
@@ -251,8 +248,10 @@ class MPQS
 		# trial division on factor base
 		sieve = sieve.select{|i| @closenuf < i[1]}
 		sieve.each do |i|
-			x = i[2]
-			i[2] = ((a * x) + b) * x + c
+			x = i[0]
+			t = a * x
+			i[0] = (t << 1) + b
+			i[1] = (t + b) * x + c
 		end
 
 		factorization = []
@@ -261,7 +260,7 @@ class MPQS
 		r_list_2 = []
 		big_prime_sup = []
 		big_prime_sup_2 = []
-		sieve.map do |r, z, s|
+		sieve.map do |r, s|
 			f, re = trial_division_on_factor_base(s, @factor_base)
 			if 1 == re
 				f[1] += 2
