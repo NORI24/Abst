@@ -195,17 +195,9 @@ class MPQS
 	def sieve(a, b, c, d)
 		t = -((b >> 1) / a)
 		lo = t - @sieve_range + 1
-		hi = t + @sieve_range
-
-		sieve = Array.new(@sieve_range_2)
-		lo_minus_1 = lo - 1
 
 		a2 = a << 1
-		t = a * lo_minus_1
-		t = (t << 1) + b
-		(lo..hi).each.with_index do |r, i|
-			sieve[i] = [r, 0]
-		end
+		sieve = Array.new(@sieve_range_2, 0)
 
 		# Sieve by 2
 #		(0...@sieve_range_2).each do |i|
@@ -232,13 +224,13 @@ class MPQS
 				t = sqrt
 				s = ((t - b) * a_inverse - lo) % pe
 				s.step(@sieve_range_2 - 1, pe) do |j|
-					sieve[j][1] += factor_base_log_i
+					sieve[j] += factor_base_log_i
 				end
 
 				t = pe - sqrt
 				s = ((t - b) * a_inverse - lo) % pe
 				s.step(@sieve_range_2 - 1, pe) do |j|
-					sieve[j][1] += factor_base_log_i
+					sieve[j] += factor_base_log_i
 				end
 
 				e += 1
@@ -246,12 +238,13 @@ class MPQS
 		end
 
 		# trial division on factor base
-		sieve = sieve.select{|i| @closenuf < i[1]}
-		sieve.each do |i|
-			x = i[0]
-			t = a * x
-			i[0] = (t << 1) + b
-			i[1] = (t + b) * x + c
+		td_target = []
+		sieve.each.with_index do |sum_of_log, idx|
+			if @closenuf < sum_of_log
+				x = idx + lo
+				t = a * x
+				td_target.push([(t << 1) + b, (t + b) * x + c])
+			end
 		end
 
 		factorization = []
@@ -260,7 +253,7 @@ class MPQS
 		r_list_2 = []
 		big_prime_sup = []
 		big_prime_sup_2 = []
-		sieve.map do |r, s|
+		td_target.each do |r, s|
 			f, re = trial_division_on_factor_base(s, @factor_base)
 			if 1 == re
 				f[1] += 2
@@ -306,7 +299,7 @@ class MPQS
 		m = @matrix_left += m.map{|row| row.reverse_each.map{|i| i[0]}}
 
 		height = m.size
-		width = m[0].size
+		width = @factor_base_size
 
 		i = 0
 		width.times do |j|
