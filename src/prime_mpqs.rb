@@ -48,6 +48,11 @@ class MPQS
 		[40000, 3000],	# 51
 		[50000, 3200],	# 52
 		[50000, 3500]]	# 53
+	
+	@@proc_time = Hash.new(0)
+	def self.get_times
+		return @@proc_time
+	end
 
 	def self.kronecker_table
 		unless @@kronecker_table
@@ -64,6 +69,7 @@ class MPQS
 	end
 
 	def initialize(n)
+@@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		@original_n = n
 		@big_prime = {}
 
@@ -79,6 +85,7 @@ class MPQS
 		@matrix_right = []
 		@mask = 1
 		@check_list = Array.new(@factor_base_size)
+@@proc_time[:init] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 	end
 
 	def decide_multiplier(n)
@@ -131,7 +138,9 @@ class MPQS
 			a, b, c, d = next_poly
 
 			# Sieve
+@@proc_time[:sieve] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			f, r, big = sieve(a, b, c, d)
+@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			next if f.empty?
 
 			# Gaussian elimination
@@ -139,7 +148,9 @@ class MPQS
 			r_list += r
 			big_prime_sup += big
 			
+@@proc_time[:gaussian] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			eliminated = gaussian_elimination(f)
+@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			eliminated.each do |row|
 				x = y = 1
 				f = Array.new(@factor_base_size, 0)
@@ -165,6 +176,7 @@ class MPQS
 
 	# Return:: a, b,c
 	def next_poly
+@@proc_time[:make_poly] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		@d = d = next_d
 		a = d ** 2
 		h1 = power(@n, (d >> 2) + 1, d)
@@ -173,6 +185,7 @@ class MPQS
 		b = a - b if b.even?
 		c = ((b ** 2 - @n) >> 2) / a
 
+@@proc_time[:make_poly] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		return a, b, c, d
 	end
 
@@ -187,7 +200,7 @@ class MPQS
 		end
 
 		loop do
-			return d if power(@n, d >> 1, d) == 1
+			return d if kronecker_symbol(@n, d) == 1 and power(@n, d >> 1, d) == 1
 			d += 4
 		end
 	end
@@ -205,6 +218,7 @@ class MPQS
 #			sieve[i][1] += @factor_base_log[1] * count
 #		end
 
+@@proc_time[:sieve_a] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		# Sieve by 3, 5, 7, 11, ...
 #		(2...@factor_base_size).each do |i|
 		(4...@factor_base_size).each do |i|
@@ -235,8 +249,10 @@ class MPQS
 				e += 1
 			end
 		end
+@@proc_time[:sieve_a] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
-		# trial division on factor base
+@@proc_time[:sieve_slct] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+		# select trial division target
 		td_target = []
 		sieve.each.with_index do |sum_of_log, idx|
 			if @closenuf < sum_of_log
@@ -245,7 +261,9 @@ class MPQS
 				td_target.push([(t << 1) + b, (t + b) * x + c])
 			end
 		end
+@@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
+		# trial division on factor base
 		factorization = []
 		factorization_2 = []
 		r_list = []
@@ -253,7 +271,9 @@ class MPQS
 		big_prime_sup = []
 		big_prime_sup_2 = []
 		td_target.each do |r, s|
+@@proc_time[:sieve_td] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			f, re = trial_division_on_factor_base(s, @factor_base)
+@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			if 1 == re
 				f[1] += 2
 				factorization.push(f)
@@ -351,7 +371,12 @@ class MPQS
 			n = -n
 		end
 
-		i = 1
+		div_count = 1
+		div_count += 1 while n[div_count] == 0
+		factor[1] = div_count
+		n >>= div_count
+
+		i = 2
 		while i < @factor_base_size
 			d = factor_base[i]
 			q, r = n.divmod(d)
