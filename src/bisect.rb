@@ -2,13 +2,25 @@ module Bisect
 	module_function
 
 	def bisect_left(list, item, lo = 0, hi = list.size)
-		while lo < hi
-			i = (lo + hi - 1) >> 1
+		if defined?(yield)
+			while lo < hi
+				i = (lo + hi - 1) >> 1
 
-			if item <= list[i]
-				hi = i
-			else
-				lo = i + 1
+				if 0 <= yield(list[i], item)
+					hi = i
+				else
+					lo = i + 1
+				end
+			end
+		else
+			while lo < hi
+				i = (lo + hi - 1) >> 1
+
+				if 0 <= (list[i] <=> item)
+					hi = i
+				else
+					lo = i + 1
+				end
 			end
 		end
 
@@ -16,13 +28,25 @@ module Bisect
 	end
 
 	def bisect_right(list, item, lo = 0, hi = list.size)
-		while lo < hi
-			i = (lo + hi - 1) >> 1
+		if defined?(yield)
+			while lo < hi
+				i = (lo + hi - 1) >> 1
 
-			if item < list[i]
-				hi = i
-			else
-				lo = i + 1
+				if 0 < yield(list[i], item)
+					hi = i
+				else
+					lo = i + 1
+				end
+			end
+		else
+			while lo < hi
+				i = (lo + hi - 1) >> 1
+
+				if 0 < (list[i] <=> item)
+					hi = i
+				else
+					lo = i + 1
+				end
 			end
 		end
 
