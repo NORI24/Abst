@@ -2,7 +2,7 @@ module Bisect
 	module_function
 
 	def bisect_left(list, item, lo = 0, hi = list.size)
-		if defined?(yield)
+		if block_given?
 			while lo < hi
 				i = (lo + hi - 1) >> 1
 
@@ -28,7 +28,7 @@ module Bisect
 	end
 
 	def bisect_right(list, item, lo = 0, hi = list.size)
-		if defined?(yield)
+		if block_given?
 			while lo < hi
 				i = (lo + hi - 1) >> 1
 
@@ -53,43 +53,43 @@ module Bisect
 		return lo
 	end
 
-	def insort_left(list, item, lo = 0, hi = list.size)
-		i = bisect_left(list, item, lo, hi)
+	def insort_left(list, item, lo = 0, hi = list.size, &block)
+		i = bisect_left(list, item, lo, hi, &block)
 		list.insert(i, item)
 	end
 
-	def insort_right(list, item, lo = 0, hi = list.size)
-		i = bisect_right(list, item, lo, hi)
+	def insort_right(list, item, lo = 0, hi = list.size, &block)
+		i = bisect_right(list, item, lo, hi, &block)
 		list.insert(i, item)
 	end
 
 	# Locate the leftmost value exactly equal to item
-	def index(list, item)
-		i = bisect_left(list, item)
+	def index(list, item, &block)
+		i = bisect_left(list, item, &block)
 		return list[i] == item ? i : nil
 	end
 
 	# Find rightmost value less than item
-	def find_lt(list, item)
-		i = bisect_left(list, item)
+	def find_lt(list, item, &block)
+		i = bisect_left(list, item, &block)
 		return list[i - 1] unless 0 == i
 	end
 
 	# Find rightmost value less than or equal to item
-	def find_le(list, item)
-		i = bisect_right(list, item)
+	def find_le(list, item, &block)
+		i = bisect_right(list, item, &block)
 		return list[i - 1] unless 0 == i
 	end
 
 	# Find leftmost value greater than item
-	def find_gt(list, item)
-		i = bisect_right(list, item)
+	def find_gt(list, item, &block)
+		i = bisect_right(list, item, &block)
 		return list[i] unless list.size == i
 	end
 
 	# Find leftmost item greater than or equal to item
-	def find_ge(list, item)
-		i = bisect_left(list, item)
+	def find_ge(list, item, &block)
+		i = bisect_left(list, item, &block)
 		return list[i] unless list.size == i
 	end
 end
