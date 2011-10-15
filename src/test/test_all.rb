@@ -1,3 +1,4 @@
+require 'test/test_bisect'
 require 'test/test_combination'
 require 'test/test_float'
 require 'test/test_fundamental'
