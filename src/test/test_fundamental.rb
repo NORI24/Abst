@@ -173,7 +173,7 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_mod_sqrt
-		test = Proc.new do |n, p, exp|
+		test = proc do |n, p, exp|
 			rslt = exp ? mod_sqrt(n, p, exp) : mod_sqrt(n, p)
 			if kronecker_symbol(n, p) == -1
 				assert_equal(nil, rslt)
@@ -199,7 +199,7 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_cornacchia
-		test = Proc.new do |d, p, expect|
+		test = proc do |d, p, expect|
 			rslt = cornacchia(d, p)
 			if expect
 				assert(rslt)
