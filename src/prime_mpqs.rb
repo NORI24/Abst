@@ -48,7 +48,7 @@ class MPQS
 		[40000, 3000],	# 51
 		[50000, 3200],	# 52
 		[50000, 3500]]	# 53
-	
+
 	@@proc_time = Hash.new(0)
 	def self.get_times
 		return @@proc_time
@@ -143,7 +143,7 @@ class MPQS
 			factorization += f
 			r_list += r
 			big_prime_sup += big
-			
+
 			eliminated = gaussian_elimination(f)
 			eliminated.each do |row|
 				x = y = 1
@@ -314,7 +314,7 @@ class MPQS
 					end
 				end
 				next unless row
-				
+
 				@check_list[j] = row
 
 				# Swap?
