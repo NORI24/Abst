@@ -500,7 +500,7 @@ def mod_sqrt(n, p, exp = 1, return_list = false)
 		return [x] if 1 == exp
 		raise ArgumentError, "if 1 < exp then n must be relatively prime with p" if 0 == x
 
-		rslt = [x]
+		rslt = [x] if return_list
 		p_power = p
 		z = extended_lehmer_gcd(x << 1, p)[0]
 		(exp - 1).times do
@@ -508,7 +508,7 @@ def mod_sqrt(n, p, exp = 1, return_list = false)
 			x += y * p_power
 			p_power *= p
 			x %= p_power
-			rslt.push(x)
+			rslt.push(x) if return_list
 		end
 
 		return return_list ? rslt : x
