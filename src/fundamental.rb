@@ -497,9 +497,8 @@ def mod_sqrt(n, p, exp = 1, return_list = false)
 	if 1 < exp or return_list
 		x = mod_sqrt(n, p)
 		return x unless x
-		raise ArgumentError, "if 1 < exp then n must be relatively prime with p" if 0 == x
-
 		return [x] if 1 == exp
+		raise ArgumentError, "if 1 < exp then n must be relatively prime with p" if 0 == x
 
 		rslt = [x]
 		p_power = p
