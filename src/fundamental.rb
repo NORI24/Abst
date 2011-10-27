@@ -539,7 +539,7 @@ def mod_sqrt(n, p, exp = 1, return_list = false)
 	z = power(g, q, p)	# |<z>| == 2 ** e
 
 	# Initialize
-	temp = power(n, (q - 1) >> 1, p)
+	temp = power(n, q >> 1, p)
 	x = n * temp % p	# n ** ((q + 1) / 2) mod p
 	b = x * temp % p	# n ** q mod p
 
