@@ -504,8 +504,7 @@ def mod_sqrt(n, p, exp = 1, return_list = false)
 		p_power = p
 		z = extended_lehmer_gcd(x << 1, p)[0]
 		(exp - 1).times do
-			y = (n - x ** 2) / p_power * z % p
-			x += y * p_power
+			x += (n - x ** 2) / p_power * z % p * p_power
 			p_power *= p
 			rslt.push(x) if return_list
 		end
