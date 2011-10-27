@@ -332,8 +332,8 @@ def factorize(n)
 		factor = []
 	end
 
-	f, n = trial_division(n, td_lim = 100_000)
-	factor += f
+	found_factor, n = trial_division(n, td_lim = 100_000)
+	factor += found_factor
 	td_lim_square = td_lim ** 2
 
 	merge = proc do |f1, f2|

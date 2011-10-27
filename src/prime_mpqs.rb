@@ -151,7 +151,7 @@ class MPQS
 				factorization.size.times do |i|
 					next if row[i] == 0
 					x = x * r_list[i] % @n
-					f = f.zip(factorization[i]).map{|a, b| a + b}
+					f = f.zip(factorization[i]).map{|e1, e2| e1 + e2}
 					y = y * big_prime_sup[i] % @n
 				end
 
@@ -271,7 +271,7 @@ class MPQS
 					t = @big_prime[re][2]
 					t = (d == t) ? a : d * t
 					big_prime_sup_2.push(re * t)
-					t = @big_prime[re][0].zip(f).map{|a, b| a + b}
+					t = @big_prime[re][0].zip(f).map{|e1, e2| e1 + e2}
 					t[1] += 4
 					factorization_2.push(t)
 				end

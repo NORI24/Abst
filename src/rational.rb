@@ -42,7 +42,7 @@ class Rational
 					quotient.last[1] = 0
 					break
 				end
-				break if quotient.map {|q, r| r}.include?(t)
+				break if quotient.map(&:last).include?(t)
 				quotient.last[1] = t
 			end
 
@@ -70,13 +70,11 @@ class Rational
 
 		convert = "0123456789abcdefghijklmnopqrstuvwxyz"
 		if 0 == quotient.last[1]
-			rslt += quotient.inject('') do |r, i|
-				r + convert[i[0]]
-			end
+			rslt += quotient.map{|q| convert[q[0]]}.inject(&:+)
 		else
-			quotient.each do |i|
-				rslt += convert[i[0]]
-				rslt += '(' if t == i[1]
+			quotient.each do |q|
+				rslt += convert[q[0]]
+				rslt += '(' if t == q[1]
 			end
 			rslt +=  ")"
 		end
@@ -130,8 +128,6 @@ class Rational
 		end
 
 		# format
-		rslt = "0."
-
 		zero_count = 0
 		while 0 == quotient[0][0]
 			zero_count += 1
@@ -147,15 +143,7 @@ class Rational
 		exp += n.size - zero_count
 
 		convert = "0123456789abcdefghijklmnopqrstuvwxyz"
-		if 0 == quotient.last[1]
-			rslt += quotient.inject('') do |r, i|
-				r + convert[i[0]]
-			end
-		else
-			quotient.each do |i|
-				rslt += convert[i[0]]
-			end
-		end
+		rslt = "0." + quotient.map{|q| convert[q[0]]}.inject(&:+)
 		rslt +=  "e" + exp.to_s unless 0 == exp
 
 		return rslt

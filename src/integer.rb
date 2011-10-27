@@ -110,7 +110,6 @@ class Integer
 
 		# trial division
 		limit = isqrt(n)
-		i = 1
 		(1...pl.size).each do |i|
 			d = pl[i]
 			return true if limit < d
