@@ -507,7 +507,6 @@ def mod_sqrt(n, p, exp = 1, return_list = false)
 			y = (n - x ** 2) / p_power * z % p
 			x += y * p_power
 			p_power *= p
-			x %= p_power
 			rslt.push(x) if return_list
 		end
 
