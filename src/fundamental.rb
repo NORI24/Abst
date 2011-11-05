@@ -48,7 +48,7 @@ def left_right_power(g, n, mod = nil)
 	while 0 != e
 		e -= 1
 
-		rslt *= rslt
+		rslt = rslt ** 2
 		rslt %= mod if mod
 
 		if 1 == n[e]
