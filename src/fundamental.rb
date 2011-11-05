@@ -21,7 +21,7 @@ def right_left_power(g, n, mod = nil)
 		n >>= 1
 		break if 0 == n
 
-		g *= g
+		g = g ** 2
 		g %= mod if mod
 	end
 
@@ -112,7 +112,7 @@ def left_right_base2k_power(g, n, mod = nil, k = nil)
 		# Multiply
 		if 0 == a
 			k.times do
-				rslt *= rslt
+				rslt = rslt ** 2
 				rslt %= mod if mod
 			end
 		else
@@ -121,13 +121,13 @@ def left_right_base2k_power(g, n, mod = nil, k = nil)
 			a >>= t if 0 < t
 
 			(k - t).times do
-				rslt *= rslt
+				rslt = rslt ** 2
 				rslt %= mod if mod
 			end
 			rslt *= z_powers[a]
 			rslt %= mod if mod
 			t.times do
-				rslt *= rslt
+				rslt = rslt ** 2
 				rslt %= mod if mod
 			end
 		end
