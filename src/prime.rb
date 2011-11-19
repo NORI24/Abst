@@ -455,7 +455,7 @@ def eratosthenes_sieve(n)
 	yield 3
 
 	# make list for sieve
-	sieve_len_max = (n + 1) / 2
+	sieve_len_max = (n + 1) >> 1
 	sieve = [true, false, true]
 	sieve_len = 3
 	k = 5
