@@ -471,7 +471,7 @@ def eratosthenes_sieve(n)
 				sieve += sieve[0...(sieve_len_max - sieve.size)]
 				sieve_len = sieve_len_max
 			else
-				sieve = sieve * k
+				sieve *= k
 			end
 
 			i.step(sieve_len, k) do |j|
