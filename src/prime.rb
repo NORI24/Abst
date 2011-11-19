@@ -474,7 +474,7 @@ def eratosthenes_sieve(n)
 				sieve *= k
 			end
 
-			i.step(sieve_len, k) do |j|
+			i.step(sieve_len - 1, k) do |j|
 				sieve[j] = false
 			end
 		end
@@ -484,10 +484,10 @@ def eratosthenes_sieve(n)
 	end
 
 	# sieve
-	limit = isqrt(n)
-	while k <= limit
+	limit = (isqrt(n) - 1) >> 1
+	while i <= limit
 		if sieve[i]
-			yield k
+			yield k = (i << 1) + 1
 			j = (k ** 2) >> 1
 			while j < sieve_len_max
 				sieve[j] = false
@@ -495,7 +495,6 @@ def eratosthenes_sieve(n)
 			end
 		end
 
-		k += 2
 		i += 1
 	end
 
