@@ -488,7 +488,7 @@ def eratosthenes_sieve(n)
 	while k <= limit
 		if sieve[i]
 			yield k
-			j = (k ** 2 - 1) >> 1
+			j = (k ** 2) >> 1
 			while j < sieve_len_max
 				sieve[j] = false
 				j += k
