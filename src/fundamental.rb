@@ -765,3 +765,32 @@ def bhaskara_brouncker(n)
 
 	return a1, b1
 end
+
+# primitive Pythagorean number
+# Param::  integer max_c
+# Return:: array of primitive Pythagorean numbers s.t. [[a, b, c], ...]
+#          a**2 + b**2 == c**2 and a < b < c <= max_c
+def pythagorean(max_c)
+	return [] if max_c <= 4
+
+	rslt = []
+	(1..isqrt(max_c - 1)).each do |m|
+		mm = m ** 2
+		s = m.even? ? 1 : 2
+		s.step(m - 1, 2) do |n|
+			next unless gcd(m, n) == 1
+
+			nn = n ** 2
+			c = mm + nn
+			break if max_c < c
+
+			a = mm - nn
+			b = (m * n) << 1
+			a, b = b, a if b < a
+
+			rslt.push([a, b, c])
+		end
+	end
+
+	return rslt
+end

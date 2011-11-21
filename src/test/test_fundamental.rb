@@ -339,4 +339,25 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal([29718, 3805], bhaskara_brouncker(61))
 		assert_equal([8890182, 851525], bhaskara_brouncker(109))
 	end
+
+	def test_pythagorean
+		assert_equal(0, pythagorean(-1).size)
+		assert_equal(0, pythagorean(0).size)
+		assert_equal(0, pythagorean(1).size)
+		assert_equal(0, pythagorean(4).size)
+		assert_equal(1, pythagorean(5).size)
+		assert_equal(16, pythagorean(100).size)
+		assert_equal(1593, pythagorean(10000).size)
+
+		10.times do
+			max_c = rand(10 ** 5)
+			rslt = pythagorean(max_c)
+			if rslt.empty?
+				assert(max_c <= 4)
+			else
+				a, b, c = rslt.sample
+				assert(a ** 2 + b ** 2 == c ** 2)
+			end
+		end
+	end
 end
