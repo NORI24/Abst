@@ -453,13 +453,13 @@ end
 # Return:: primitive root modulo p
 def primitive_root(p)
 	p_m1 = p - 1
-	factor = factorize(p_m1).map(&:first)
+	check_order = factorize(p_m1).map{|f| p_m1 / f.first}
 
 	a = 2
 	loop do
 		check = true
-		factor.each do |f|
-			if 1 == power(a, p_m1 / f, p)
+		check_order.each do |e|
+			if 1 == power(a, e, p)
 				check = false
 				break
 			end
