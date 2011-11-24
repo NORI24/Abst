@@ -319,10 +319,10 @@ def p_minus_1(n, bound = 10_000, m = 2)
 end
 
 # Param::  integer n
-# Return:: factorization of n s.t. [[a, b], [c, d], ...], n == a**b * c**d * ...
-#          if n == -1 or 0 or 1 then return [[n, 1]].
+# Return:: prime factorization of n s.t. [[p_1, e_1], [p_2, e_2], ...]
+#          n == p_1**e_1 * p_2**e_2 * ... (p_1 < p_2 < ...)
+#          if |n| <= 1 then return [[n, 1]].
 #          if n < 0 then [-1, 1] is added as a factor.
-#          otherwise find prime factors.
 def factorize(n)
 	if n <= 1
 		return [[n, 1]] if -1 <= n
