@@ -332,7 +332,7 @@ def factorize(n)
 		factor = []
 	end
 
-	found_factor, n = trial_division(n, td_lim = 100_000)
+	found_factor, n = trial_division(n, td_lim = 10_000)
 	factor += found_factor
 	td_lim_square = td_lim ** 2
 
@@ -389,23 +389,6 @@ def factorize(n)
 		end
 		s = rand(n)
 		f = pollard_rho(n, c, s, 10_000)
-		break unless f
-
-		# f is prime?
-		n /= f
-		if f <= td_lim_square or prime?(f)
-			f = divide.call([[f, 1]])
-		else
-			f = divide.call(factorize(f))
-		end
-
-		factor = merge.call(factor, f)
-		check_finish.call
-	end
-
-	# p_minus_1
-	loop do
-		f = p_minus_1(n, 10_000)
 		break unless f
 
 		# f is prime?
