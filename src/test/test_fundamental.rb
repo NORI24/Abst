@@ -140,6 +140,15 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal([[0, 1], [5, 12]], continued_fraction(5, 6, 12, 13))
 	end
 
+	def test_primitive_root
+		assert_equal(2, primitive_root(3))
+		assert_equal(2, primitive_root(5))
+		assert_equal(3, primitive_root(7))
+		assert_equal(2, primitive_root(11))
+		assert_equal(2, primitive_root(13))
+		assert_equal(3, primitive_root(17))
+	end
+
 	def test_kronecker_symbol
 		assert_equal(1, kronecker_symbol(-1, 0))
 		assert_equal(1, kronecker_symbol(1, 0))
@@ -350,7 +359,7 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(1593, pythagorean(10000).size)
 
 		10.times do
-			max_c = rand(10 ** 5)
+			max_c = rand(10 ** 4)
 			rslt = pythagorean(max_c)
 			if rslt.empty?
 				assert(max_c <= 4)

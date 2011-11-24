@@ -449,6 +449,27 @@ def continued_fraction(a, b, a_, b_)
 	return rslt, [q, q_]
 end
 
+# Param::  odd prime p
+# Return:: primitive root modulo p
+def primitive_root(p)
+	p_m1 = p - 1
+	factor = factorize(p_m1).map(&:first)
+
+	a = 2
+	loop do
+		check = true
+		factor.each do |f|
+			if 1 == power(a, p_m1 / f, p)
+				check = false
+				break
+			end
+		end
+
+		return a if check
+		a += 1
+	end
+end
+
 # Param::  integer n, m
 # Return:: kronecker symbol (n|m)
 def kronecker_symbol(n, m)
