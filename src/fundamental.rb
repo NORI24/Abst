@@ -455,7 +455,8 @@ def primitive_root(p)
 	p_m1 = p - 1
 	check_order = factorize(p_m1)
 	check_order.shift
-	check_order.map!{|f| p_m1 / f.first}
+	half_p_m1 = p_m1 >> 1
+	check_order.map!{|f| half_p_m1 / f.first}
 
 	a = 1
 	loop do
@@ -464,7 +465,7 @@ def primitive_root(p)
 		next unless -1 == kronecker_symbol(a, p)
 		check = true
 		check_order.each do |e|
-			if 1 == power(a, e, p)
+			if p_m1 == power(a, e, p)
 				check = false
 				break
 			end

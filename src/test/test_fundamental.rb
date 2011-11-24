@@ -147,6 +147,12 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(2, primitive_root(11))
 		assert_equal(2, primitive_root(13))
 		assert_equal(3, primitive_root(17))
+		assert_equal(2, primitive_root(19))
+		assert_equal(5, primitive_root(23))
+		assert_equal(2, primitive_root(29))
+		assert_equal(3, primitive_root(31))
+		assert_equal(2, primitive_root(37))
+		assert_equal(6, primitive_root(41))
 	end
 
 	def test_kronecker_symbol
