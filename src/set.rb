@@ -4,10 +4,10 @@ class Set
 	end
 
 	def add(a)
-		return self if @set.include?(a)
-		@set.push(a)
-		@set.sort!
+		i = Bisect.bisect_left(@set, a)
+		return self if @set[i] == a
 
+		@set.insert(i, a)
 		return self
 	end
 
