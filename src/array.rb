@@ -1,10 +1,12 @@
 class Array
 	def each_coefficient(init = nil)
+		return Enumerator.new(self, :each_coefficient, init) unless block_given?
+
 		init = Array.new(self.size, 0) unless init
-		current = init
+		current = init.dup
 
 		loop do
-			yield current
+			yield current.dup
 
 			# next coef
 			self.size.times do |i|
