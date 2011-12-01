@@ -432,7 +432,7 @@ def eratosthenes_sieve(n)
 
 	return if n < 2
 
-	yield(2)
+	yield 2
 	return if 2 == n
 
 	yield 3
@@ -484,7 +484,7 @@ def eratosthenes_sieve(n)
 	# output result
 	limit = (n - 1) >> 1
 	while i <= limit
-		yield((i << 1) + 1) if sieve[i]
+		yield (i << 1) + 1 if sieve[i]
 		i += 1
 	end
 end
@@ -511,13 +511,13 @@ class Range
 			a = Bisect.bisect_left(primes, first)
 			(a...primes.size).each do |i|
 				return if max < primes[i]
-				yield(primes[i])
+				yield primes[i]
 			end
 		end
 
 		s = primes.last + 2
 		s.step(max, 2) do |i|
-			yield(i) if prime?(i)
+			yield i if prime?(i)
 		end
 	end
 end
