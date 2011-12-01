@@ -1,6 +1,6 @@
 class Set
 	def initialize(ary)
-		@set = ary
+		@set = ary.sort
 	end
 
 	def add(a)
