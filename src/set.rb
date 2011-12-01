@@ -15,12 +15,20 @@ class Set
 		return @set == other.to_a
 	end
 
-	def to_a
-		return @set
+	def each(&block)
+		@set.each(&block)
+	end
+
+	def size
+		@set.size
 	end
 
 	def inspect
 		str = @set.inspect[1..-2]
 		return "{" + str + "}"
+	end
+
+	def to_a
+		return @set
 	end
 end
