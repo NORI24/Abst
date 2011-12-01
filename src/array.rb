@@ -18,4 +18,8 @@ class Array
 			end
 		end
 	end
+
+	def to_set
+		return Set.new(self)
+	end
 end
