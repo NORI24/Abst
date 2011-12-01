@@ -11,6 +11,7 @@ require ABST_ROOT + 'config'
 require ABST_ROOT + 'bisect'
 require ABST_ROOT + 'cache'
 
+require ABST_ROOT + 'array'
 require ABST_ROOT + 'combination'
 require ABST_ROOT + 'complex'
 require ABST_ROOT + 'float'
