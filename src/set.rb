@@ -18,4 +18,9 @@ class Set
 	def to_a
 		return @set
 	end
+
+	def inspect
+		str = @set.inspect[1..-2]
+		return "{" + str + "}"
+	end
 end
