@@ -21,7 +21,8 @@ class Array
 		end
 	end
 
-	def to_set
+	def to_set(sortable = true, &compare)
+		return SortableSet.new(self, &compare) if sortable
 		return Set.new(self)
 	end
 end
