@@ -42,7 +42,7 @@ end
 class SortableSet < Set
 	def initialize(ary = [], &compare)
 		@set = ary.uniq.sort(&compare)
-		@compare = block_given? ? compare : :<=>.to_proc
+		@compare = compare
 	end
 
 	def add(a)
