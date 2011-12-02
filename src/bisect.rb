@@ -1,32 +1,52 @@
 module Bisect
 	module_function
 
-	def bisect_left(list, item, lo = 0, hi = list.size, &compare)
-		compare = :<=>.to_proc unless block_given?
+	def bisect_left(list, item, lo = 0, hi = list.size)
+		if block_given?
+			while lo < hi
+				i = (lo + hi - 1) >> 1
 
-		while lo < hi
-			i = (lo + hi - 1) >> 1
+				if 0 <= yield(list[i], item)
+					hi = i
+				else
+					lo = i + 1
+				end
+			end
+		else
+			while lo < hi
+				i = (lo + hi - 1) >> 1
 
-			if 0 <= compare.call(list[i], item)
-				hi = i
-			else
-				lo = i + 1
+				if 0 <= (list[i] <=> item)
+					hi = i
+				else
+					lo = i + 1
+				end
 			end
 		end
 
 		return hi
 	end
 
-	def bisect_right(list, item, lo = 0, hi = list.size, &compare)
-		compare = :<=>.to_proc unless block_given?
+	def bisect_right(list, item, lo = 0, hi = list.size)
+		if block_given?
+			while lo < hi
+				i = (lo + hi - 1) >> 1
 
-		while lo < hi
-			i = (lo + hi - 1) >> 1
+				if 0 < yield(list[i], item)
+					hi = i
+				else
+					lo = i + 1
+				end
+			end
+		else
+			while lo < hi
+				i = (lo + hi - 1) >> 1
 
-			if 0 < compare.call(list[i], item)
-				hi = i
-			else
-				lo = i + 1
+				if 0 < (list[i] <=> item)
+					hi = i
+				else
+					lo = i + 1
+				end
 			end
 		end
 
