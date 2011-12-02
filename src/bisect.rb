@@ -53,12 +53,12 @@ module Bisect
 		return lo
 	end
 
-	def insort_left(list, item, lo = 0, hi = list.size, &block)
+	def insert_left(list, item, lo = 0, hi = list.size, &block)
 		i = bisect_left(list, item, lo, hi, &block)
 		list.insert(i, item)
 	end
 
-	def insort_right(list, item, lo = 0, hi = list.size, &block)
+	def insert_right(list, item, lo = 0, hi = list.size, &block)
 		i = bisect_right(list, item, lo, hi, &block)
 		list.insert(i, item)
 	end
