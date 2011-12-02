@@ -25,6 +25,10 @@ class Set
 		@set.size
 	end
 
+	def dup
+		self.class.new(@set.dup)
+	end
+
 	def include?(a)
 		@set.include?(a)
 	end
@@ -49,5 +53,9 @@ class SortableSet < Set
 		i = Bisect.bisect_left(@set, a, &@compare)
 		@set.insert(i, a) unless @set[i] == a
 		return self
+	end
+
+	def dup
+		self.class.new(@set.dup, &@compare)
 	end
 end
