@@ -1,5 +1,5 @@
 class Set
-	def initialize(ary)
+	def initialize(ary = [])
 		@set = ary.uniq
 	end
 
@@ -40,7 +40,7 @@ class Set
 end
 
 class SortableSet < Set
-	def initialize(ary, &compare)
+	def initialize(ary = [], &compare)
 		@set = ary.uniq.sort(&compare)
 		@compare = block_given? ? compare : :<=>.to_proc
 	end
