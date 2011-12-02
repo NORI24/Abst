@@ -1,13 +1,11 @@
 class Set
 	def initialize(ary)
-		@set = ary.sort
+		@set = ary.uniq.sort
 	end
 
 	def add(a)
 		i = Bisect.bisect_left(@set, a)
-		return self if @set[i] == a
-
-		@set.insert(i, a)
+		@set.insert(i, a) unless @set[i] == a
 		return self
 	end
 
