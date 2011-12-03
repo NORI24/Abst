@@ -32,7 +32,7 @@ class Cache
 	def self.get_path(cache_id)
 		cache_id = cache_id.to_s
 		unless /^[a-z0-9_]+$/ =~ cache_id
-			raise ArgumentError, "Invalid cache_id. (a-z 0-9 and _ are available)"
+			raise ArgumentError, "Invalid cache_id. (Only a-z 0-9 and _ are available)"
 		end
 
 		return CACHE_DIR + @@prefix + cache_id
