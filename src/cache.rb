@@ -11,18 +11,8 @@ class Cache
 	def self.[](cache_id)
 		path = get_path(cache_id)
 
-		if FileTest.exist?(path)
-			open(path) {|io| return Marshal.load(io)}
-		end
-
-		unless block_given?
-			raise RuntimeError, "There is no cache data '#{cache_id}'"
-		end
-
-		data = yield
-		save(cache_id, data)
-
-		return data
+		return nil unless FileTest.exist?(path)
+		open(path) {|io| return Marshal.load(io)}
 	end
 
 	def self.delete(cache_id)
@@ -40,7 +30,10 @@ class Cache
 	end
 
 	def self.get_path(cache_id)
-		raise ArgumentError, "Invalid cache_id. (a-z 0-9 and _ are available)" unless /[a-z0-9_]+/ =~ cache_id
+		cache_id = cache_id.to_s
+		unless /[a-z0-9_]+/ =~ cache_id
+			raise ArgumentError, "Invalid cache_id. (a-z 0-9 and _ are available)"
+		end
 
 		return CACHE_DIR + @@prefix + cache_id
 	end
