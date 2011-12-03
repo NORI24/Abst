@@ -1,10 +1,18 @@
 class Cache
-	@@prefix = 'abst_cache_'
+	PREFIX = 'abst_cache_'
+	CACHE_DIR = CACHE_DIR
+
+	def self.mkdir(dir)
+		pdir = File.dirname(dir)
+		mkdir(pdir) unless FileTest.exist?(pdir)
+		Dir::mkdir(dir)
+	end
 
 	def self.[]=(cache_id, data)
 		path = get_path(cache_id)
+		dir = File.dirname(path)
 
-		Dir::mkdir(CACHE_DIR) unless FileTest.exist?(CACHE_DIR)
+		mkdir(dir) unless FileTest.exist?(dir)
 		open(path, "w") {|io| Marshal.dump(data, io)}
 	end
 
@@ -35,6 +43,11 @@ class Cache
 			raise ArgumentError, "Invalid cache_id. (Only a-z 0-9 and _ are available)"
 		end
 
-		return CACHE_DIR + @@prefix + cache_id
+		return self::CACHE_DIR + self::PREFIX + cache_id
 	end
+end
+
+class SystemCache < Cache
+	PREFIX = ''
+	CACHE_DIR = DATA_DIR
 end
