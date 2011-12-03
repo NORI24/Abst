@@ -31,7 +31,7 @@ class Cache
 
 	def self.get_path(cache_id)
 		cache_id = cache_id.to_s
-		unless /[a-z0-9_]+/ =~ cache_id
+		unless /^[a-z0-9_]+$/ =~ cache_id
 			raise ArgumentError, "Invalid cache_id. (a-z 0-9 and _ are available)"
 		end
 
