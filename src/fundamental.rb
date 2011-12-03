@@ -797,6 +797,7 @@ end
 # Return:: array of primitive Pythagorean numbers s.t. [[a, b, c], ...]
 #          a**2 + b**2 == c**2 and a < b < c <= max_c
 def pythagorean(max_c)
+	return Enumerator.new(self, :pythagorean, max_c) unless block_given?
 	return [] if max_c <= 4
 
 	rslt = []
@@ -814,7 +815,7 @@ def pythagorean(max_c)
 			b = (m * n) << 1
 			a, b = b, a if b < a
 
-			rslt.push([a, b, c])
+			yield [a, b, c]
 		end
 	end
 

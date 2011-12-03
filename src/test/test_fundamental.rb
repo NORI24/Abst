@@ -356,17 +356,17 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_pythagorean
-		assert_equal(0, pythagorean(-1).size)
-		assert_equal(0, pythagorean(0).size)
-		assert_equal(0, pythagorean(1).size)
-		assert_equal(0, pythagorean(4).size)
-		assert_equal(1, pythagorean(5).size)
-		assert_equal(16, pythagorean(100).size)
-		assert_equal(1593, pythagorean(10000).size)
+		assert_equal(0, pythagorean(-1).to_a.size)
+		assert_equal(0, pythagorean(0).to_a.size)
+		assert_equal(0, pythagorean(1).to_a.size)
+		assert_equal(0, pythagorean(4).to_a.size)
+		assert_equal(1, pythagorean(5).to_a.size)
+		assert_equal(16, pythagorean(100).to_a.size)
+		assert_equal(1593, pythagorean(10000).to_a.size)
 
 		10.times do
 			max_c = rand(10 ** 4)
-			rslt = pythagorean(max_c)
+			rslt = pythagorean(max_c).to_a
 			if rslt.empty?
 				assert(max_c <= 4)
 			else
