@@ -21,7 +21,7 @@ class Cache
 		File.delete(path) if FileTest.exist?(path)
 	end
 
-	def self.delete_all
+	def self.clear
 		raise NotImplementedError
 	end
 
