@@ -116,7 +116,7 @@ class MPQS
 
 		@power_limit = Array.new(@factor_base_size)
 		@mod_sqrt_cache = Array.new(@factor_base_size)
-		(2...@factor_base_size).each do |i|
+		2.upto(@factor_base_size - 1) do |i|
 			p = @factor_base[i]
 			@power_limit[i] = (@factor_base_log.last / @factor_base_log[i]).floor
 			@mod_sqrt_cache[i] = [nil] + mod_sqrt(@n, p, @power_limit[i], true)
@@ -155,7 +155,7 @@ class MPQS
 					y = y * big_prime_sup[i] % @n
 				end
 
-				(2...@factor_base_size).each do |i|
+				2.upto(@factor_base_size - 1) do |i|
 					y = y * power(@factor_base[i], f[i] >> 1, @n) % @n
 				end
 				y = (y << (f[1] >> 1)) % @n
@@ -202,15 +202,15 @@ class MPQS
 		sieve = Array.new(@sieve_range_2, 0)
 
 		# Sieve by 2
-#		(0...@sieve_range_2).each do |i|
+#		0.upto(@sieve_range_2 - 1) do |i|
 #			count = 1
 #			count += 1 while sieve[i][2][count] == 0
 #			sieve[i][1] += @factor_base_log[1] * count
 #		end
 
 		# Sieve by 3, 5, 7, 11, ...
-#		(2...@factor_base_size).each do |i|
-		(4...@factor_base_size).each do |i|
+#		2.upto(@factor_base_size - 1) do |i|
+		4.upto(@factor_base_size - 1) do |i|
 			p = @factor_base[i]
 			a_inverse = extended_lehmer_gcd(a2, p ** @power_limit[i])[0]
 			pe = 1
@@ -307,7 +307,7 @@ class MPQS
 			unless @check_list[j]
 				# Find non-zero entry
 				row = nil
-				(elim_start...height).each do |i2|
+				elim_start.upto(height - 1) do |i2|
 					if 1 == m[i2][j]
 						row = i2
 						break
@@ -328,11 +328,11 @@ class MPQS
 
 			# Eliminate
 			m_i = m[i]
-			((row ? (row + 1) : elim_start)...height).each do |i2|
+			(row ? (row + 1) : elim_start).upto(height - 1) do |i2|
 				next if m[i2][j] == 0
 
 				m_i2 = m[i2]
-				((j + 1)...width).each do |j2|
+				(j + 1).upto(width - 1) do |j2|
 					m_i2[j2] ^= 1 if 1 == m_i[j2]
 				end
 				rslt[i2] ^= rslt[i]
