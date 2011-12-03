@@ -803,7 +803,7 @@ def pythagorean(max_c)
 	(1..isqrt(max_c - 1)).each do |m|
 		mm = m ** 2
 		s = m.even? ? 1 : 2
-		s.step(m - 1, 2) do |n|
+		s.step(m, 2) do |n|
 			next unless gcd(m, n) == 1
 
 			nn = n ** 2
