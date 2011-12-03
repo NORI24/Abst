@@ -800,7 +800,7 @@ def pythagorean(max_c)
 	return Enumerator.new(self, :pythagorean, max_c) unless block_given?
 	return [] if max_c <= 4
 
-	(1..isqrt(max_c - 1)).each do |m|
+	1.upto(isqrt(max_c - 1)) do |m|
 		mm = m ** 2
 		s = m.even? ? 1 : 2
 		s.step(m, 2) do |n|
