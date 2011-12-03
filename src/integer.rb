@@ -19,7 +19,7 @@ class Integer
 	# Param::  non-negative integer self
 	# Return:: factorial self!
 	def factorial
-		return (2..self).inject(1) {|r, i| r * i}
+		return 2.upto(self).inject(1) {|r, i| r * i}
 	end
 
 	def combination(r)
@@ -31,7 +31,7 @@ class Integer
 		end
 
 		rslt = self
-		(2..r).each do |i|
+		2.upto(r) do |i|
 			rslt = rslt * (self - i + 1) / i
 		end
 
@@ -110,7 +110,7 @@ class Integer
 
 		# trial division
 		limit = isqrt(n)
-		(1...pl.size).each do |i|
+		1.upto(pl.size - 1).each do |i|
 			d = pl[i]
 			return true if limit < d
 
