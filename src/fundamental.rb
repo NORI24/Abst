@@ -818,3 +818,29 @@ def pythagorean(max_c)
 		end
 	end
 end
+
+# Param::  Integer base (2 <= base < p)
+#          Integer m (2 <= m < p)
+#          prime p
+# Return:: Integer e s.t. base ** e == m (mod p)
+def dlog_rho(base, m, p)
+
+end
+
+# Param::  Integer base (2 <= base < p)
+#          Integer m (2 <= m < p)
+#          prime p
+# Return:: Integer e s.t. base ** e == m (mod p)
+def dlog_icm(base, m, p)
+	# Select factor base
+
+	# Select smooth elements on factor base
+
+	# Solve DL of factor base for base
+
+	# Find smooth element h s.t. h == m * base ** f where f is integer
+
+	# Solve DL of h for factor base
+
+
+end
