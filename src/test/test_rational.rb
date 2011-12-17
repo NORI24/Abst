@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'abst'
+require 'ant'
 
 class TC_Rational < Test::Unit::TestCase
 	def test_to_rds

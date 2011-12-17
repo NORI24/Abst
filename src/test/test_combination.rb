@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'abst'
+require 'ant'
 
 class TC_Combination < Test::Unit::TestCase
 end

@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'abst'
+require 'ant'
 
 class TC_PrimeMPQS < Test::Unit::TestCase
 	def test_primes_list

@@ -1,5 +1,5 @@
 class Cache
-	PREFIX = 'abst_cache_'
+	PREFIX = 'ant_cache_'
 	CACHE_DIR = CACHE_DIR
 
 	def self.mkdir(dir)

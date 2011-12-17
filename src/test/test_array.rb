@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'abst'
+require 'ant'
 
 class TC_Array < Test::Unit::TestCase
 	def test_each_coefficient

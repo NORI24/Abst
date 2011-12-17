@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'abst'
+require 'ant'
 
 class TC_Float < Test::Unit::TestCase
 	def test_to_fs
