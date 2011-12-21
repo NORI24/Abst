@@ -49,11 +49,6 @@ class MPQS
 		[50000, 3200],	# 52
 		[50000, 3500]]	# 53
 
-	@@proc_time = Hash.new(0)
-	def self.get_times
-		return @@proc_time
-	end
-
 	def self.kronecker_table
 		unless @@kronecker_table
 			target = [3, 5, 7, 11, 13]
