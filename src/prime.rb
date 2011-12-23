@@ -484,7 +484,7 @@ def eratosthenes_sieve(n)
 	# output result
 	limit = (n - 1) >> 1
 	while i <= limit
-		yield (i << 1) + 1 if sieve[i]
+		yield((i << 1) + 1) if sieve[i]
 		i += 1
 	end
 end

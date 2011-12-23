@@ -405,7 +405,7 @@ def chinese_remainder_theorem(list)
 	x, m = list.shift
 
 	list.each do |xi, mi|
-		u, v, d = extended_gcd(m, mi)
+		u, v, = extended_gcd(m, mi)
 		x = u * m * xi + v * mi * x
 		m *= mi
 		x %= m
