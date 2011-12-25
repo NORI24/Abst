@@ -88,7 +88,7 @@ class Integer
 		end
 
 		q = isqrt(self)
-		return false if q ** 2 != self
+		return false unless q ** 2 == self
 
 		return q
 	end
@@ -183,9 +183,5 @@ class Integer
 		return false unless 0 == r
 
 		return q
-	end
-
-	def cube?
-		raise NotImplementedError
 	end
 end
