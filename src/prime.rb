@@ -319,48 +319,31 @@ def p_minus_1(n, bound = 10_000, m = 2)
 end
 
 # Param::  integer n
+#          boolean return_hash
 # Return:: prime factorization of n s.t. [[p_1, e_1], [p_2, e_2], ...]
 #          n == p_1**e_1 * p_2**e_2 * ... (p_1 < p_2 < ...)
 #          if |n| <= 1 then return [[n, 1]].
 #          if n < 0 then [-1, 1] is added as a factor.
-def factorize(n)
+def factorize(n, return_hash = false)
+	unless return_hash
+		return factorize(n, true).to_a
+	end
+
+	factor = Hash.new(0)
 	if n <= 1
-		return [[n, 1]] if -1 <= n
+		return {n => 1} if -1 <= n
 		n = -n
-		factor = [[-1, 1]]
-	else
-		factor = []
+		factor[-1] = 1
 	end
 
 	found_factor, n = trial_division(n, td_lim = 10_000)
-	factor += found_factor
+	found_factor.each {|k, v| factor[k] += v}
 	td_lim_square = td_lim ** 2
-
-	merge = proc do |f1, f2|
-		next f2 if f1.empty?
-
-		insert_pos = 0
-		until f2.empty?
-			d, e = f2.first
-			insert_pos = Bisect.bisect_left(f1.map(&:first), d, insert_pos)
-			break if f1.size <= insert_pos
-
-			if f1[insert_pos][0] == d
-				f1[insert_pos][1] += e
-				f2.shift
-			else
-				f1.insert(insert_pos, f2.shift)
-			end
-			insert_pos += 1
-		end
-
-		next f1 + f2
-	end
 
 	check_finish = proc do
 		if n <= td_lim_square or prime?(n)
-			return factor if 1 == n
-			return merge.call(factor, [[n, 1]])
+			factor[n] += 1 unless 1 == n
+			return factor
 		end
 	end
 
@@ -399,7 +382,7 @@ def factorize(n)
 			f = divide.call(factorize(f))
 		end
 
-		factor = merge.call(factor, f)
+		f.each {|k, v| factor[k] += v}
 		check_finish.call
 	end
 
@@ -416,7 +399,7 @@ def factorize(n)
 			f = divide.call(factorize(f))
 		end
 
-		factor = merge.call(factor, f)
+		f.each {|k, v| factor[k] += v}
 		check_finish.call
 	end
 
