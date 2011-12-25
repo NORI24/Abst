@@ -184,4 +184,8 @@ class Integer
 
 		return q
 	end
+
+	def cube?
+		raise NotImplementedError
+	end
 end
