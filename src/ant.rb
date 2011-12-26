@@ -6,7 +6,7 @@ require_relative 'include/compatibility'
 BASE_BYTE = 1.size
 INFINITY = Float::INFINITY
 
-require_relative 'include/config'
+require_relative 'ant_config'
 
 require_relative 'include/bisect'
 require_relative 'include/cache'
