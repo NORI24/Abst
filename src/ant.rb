@@ -1,27 +1,27 @@
-ABST_ROOT = File.dirname(__FILE__) + '/'
+ANT_ROOT = File.dirname(__FILE__) + '/'
 
-require_relative 'compatibility'
+require_relative 'include/compatibility'
 
 # Integer block byte size
 BASE_BYTE = 1.size
 INFINITY = Float::INFINITY
 
-require_relative 'config'
+require_relative 'include/config'
 
-require_relative 'bisect'
-require_relative 'cache'
+require_relative 'include/bisect'
+require_relative 'include/cache'
 
-require_relative 'array'
-require_relative 'combination'
-require_relative 'complex'
-require_relative 'float'
-require_relative 'fundamental'
-require_relative 'integer'
-require_relative 'polynomial'
-require_relative 'prime'
-require_relative 'prime_mpqs'
-require_relative 'rational'
-require_relative 'sequence'
-require_relative 'set'
-require_relative 'vector'
-require_relative 'matrix'
+require_relative 'include/array'
+require_relative 'include/combination'
+require_relative 'include/complex'
+require_relative 'include/float'
+require_relative 'include/fundamental'
+require_relative 'include/integer'
+require_relative 'include/polynomial'
+require_relative 'include/prime'
+require_relative 'include/prime_mpqs'
+require_relative 'include/rational'
+require_relative 'include/sequence'
+require_relative 'include/set'
+require_relative 'include/vector'
+require_relative 'include/matrix'
