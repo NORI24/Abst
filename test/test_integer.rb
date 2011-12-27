@@ -56,9 +56,9 @@ class TC_Fundamental < Test::Unit::TestCase
 
 		10.times do
 			n = rand(10 ** 10) + 1
-			square = n ** 2
-			assert_equal(n, square.square?)
-			assert_equal(false, (square + 1).square?)
+			n_2 = n ** 2
+			assert_equal(n, n_2.square?)
+			assert_equal(false, (n_2 + 1).square?)
 		end
 	end
 
