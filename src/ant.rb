@@ -1,10 +1,12 @@
-ANT_ROOT = File.dirname(__FILE__) + '/'
-
 require_relative 'include/compatibility'
 
-# Integer block byte size
-BASE_BYTE = 1.size
-INFINITY = Float::INFINITY
+module ANT
+	ANT_ROOT = File.dirname(__FILE__) + '/'
+
+	# Integer block byte size
+	BASE_BYTE = 1.size
+	INFINITY = Float::INFINITY
+end
 
 require_relative 'ant_config'
 
