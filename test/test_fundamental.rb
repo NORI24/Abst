@@ -3,31 +3,31 @@ require 'ant'
 
 class TC_Fundamental < Test::Unit::TestCase
 	def test_right_left_power
-		assert_equal(1, right_left_power(5, 0))
-		assert_equal(1024, right_left_power(2, 10))
-		assert_equal(24, right_left_power(2, 10, 100))
+		assert_equal(1, ANT.right_left_power(5, 0))
+		assert_equal(1024, ANT.right_left_power(2, 10))
+		assert_equal(24, ANT.right_left_power(2, 10, 100))
 		# Float
-		assert_equal(1.0 / 1024, right_left_power(2.0, -10))
+		assert_equal(1.0 / 1024, ANT.right_left_power(2.0, -10))
 		# Rational
-		assert_equal(Rational(1024, 59049), right_left_power(Rational(2, 3), 10))
-		assert_equal(Rational(59049, 1024), right_left_power(Rational(2, 3), -10))
+		assert_equal(Rational(1024, 59049), ANT.right_left_power(Rational(2, 3), 10))
+		assert_equal(Rational(59049, 1024), ANT.right_left_power(Rational(2, 3), -10))
 		# Complex
-		assert_equal(Complex('1/32i'), right_left_power(Complex('1/2+1/2i'), 10))
-		assert_equal(Complex('-32i'), right_left_power(Complex('1/2+1/2i'), -10))
+		assert_equal(Complex('1/32i'), ANT.right_left_power(Complex('1/2+1/2i'), 10))
+		assert_equal(Complex('-32i'), ANT.right_left_power(Complex('1/2+1/2i'), -10))
 	end
 
 	def test_left_right_power
-		assert_equal(1, left_right_power(5, 0))
-		assert_equal(1024, left_right_power(2, 10))
-		assert_equal(24, left_right_power(2, 10, 100))
+		assert_equal(1, ANT.left_right_power(5, 0))
+		assert_equal(1024, ANT.left_right_power(2, 10))
+		assert_equal(24, ANT.left_right_power(2, 10, 100))
 		# Float
-		assert_equal(1.0 / 1024, left_right_power(2.0, -10))
+		assert_equal(1.0 / 1024, ANT.left_right_power(2.0, -10))
 		# Rational
-		assert_equal(Rational(1024, 59049), left_right_power(Rational(2, 3), 10))
-		assert_equal(Rational(59049, 1024), left_right_power(Rational(2, 3), -10))
+		assert_equal(Rational(1024, 59049), ANT.left_right_power(Rational(2, 3), 10))
+		assert_equal(Rational(59049, 1024), ANT.left_right_power(Rational(2, 3), -10))
 		# Complex
-		assert_equal(Complex('1/32i'), left_right_power(Complex('1/2+1/2i'), 10))
-		assert_equal(Complex('-32i'), left_right_power(Complex('1/2+1/2i'), -10))
+		assert_equal(Complex('1/32i'), ANT.left_right_power(Complex('1/2+1/2i'), 10))
+		assert_equal(Complex('-32i'), ANT.left_right_power(Complex('1/2+1/2i'), -10))
 	end
 
 	def test_left_right_base2k_power
@@ -127,6 +127,14 @@ class TC_Fundamental < Test::Unit::TestCase
 			assert_equal(gcd(a, b), d)
 			assert_equal(d, a * u + b * v)
 		end
+	end
+
+	def test_inverse
+		assert_equal(1, ANT.inverse(1, 3))
+		assert_equal(2, ANT.inverse(2, 3))
+		assert_equal(4, ANT.inverse(2, 7))
+		assert_equal(14, ANT.inverse(11, 17))
+		assert_equal(14, ANT.inverse(-6, 17))
 	end
 
 	def test_chinese_remainder_theorem
