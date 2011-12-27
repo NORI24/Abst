@@ -87,7 +87,7 @@ class Integer
 			return false unless check[c][r % c]
 		end
 
-		q = isqrt(self)
+		q = ANT.isqrt(self)
 		return false unless q ** 2 == self
 
 		return q
