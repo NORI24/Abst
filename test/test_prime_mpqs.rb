@@ -4,7 +4,7 @@ require 'ant'
 class TC_PrimeMPQS < Test::Unit::TestCase
 	def test_primes_list
 		test = proc do |n|
-			factor = mpqs(n)
+			factor = ANT.mpqs(n)
 			assert(1 < factor && factor < n)
 			assert_equal(0, n % factor)
 		end
