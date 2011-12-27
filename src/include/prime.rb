@@ -332,14 +332,15 @@ module ANT
 		found_factor.each {|k, v| factor[k] += v}
 		td_lim_square = td_lim ** 2
 
-		check_finish = proc do
+		check_finish = lambda do
 			if n <= td_lim_square or prime?(n)
 				factor[n] += 1 unless 1 == n
-				return factor
+				return true
 			end
+			return false
 		end
 
-		divide = proc do |f|
+		divide = lambda do |f|
 			f.size.times do |i|
 				d = f[i][0]
 				loop do
@@ -350,10 +351,10 @@ module ANT
 				end
 			end
 
-			next f
+			return f
 		end
 
-		check_finish.call
+		return factor if check_finish.call
 
 		# pollard_rho
 		loop do
@@ -375,7 +376,7 @@ module ANT
 			end
 
 			f.each {|k, v| factor[k] += v}
-			check_finish.call
+			return factor if check_finish.call
 		end
 
 		# MPQS
