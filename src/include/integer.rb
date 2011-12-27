@@ -8,7 +8,7 @@ class Integer
 	end
 
 	def bit_size
-		return ilog2(self) + 1
+		return ANT.ilog2(self) + 1
 	end
 
 	# Return:: formatted string
@@ -19,7 +19,7 @@ class Integer
 	# Param::  non-negative integer self
 	# Return:: factorial self!
 	def factorial
-		return 2.upto(self).inject(1) {|r, i| r * i}
+		return 2.upto(self).inject(1, &:*)
 	end
 
 	def combination(r)
