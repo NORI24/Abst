@@ -138,7 +138,7 @@ module ANT
 		factor = []
 		lim = [limit, isqrt(n)].min
 
-		divide = proc do |d|
+		divide = lambda do |d|
 			n /= d
 			div_count = 1
 			loop do

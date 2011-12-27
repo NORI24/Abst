@@ -222,7 +222,7 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_cornacchia
-		test = proc do |d, p, expect|
+		test = lambda do |d, p, expect|
 			rslt = ANT.cornacchia(d, p)
 			if expect
 				assert(rslt)
