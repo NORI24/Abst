@@ -3,17 +3,17 @@ require 'ant'
 
 class TC_Matrix < Test::Unit::TestCase
 	def test_Matrix
-		matrix = Matrix(Rational, 2, 2)
+		matrix = ANT.Matrix(Rational, 2, 2)
 		assert_equal("Rational", matrix.coef_class.name)
 		assert_equal(2, matrix.height)
 		assert_equal(2, matrix.width)
 
-		m = Matrix(Rational, [[3, 5], [9, 2]])
+		m = ANT.Matrix(Rational, [[3, 5], [9, 2]])
 		assert_equal([[3, 5], [9, 2]], m)
 	end
 
 	def test_add
-		matrix = Matrix(Rational, 2, 2)
+		matrix = ANT.Matrix(Rational, 2, 2)
 		m1 = matrix.new([[2, 3], [4, 5]])
 		m2 = matrix.new([[3, 1], [2, -3]])
 
@@ -21,7 +21,7 @@ class TC_Matrix < Test::Unit::TestCase
 	end
 
 	def test_sub
-		matrix = Matrix(Rational, 2, 2)
+		matrix = ANT.Matrix(Rational, 2, 2)
 		m1 = matrix.new([[2, 3], [4, 5]])
 		m2 = matrix.new([[3, 1], [2, -3]])
 
@@ -29,7 +29,7 @@ class TC_Matrix < Test::Unit::TestCase
 	end
 
 	def test_trace
-		matrix = Matrix(Rational, 2, 2)
+		matrix = ANT.Matrix(Rational, 2, 2)
 		m = matrix.new([[2, 3], [4, 5]])
 
 		assert_equal(7, m.trace)

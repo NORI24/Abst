@@ -106,10 +106,10 @@ class Integer
 		return true if self <= 3
 		return false if self.square?
 
-		pl = primes_list
+		pl = ANT.primes_list
 
 		# trial division
-		limit = isqrt(n)
+		limit = ANT.isqrt(n)
 		1.upto(pl.size - 1).each do |i|
 			d = pl[i]
 			return true if limit < d
@@ -117,7 +117,7 @@ class Integer
 			if n % d == 0
 				n /= d
 				return false if n % d == 0
-				limit = isqrt(n)
+				limit = ANT.isqrt(n)
 			end
 		end
 
@@ -128,7 +128,7 @@ class Integer
 			if n % d == 0
 				n /= d
 				return false if n % d == 0
-				limit = isqrt(n)
+				limit = ANT.isqrt(n)
 			end
 
 			d += 2

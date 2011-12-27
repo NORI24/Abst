@@ -354,27 +354,27 @@ class TC_Fundamental < Test::Unit::TestCase
 	end
 
 	def test_bhaskara_brouncker
-		assert_equal([1, 1], bhaskara_brouncker(2))
-		assert_equal([2, 1], bhaskara_brouncker(3))
-		assert_equal([2, 1], bhaskara_brouncker(5))
-		assert_equal([5, 2], bhaskara_brouncker(6))
-		assert_equal([8, 3], bhaskara_brouncker(7))
-		assert_equal([29718, 3805], bhaskara_brouncker(61))
-		assert_equal([8890182, 851525], bhaskara_brouncker(109))
+		assert_equal([1, 1], ANT.bhaskara_brouncker(2))
+		assert_equal([2, 1], ANT.bhaskara_brouncker(3))
+		assert_equal([2, 1], ANT.bhaskara_brouncker(5))
+		assert_equal([5, 2], ANT.bhaskara_brouncker(6))
+		assert_equal([8, 3], ANT.bhaskara_brouncker(7))
+		assert_equal([29718, 3805], ANT.bhaskara_brouncker(61))
+		assert_equal([8890182, 851525], ANT.bhaskara_brouncker(109))
 	end
 
 	def test_pythagorean
-		assert_equal(0, pythagorean(-1).to_a.size)
-		assert_equal(0, pythagorean(0).to_a.size)
-		assert_equal(0, pythagorean(1).to_a.size)
-		assert_equal(0, pythagorean(4).to_a.size)
-		assert_equal(1, pythagorean(5).to_a.size)
-		assert_equal(16, pythagorean(100).to_a.size)
-		assert_equal(1593, pythagorean(10000).to_a.size)
+		assert_equal(0, ANT.pythagorean(-1).to_a.size)
+		assert_equal(0, ANT.pythagorean(0).to_a.size)
+		assert_equal(0, ANT.pythagorean(1).to_a.size)
+		assert_equal(0, ANT.pythagorean(4).to_a.size)
+		assert_equal(1, ANT.pythagorean(5).to_a.size)
+		assert_equal(16, ANT.pythagorean(100).to_a.size)
+		assert_equal(1593, ANT.pythagorean(10000).to_a.size)
 
 		10.times do
 			max_c = rand(10 ** 4)
-			rslt = pythagorean(max_c).to_a
+			rslt = ANT.pythagorean(max_c).to_a
 			if rslt.empty?
 				assert(max_c <= 4)
 			else
