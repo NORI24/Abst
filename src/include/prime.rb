@@ -152,34 +152,23 @@ module ANT
 			factor.push([d, div_count])
 			lim = [lim, isqrt(n)].min
 
-			break if lim < d
+			lim < d
 		end
 
 		(plist = primes_list).each do |d|
 			break if lim < d
-			divide.call(d) if 0 == n % d
+			break if 0 == n % d and divide.call(d)
 		end
 
 		if plist.last < lim
 			d = plist.last - plist.last % 30 - 1
 			while d <= lim
 				# [2, 6, 4, 2, 4, 2, 4, 6] are difference of [1, 7, 11, 13, 17, 19, 23, 29]
-				d += 2
-				divide.call(d) if 0 == n % d
-				d += 6
-				divide.call(d) if 0 == n % d
-				d += 4
-				divide.call(d) if 0 == n % d
-				d += 2
-				divide.call(d) if 0 == n % d
-				d += 4
-				divide.call(d) if 0 == n % d
-				d += 2
-				divide.call(d) if 0 == n % d
-				d += 4
-				divide.call(d) if 0 == n % d
-				d += 6
-				divide.call(d) if 0 == n % d
+				# which are prime bellow 30 == 2 * 3 * 5 except 2, 3, 5
+				[2, 6, 4, 2, 4, 2, 4, 6].each do |diff|
+					d += diff
+					break if 0 == n % d and divide.call(d)
+				end
 			end
 		end
 
