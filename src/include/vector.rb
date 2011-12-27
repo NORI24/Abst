@@ -2,6 +2,10 @@ module ANT
 	module_function
 
 	class VectorCore < Array
+		class << self
+			attr_reader :coef_class, :size
+		end
+
 		def +(other)
 			raise VectorSizeError unless self.size == other.size
 			return self.class.new(self.zip(other).map{|a, b| a + b})
@@ -30,18 +34,10 @@ module ANT
 			size = size.size
 		end
 
-		vector = Class.new(Vector) do; end
-		vector.class_variable_set("@@coef_class", coef_class)
-		vector.class_variable_set("@@size", size)
-		vector.class_eval %{
-			def self.coef_class
-				return @@coef_class
-			end
-
-			def self.size
-				return @@size
-			end
-		}
+		vector = Class.new(Vector) do
+			@coef_class = coef_class
+			@size = size
+		end
 
 		return vector.new(elems) if elems
 		return vector
