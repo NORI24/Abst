@@ -75,6 +75,7 @@ end
 @@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@original_n = n
 			@big_prime = {}
+			@big_prime_mutex = Mutex.new
 
 			decide_multiplier(n)
 			decide_parameter
@@ -138,11 +139,8 @@ end
 			end
 
 			def method_missing(method, *args)
-				begin
-					@mutex.lock
+				@mutex.synchronize do
 					return @queue.send method, *args
-				ensure
-					@mutex.unlock if @mutex.locked?
 				end
 			end
 		end
