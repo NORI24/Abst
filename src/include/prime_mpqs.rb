@@ -52,6 +52,11 @@ module ANT
 			[50000, 3200],	# 52
 			[50000, 3500]]	# 53
 
+@@proc_time = Hash.new(0)
+def self.get_times
+	return @@proc_time
+end
+
 		def self.kronecker_table
 			unless @@kronecker_table
 				target = [3, 5, 7, 11, 13]
@@ -67,6 +72,7 @@ module ANT
 		end
 
 		def initialize(n)
+@@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@original_n = n
 			@big_prime = {}
 
@@ -82,6 +88,7 @@ module ANT
 			@matrix_right = []
 			@mask = 1
 			@check_list = Array.new(@factor_base_size)
+@@proc_time[:init] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		end
 
 		def decide_multiplier(n)
@@ -124,25 +131,83 @@ module ANT
 			@closenuf = target - 1.8 * Math.log(@factor_base.last)
 		end
 
+		class Queue
+			def initialize
+				@queue = []
+				@mutex = Mutex.new
+			end
+
+			def method_missing(method, *args)
+				begin
+					@mutex.lock
+					return @queue.send method, *args
+				ensure
+					@mutex.unlock if @mutex.locked?
+				end
+			end
+		end
+
 		def find_factor
+			queue = Queue.new
+show = false
+count = 0
+Signal.trap :INT do
+	count += 1
+	exit if 2 <= count
+	show = true
+end
+
+			# Create sieve control thread
+			th_sieve_control = Thread.new do
+				thg_sieve = ThreadGroup.new
+				begin
+					loop do
+						# Create sieve threads
+						(ANT::MAX_THREAD_NUM - Thread.list.size).times do
+							# Create polynomial
+							a, b, c, d = next_poly
+
+							th = Thread.new do
+								# Sieve
+@@proc_time[:sieve] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+								f, r, big = sieve(a, b, c, d)
+@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+								queue.push [f, r, big] unless f.empty?
+
+								Thread.main.run
+							end
+							thg_sieve.add th
+						end
+
+						sleep while MAX_THREAD_NUM << 1 <= queue.size or
+							ANT::MAX_THREAD_NUM == Thread.list.size
+					end
+				ensure
+#					p thg_sieve.list.size
+					thg_sieve.list.each {|th| th.kill}
+				end
+			end
+
 			r_list = []
 			factorization = []
 			big_prime_sup = []
-
 			loop do
-				# Create polynomial
-				a, b, c, d = next_poly
-
-				# Sieve
-				f, r, big = sieve(a, b, c, d)
-				next if f.empty?
+				unless temp = queue.shift
+					sleep
+					next
+				end
+				th_sieve_control.run
+print "#{queue.size} ," if show
+				f, r, big = temp
 
 				# Gaussian elimination
 				factorization += f
 				r_list += r
 				big_prime_sup += big
 
+@@proc_time[:gaussian] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				eliminated = gaussian_elimination(f)
+@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				eliminated.each do |row|
 					x = y = 1
 					f = Array.new(@factor_base_size, 0)
@@ -162,10 +227,13 @@ module ANT
 					return z if 1 < z and z < @original_n
 				end
 			end
+		ensure
+			Thread.kill(th_sieve_control)
 		end
 
 		# Return:: a, b,c
 		def next_poly
+@@proc_time[:make_poly] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@d = d = next_d
 			a = d ** 2
 			h1 = ANT.power(@n, (d >> 2) + 1, d)
@@ -174,6 +242,7 @@ module ANT
 			b = a - b if b.even?
 			c = ((b ** 2 - @n) >> 2) / a
 
+@@proc_time[:make_poly] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			return a, b, c, d
 		end
 
@@ -199,6 +268,7 @@ module ANT
 
 			sieve = Array.new(@sieve_range_2, 0)
 
+@@proc_time[:sieve_a] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			# Sieve by 2
 	#		0.upto(@sieve_range_2 - 1) do |i|
 	#			count = 1
@@ -236,7 +306,9 @@ module ANT
 					e += 1
 				end
 			end
+@@proc_time[:sieve_a] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
+@@proc_time[:sieve_slct] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			# select trial division target
 			td_target = []
 			sieve.each.with_index do |sum_of_log, idx|
@@ -246,6 +318,7 @@ module ANT
 					td_target.push([(t << 1) + b, (t + b) * x + c])
 				end
 			end
+@@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
 			# trial division on factor base
 			factorization = []
@@ -255,7 +328,9 @@ module ANT
 			big_prime_sup = []
 			big_prime_sup_2 = []
 			td_target.each do |r, s|
+@@proc_time[:sieve_td] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				f, re = trial_division_on_factor_base(s, @factor_base)
+@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				if 1 == re
 					f[1] += 2
 					factorization.push(f)
