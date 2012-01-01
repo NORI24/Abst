@@ -73,9 +73,10 @@ end
 			return @@kronecker_table
 		end
 
-		def initialize(n)
+		def initialize(n, thread_num = ANT::THREAD_NUM)
 @@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@original_n = n
+			@sieve_thread_num = [thread_num - 2, 1].max
 			@big_prime = {}
 			@big_prime_mutex = Mutex.new
 
@@ -145,7 +146,7 @@ end
 
 			thg_sieve = ThreadGroup.new
 			# Create threads for sieve
-			ANT::THREAD_NUM.times do
+			@sieve_thread_num.times do
 				thread = Thread.new do
 					loop do
 						a, b, c, d = queue_poly.shift
@@ -295,10 +296,9 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			r_list_2 = []
 			big_prime_sup = []
 			big_prime_sup_2 = []
-			td_target.each do |r, s|
 temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+			td_target.each do |r, s|
 				f, re = trial_division_on_factor_base(s, @factor_base)
-@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 				if 1 == re
 					f[1] += 2
 					factorization.push(f)
@@ -318,6 +318,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 					end
 				end
 			end
+@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
 			if factorization_2.empty?
 				return factorization, r_list, big_prime_sup
