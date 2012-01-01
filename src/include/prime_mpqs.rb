@@ -1,3 +1,5 @@
+require 'thread'
+
 module ANT
 	module_function
 
@@ -132,71 +134,38 @@ end
 			@closenuf = target - 1.8 * Math.log(@factor_base.last)
 		end
 
-		class Queue
-			def initialize
-				@queue = []
-				@mutex = Mutex.new
-			end
-
-			def method_missing(method, *args)
-				@mutex.synchronize do
-					return @queue.send method, *args
-				end
-			end
-		end
-
 		def find_factor
-			queue = Queue.new
-show = false
-count = 0
-Signal.trap :INT do
-	count += 1
-	exit if 2 <= count
-	show = true
-end
+			queue_poly = SizedQueue.new(ANT::THREAD_NUM)
+			queue_factor = Queue.new
 
-			# Create sieve control thread
-			th_sieve_control = Thread.new do
-				thg_sieve = ThreadGroup.new
-				begin
+			# Create thread make polynomials
+			th_make_poly = Thread.new do
+				loop { queue_poly.push next_poly }
+			end
+
+			thg_sieve = ThreadGroup.new
+			# Create threads for sieve
+			ANT::THREAD_NUM.times do
+				thread = Thread.new do
 					loop do
-						# Create sieve threads
-						(ANT::MAX_THREAD_NUM - Thread.list.size).times do
-							# Create polynomial
-							a, b, c, d = next_poly
+						a, b, c, d = queue_poly.shift
 
-							th = Thread.new do
-								# Sieve
-@@proc_time[:sieve] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
-								f, r, big = sieve(a, b, c, d)
-@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
-								queue.push [f, r, big] unless f.empty?
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+						# Sieve
+						f, r, big = sieve(a, b, c, d)
+@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
-								Thread.main.run
-							end
-							thg_sieve.add th
-						end
-
-						sleep while MAX_THREAD_NUM << 1 <= queue.size or
-							ANT::MAX_THREAD_NUM == Thread.list.size
+						queue_factor.push [f, r, big] unless f.empty?
 					end
-				ensure
-#					p thg_sieve.list.size
-					thg_sieve.list.each {|th| th.kill}
 				end
+				thg_sieve.add thread
 			end
 
 			r_list = []
 			factorization = []
 			big_prime_sup = []
 			loop do
-				unless temp = queue.shift
-					sleep
-					next
-				end
-				th_sieve_control.run
-print "#{queue.size} ," if show
-				f, r, big = temp
+				f, r, big = queue_factor.shift
 
 				# Gaussian elimination
 				factorization += f
@@ -226,12 +195,13 @@ print "#{queue.size} ," if show
 				end
 			end
 		ensure
-			Thread.kill(th_sieve_control)
+			th_make_poly.kill if th_make_poly
+			thg_sieve.list.each {|th| th.kill}
 		end
 
 		# Return:: a, b,c
 		def next_poly
-@@proc_time[:make_poly] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@d = d = next_d
 			a = d ** 2
 			h1 = ANT.power(@n, (d >> 2) + 1, d)
@@ -240,7 +210,7 @@ print "#{queue.size} ," if show
 			b = a - b if b.even?
 			c = ((b ** 2 - @n) >> 2) / a
 
-@@proc_time[:make_poly] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+@@proc_time[:make_poly] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 			return a, b, c, d
 		end
 
@@ -266,7 +236,7 @@ print "#{queue.size} ," if show
 
 			sieve = Array.new(@sieve_range_2, 0)
 
-@@proc_time[:sieve_a] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			# Sieve by 2
 	#		0.upto(@sieve_range_2 - 1) do |i|
 	#			count = 1
@@ -304,9 +274,9 @@ print "#{queue.size} ," if show
 					e += 1
 				end
 			end
-@@proc_time[:sieve_a] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+@@proc_time[:sieve_a] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
-@@proc_time[:sieve_slct] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			# select trial division target
 			td_target = []
 			sieve.each.with_index do |sum_of_log, idx|
@@ -316,7 +286,7 @@ print "#{queue.size} ," if show
 					td_target.push([(t << 1) + b, (t + b) * x + c])
 				end
 			end
-@@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+@@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
 			# trial division on factor base
 			factorization = []
@@ -326,9 +296,9 @@ print "#{queue.size} ," if show
 			big_prime_sup = []
 			big_prime_sup_2 = []
 			td_target.each do |r, s|
-@@proc_time[:sieve_td] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				f, re = trial_division_on_factor_base(s, @factor_base)
-@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 				if 1 == re
 					f[1] += 2
 					factorization.push(f)
@@ -349,7 +319,7 @@ print "#{queue.size} ," if show
 				end
 			end
 
-			if factorization_2.size < 1
+			if factorization_2.empty?
 				return factorization, r_list, big_prime_sup
 			end
 
