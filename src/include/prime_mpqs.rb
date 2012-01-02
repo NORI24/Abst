@@ -155,8 +155,10 @@ end
 
 				# Sieve
 temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
-				f, r, big = sieve(a, b, c, d)
+				sieve_rslt = sieve(a, b, c, d)
 @@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+				next if sieve_rslt.empty?
+				f, big, r = eliminate_big_primes(sieve_rslt)
 				next if f.empty?
 
 				# Gaussian elimination
@@ -190,7 +192,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
 		def find_factor_multi_thread(sieve_thread_num)
 			queue_poly = SizedQueue.new(sieve_thread_num)
-			queue_factor = SizedQueue.new(sieve_thread_num)
+			queue_sieve_rslt = SizedQueue.new(sieve_thread_num)
 
 			# Create thread make polynomials
 			th_make_poly = Thread.new do
@@ -206,10 +208,10 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
 temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 						# Sieve
-						f, r, big = sieve(a, b, c, d)
+						rslt = sieve(a, b, c, d)
 @@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
-						queue_factor.push [f, r, big] unless f.empty?
+						queue_sieve_rslt.push rslt unless rslt.empty?
 					end
 				end
 				thg_sieve.add thread
@@ -219,16 +221,21 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			factorization = []
 			big_prime_sup = []
 			loop do
-				f, r, big = queue_factor.shift
+				sieve_rslt = queue_sieve_rslt.shift
+				next if sieve_rslt.empty?
 
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+				f, big, r = eliminate_big_primes(sieve_rslt)
+				next if f.empty?
+
+#p [factorization.size, r_list.size, big_prime_sup.size]
 				# Gaussian elimination
-				factorization += f
-				r_list += r
-				big_prime_sup += big
+				factorization.concat f
+				r_list.concat r
+				big_prime_sup.concat big
 
-@@proc_time[:gaussian] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				eliminated = gaussian_elimination(f)
-@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 				eliminated.each do |row|
 					x = y = 1
 					f = Array.new(@factor_base_size, 0)
@@ -251,6 +258,26 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		ensure
 			thg_sieve.list.each {|th| th.kill}
 			th_make_poly.kill
+		end
+
+		def eliminate_big_primes(sieve_rslt)
+			sieve_rslt_with_big_prime = sieve_rslt.select{|f, re, d, r| 1 != re}
+			sieve_rslt.select!{|f, re, d, r| 1 == re}
+
+			temp_f = sieve_rslt.map(&:first)
+			temp_r = sieve_rslt.map(&:last)
+			temp_big = sieve_rslt.map{|f, re, d, r| d}
+			sieve_rslt_with_big_prime.each do |f, re, d, r|
+				unless @big_prime[re]
+					@big_prime[re] = [f, r, d]
+				else
+					temp_f << (@big_prime[re][0].zip(f).map{|e1, e2| e1 + e2})
+					temp_big << (re * d * @big_prime[re][2])
+					temp_r << (r * @big_prime[re][1])
+				end
+			end
+
+			return temp_f, temp_big, temp_r
 		end
 
 		# Return:: a, b,c
@@ -343,45 +370,16 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 @@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
 			# trial division on factor base
-			factorization = []
-			factorization_2 = []
-			r_list = []
-			r_list_2 = []
-			big_prime_sup = []
-			big_prime_sup_2 = []
+			rslt = []
 temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			td_target.each do |r, s|
 				f, re = trial_division_on_factor_base(s, @factor_base)
-				if 1 == re
-					f[1] += 2
-					factorization.push(f)
-					r_list.push(r)
-					big_prime_sup.push(d)
-#				else
-#					unless @big_prime[re]
-#						@big_prime[re] = [f, r, d]
-#					else
-#						r_list_2.push(r * @big_prime[re][1])
-#						t = @big_prime[re][2]
-#						t = (d == t) ? a : d * t
-#						big_prime_sup_2.push(re * t)
-#						t = @big_prime[re][0].zip(f).map{|e1, e2| e1 + e2}
-#						t[1] += 4
-#						factorization_2.push(t)
-#					end
-				end
+				f[1] += 2
+				rslt.push [f, re, d, r]
 			end
 @@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
-			if factorization_2.empty?
-				return factorization, r_list, big_prime_sup
-			end
-
-			r_list += r_list_2
-			big_prime_sup += big_prime_sup_2
-			factorization += factorization_2
-
-			return factorization, r_list, big_prime_sup
+			return rslt
 		end
 
 		def gaussian_elimination(m)
@@ -392,7 +390,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				@mask <<= 1
 			end
 			rslt = @matrix_right += temp
-			m = @matrix_left += m.map{|row| row.reverse_each.map{|i| i[0]}}
+			m = @matrix_left.concat(m.map{|row| row.reverse_each.map{|i| i[0]}})
 
 			height = m.size
 			width = @factor_base_size
