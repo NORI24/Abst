@@ -73,10 +73,10 @@ end
 			return @@kronecker_table
 		end
 
-		def initialize(n, thread_num = ANT::THREAD_NUM)
+		def initialize(n, thread_num)
 @@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@original_n = n
-			@sieve_thread_num = [thread_num - 2, 1].max
+			@thread_num = [thread_num, 1].max
 			@big_prime = {}
 			@big_prime_mutex = Mutex.new
 
@@ -86,7 +86,7 @@ end
 			some_precomputations
 
 			@d = ANT.isqrt(ANT.isqrt(@n >> 1) / @sieve_range)
-			@d -= 1 + (@d & 3)
+			@d -= (@d & 3) + 1
 
 			@matrix_left = []
 			@matrix_right = []
@@ -136,8 +136,61 @@ end
 		end
 
 		def find_factor
-			queue_poly = SizedQueue.new(ANT::THREAD_NUM)
-			queue_factor = Queue.new
+			if 1 == @thread_num
+				find_factor_single_thread
+			else
+				sieve_thread_num = [@thread_num - 2, 1].max
+				find_factor_multi_thread(sieve_thread_num)
+			end
+		end
+
+		def find_factor_single_thread
+			r_list = []
+			factorization = []
+			big_prime_sup = []
+
+			loop do
+				# Create polynomial
+				a, b, c, d = next_poly
+
+				# Sieve
+temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+				f, r, big = sieve(a, b, c, d)
+@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+				next if f.empty?
+
+				# Gaussian elimination
+				factorization += f
+				r_list += r
+				big_prime_sup += big
+
+@@proc_time[:gaussian] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+				eliminated = gaussian_elimination(f)
+@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+				eliminated.each do |row|
+					x = y = 1
+					f = Array.new(@factor_base_size, 0)
+					factorization.size.times do |i|
+						next if row[i] == 0
+						x = x * r_list[i] % @n
+						f = f.zip(factorization[i]).map{|e1, e2| e1 + e2}
+						y = y * big_prime_sup[i] % @n
+					end
+
+					2.upto(@factor_base_size - 1) do |i|
+						y = y * ANT.power(@factor_base[i], f[i] >> 1, @n) % @n
+					end
+					y = (y << (f[1] >> 1)) % @n
+
+					z = ANT.lehmer_gcd(x - y, @original_n)
+					return z if 1 < z and z < @original_n
+				end
+			end
+		end
+
+		def find_factor_multi_thread(sieve_thread_num)
+			queue_poly = SizedQueue.new(sieve_thread_num)
+			queue_factor = SizedQueue.new(sieve_thread_num)
 
 			# Create thread make polynomials
 			th_make_poly = Thread.new do
@@ -146,7 +199,7 @@ end
 
 			thg_sieve = ThreadGroup.new
 			# Create threads for sieve
-			@sieve_thread_num.times do
+			sieve_thread_num.times do
 				thread = Thread.new do
 					loop do
 						a, b, c, d = queue_poly.shift
@@ -196,8 +249,8 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				end
 			end
 		ensure
-			th_make_poly.kill if th_make_poly
 			thg_sieve.list.each {|th| th.kill}
+			th_make_poly.kill
 		end
 
 		# Return:: a, b,c
@@ -211,7 +264,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			b = a - b if b.even?
 			c = ((b ** 2 - @n) >> 2) / a
 
-@@proc_time[:make_poly] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+@@proc_time[:make_poly_2] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 			return a, b, c, d
 		end
 
@@ -304,18 +357,18 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 					factorization.push(f)
 					r_list.push(r)
 					big_prime_sup.push(d)
-				else
-					unless @big_prime[re]
-						@big_prime[re] = [f, r, d]
-					else
-						r_list_2.push(r * @big_prime[re][1])
-						t = @big_prime[re][2]
-						t = (d == t) ? a : d * t
-						big_prime_sup_2.push(re * t)
-						t = @big_prime[re][0].zip(f).map{|e1, e2| e1 + e2}
-						t[1] += 4
-						factorization_2.push(t)
-					end
+#				else
+#					unless @big_prime[re]
+#						@big_prime[re] = [f, r, d]
+#					else
+#						r_list_2.push(r * @big_prime[re][1])
+#						t = @big_prime[re][2]
+#						t = (d == t) ? a : d * t
+#						big_prime_sup_2.push(re * t)
+#						t = @big_prime[re][0].zip(f).map{|e1, e2| e1 + e2}
+#						t[1] += 4
+#						factorization_2.push(t)
+#					end
 				end
 			end
 @@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
@@ -425,8 +478,8 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		end
 	end
 
-	def mpqs(n)
-		mpqs = MPQS.new(n)
+	def mpqs(n, thread_num = ANT::THREAD_NUM)
+		mpqs = MPQS.new(n, thread_num)
 		return mpqs.find_factor
 	end
 end
