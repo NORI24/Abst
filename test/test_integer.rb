@@ -31,11 +31,40 @@ class TC_Fundamental < Test::Unit::TestCase
 		assert_equal(720, 6.factorial)
 	end
 
+	def test_pmod_factorial
+		assert_equal(1, 0.pmod_factorial(5))
+		assert_equal(1, 1.pmod_factorial(5))
+		assert_equal(0, 2.pmod_factorial(2))
+		assert_equal(1, 3.pmod_factorial(5))
+		assert_equal(7, 4.pmod_factorial(17))
+		assert_equal(27, 5.pmod_factorial(31))
+		assert_equal(0, 6.pmod_factorial(5))
+	end
+
+	def test_extended_pmod_factorial
+		assert_equal([1, 0], 0.extended_pmod_factorial(5))
+		assert_equal([1, 0], 1.extended_pmod_factorial(5))
+		assert_equal([1, 1], 2.extended_pmod_factorial(2))
+		assert_equal([2, 1], 3.extended_pmod_factorial(3))
+		assert_equal([7, 0], 4.extended_pmod_factorial(17))
+		assert_equal([1, 3], 5.extended_pmod_factorial(2))
+		assert_equal([4, 1], 6.extended_pmod_factorial(5))
+	end
+
 	def test_combination
 		assert_equal(1, 1.combination(1))
 		assert_equal(1, 1.combination(0))
 		assert_equal(45, 10.combination(2))
 		assert_equal(120, 10.combination(7))
+	end
+
+	def test_pmod_combination
+		assert_equal(1, 1.pmod_combination(1, 2))
+		assert_equal(1, 1.pmod_combination(0, 3))
+		assert_equal(0, 10.pmod_combination(2, 3))
+		assert_equal(3, 10.pmod_combination(7, 13))
+		assert_equal(0, (10 ** 18).pmod_combination(10 ** 9, 2437))
+		assert_equal(673, (10 ** 18).pmod_combination(10 ** 9, 3389))
 	end
 
 	def test_power_of?

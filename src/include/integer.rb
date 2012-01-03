@@ -22,6 +22,34 @@ class Integer
 		return 2.upto(self).inject(1, &:*)
 	end
 
+	# Param::  prime
+	# Return:: self! mod prime
+	def pmod_factorial(prime)
+		return 2.upto(self).inject(1) {|r, i| r * i % prime}
+	end
+
+	# Param::  prime
+	# Return:: integer f > 0 and e >= 0 s.t.
+	#          prime ** e || self! and
+	#          f == self! / (prime ** e) % prime
+	def extended_pmod_factorial(prime)
+		q, r = self.divmod prime
+		fac = q.even? ? 1 : prime - 1
+		fac = fac * r.pmod_factorial(prime) % prime
+
+		a = nil
+		e = q
+		if prime <= q
+			a, b = q.extended_pmod_factorial(prime)
+			e += b
+		else
+			a = q.pmod_factorial(prime)
+		end
+		fac = fac * a % prime
+
+		return fac, e
+	end
+
 	def combination(r)
 		r = self - r if self - r < r
 
@@ -38,6 +66,15 @@ class Integer
 		return rslt
 	end
 	alias :C :combination
+
+	def pmod_combination(r, prime)
+		f1, e1 = self.extended_pmod_factorial(prime)
+		f2, e2 = r.extended_pmod_factorial(prime)
+		f3, e3 = (self - r).extended_pmod_factorial(prime)
+
+		return 0 if e2 + e3 < e1
+		return f1 * ANT.inverse(f2 * f3, prime) % prime
+	end
 
 	def repeated_combination(r)
 		return (self + r - 1).combination(r)
