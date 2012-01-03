@@ -10,6 +10,11 @@ module ANT
 		end
 
 		def self.[]=(cache_id, data)
+			if nil == data
+				delete(cache_id)
+				return
+			end
+
 			path = get_path(cache_id)
 			dir = File.dirname(path)
 
