@@ -607,7 +607,8 @@ module ANT
 
 	# Param::  positive integer d
 	#          prime number p (d < p)
-	# Return:: integer pair (x, y) s.t. x ** 2 + dy ** 2 = p if exists else nil
+	# Return:: integer solution (x, y) to the Diophantine equation
+	#          x ** 2 + d * y ** 2 = p if exists else nil
 	def cornacchia(d, p)
 		return nil if -1 == kronecker_symbol(-d, p)
 
@@ -633,10 +634,36 @@ module ANT
 		return [b, q]
 	end
 
-	# Param::
-	# Return::
-	def modified_cornacchia()
-		raise NotImplementedError
+	# Param::  d is a negative integer s.t. d = 0 or 1 mod 4
+	#          prime number p (|d| < 4p)
+	# Return:: integer solution (x, y) to the Diophantine equation
+	#          x ** 2 + |d| * y ** 2 = 4p if exists else nil
+	def modified_cornacchia(d, p)
+		# Case p == 2
+		if 2 == p
+			return nil unless q = (d + 8).square?
+			return q, 1
+		end
+
+		# Test if residue
+		return nil if -1 == kronecker_symbol(d, p)
+
+		# Compute square root
+		x0 = mod_sqrt(d, p)
+		x0 = p - x0 if 0 != x0 - d % 2
+
+		a = p << 1
+		b = x0
+		l = isqrt(p << 2)
+
+		# Euclidean algorithm
+		a, b = b, a % b while b < l
+
+		# Test solution
+		c, r = (4 * p - b**2).divmod(-d)
+		return nil if 0 != r
+		return nil unless q = c.square?
+		return b, q
 	end
 
 	# Integer Square Root

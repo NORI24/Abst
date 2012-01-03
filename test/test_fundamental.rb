@@ -242,6 +242,25 @@ class TC_Fundamental < Test::Unit::TestCase
 		test.call(1, 19, false)
 	end
 
+	def test_modified_cornacchia
+		test = lambda do |d, p, expect|
+			rslt = ANT.modified_cornacchia(d, p)
+			if expect
+				assert(rslt)
+				x, y = rslt
+				assert_equal(p << 2, x ** 2 - d * y ** 2)
+			else
+				assert(nil == rslt)
+			end
+		end
+
+		test.call(-7, 2, true)
+		test.call(-4, 2, true)
+		test.call(-3, 2, false)
+		test.call(-7, 3, false)
+		test.call(-4, 5, true)
+	end
+
 	def test_isqrt
 		assert_equal(1, ANT.isqrt(1))
 		assert_equal(1, ANT.isqrt(2))
