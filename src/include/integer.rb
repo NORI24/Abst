@@ -106,7 +106,7 @@ class Integer
 
 	# Test whether self is a square number or not
 	# Param::  positive integer self
-	# Return:: root(self) if self is square else false
+	# Return:: square root of self if self is square else false
 	def square?
 		check = {
 			11=>[true, true, false, true, true, true, false, false, false, true, false],
