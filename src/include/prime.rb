@@ -110,6 +110,7 @@ module ANT
 		half_n_1 = n_1 >> 1
 
 		primes = primes_list.each
+		primes.next
 		find_base = proc do
 			b = primes.next
 			until (t = power(b, half_n_1, n)) == n_1
@@ -152,7 +153,7 @@ module ANT
 		end
 
 		return false unless miller_rabin(n)
-		return n == trial_division(n)[0][0][0]
+		return n_minus_1(n)
 	end
 
 	#
