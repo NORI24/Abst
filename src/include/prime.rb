@@ -393,7 +393,7 @@ module ANT
 			end
 
 			f.each {|k, v| factor[k] += v}
-			check_finish.call
+			return factor if check_finish.call
 		end
 
 		raise [factor, n].to_s
