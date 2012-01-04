@@ -100,7 +100,7 @@ module ANT
 	end
 
 	# Primality test
-	# Param::  positive odd integer n > 2
+	# Param::  positive integer n > 2
 	#          factor is factorization of n - 1
 	# Return:: boolean whether n is prime or not
 	def n_minus_1(n, factor = nil)
@@ -110,7 +110,6 @@ module ANT
 		half_n_1 = n_1 >> 1
 
 		primes = primes_list.each
-		primes.next
 		find_base = proc do
 			b = primes.next
 			until (t = power(b, half_n_1, n)) == n_1
