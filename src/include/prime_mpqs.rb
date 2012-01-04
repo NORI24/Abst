@@ -477,7 +477,6 @@ module ANT
 	end
 
 	def mpqs(n, thread_num = ANT::THREAD_NUM)
-p n
 		mpqs = MPQS.new(n, thread_num)
 		return mpqs.find_factor
 	end
