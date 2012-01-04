@@ -99,7 +99,7 @@ module ANT
 		return return_witness ? [true, nil] : true
 	end
 
-	# Primarity test
+	# Primality test
 	# Param::  positive odd integer n > 2
 	#          factor is factorization of n - 1
 	# Return:: boolean whether n is prime or not
