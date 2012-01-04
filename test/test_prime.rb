@@ -31,16 +31,14 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(false, ANT.miller_rabin(169))
 	end
 
-	def test_trial_division
-		assert_equal([[[2, 1]], 1], ANT.trial_division(2))
-		assert_equal([[[3, 1]], 1], ANT.trial_division(3))
-		assert_equal([[[2, 2]], 1], ANT.trial_division(4))
-		assert_equal([[[5, 1]], 1], ANT.trial_division(5))
-		assert_equal([[[2, 1], [3, 1]], 1], ANT.trial_division(6))
-		assert_equal([[[11, 1]], 1], ANT.trial_division(11))
-		assert_equal([[[13, 2]], 1], ANT.trial_division(169))
-		assert_equal([[[2, 2], [231053, 1], [415039, 1]], 708806692316951],
-			ANT.trial_division(4 * 231053 * 415039 * 70_880_669_231_6951, 500_000))
+	def test_n_minus_1
+		assert_equal(true, ANT.n_minus_1(3))
+		assert_equal(false, ANT.n_minus_1(4))
+		assert_equal(true, ANT.n_minus_1(5))
+		assert_equal(false, ANT.n_minus_1(6))
+		assert_equal(true, ANT.n_minus_1(7))
+		assert_equal(false, ANT.n_minus_1(561))
+		assert_equal(true, ANT.n_minus_1(507526619771207))
 	end
 
 	def test_prime?
@@ -59,6 +57,18 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal(true, ANT.prime?(13))
 		assert_equal(true, ANT.prime?(17))
 		assert_equal(false, ANT.prime?(1_373_653))
+	end
+
+	def test_trial_division
+		assert_equal([[[2, 1]], 1], ANT.trial_division(2))
+		assert_equal([[[3, 1]], 1], ANT.trial_division(3))
+		assert_equal([[[2, 2]], 1], ANT.trial_division(4))
+		assert_equal([[[5, 1]], 1], ANT.trial_division(5))
+		assert_equal([[[2, 1], [3, 1]], 1], ANT.trial_division(6))
+		assert_equal([[[11, 1]], 1], ANT.trial_division(11))
+		assert_equal([[[13, 2]], 1], ANT.trial_division(169))
+		assert_equal([[[2, 2], [231053, 1], [415039, 1]], 708806692316951],
+			ANT.trial_division(4 * 231053 * 415039 * 70_880_669_231_6951, 500_000))
 	end
 
 	def test_differences_of_squares

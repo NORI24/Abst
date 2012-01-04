@@ -99,6 +99,36 @@ module ANT
 		return return_witness ? [true, nil] : true
 	end
 
+	# Primarity test
+	# Param::  positive odd integer n > 2
+	#          factor is factorization of n - 1
+	# Return:: boolean whether n is prime or not
+	def n_minus_1(n, factor = nil)
+		factor = factorize(n - 1) unless factor
+
+		n_1 = n - 1
+		half_n_1 = n_1 >> 1
+
+		primes = primes_list.each
+		find_base = proc do
+			b = primes.next
+			until (t = power(b, half_n_1, n)) == n_1
+				return false unless t == 1
+				b = primes.next
+			end
+			b
+		end
+
+		base = find_base.call
+		factor.each do |prime, e|
+			while power(base, half_n_1 / prime, n) == n_1
+				base = find_base.call
+			end
+		end
+
+		return true
+	end
+
 	# Param::  positive integer n
 	# Return:: boolean whether n is prime or not
 	def prime?(n)
