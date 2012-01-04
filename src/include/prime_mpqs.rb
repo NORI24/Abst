@@ -54,10 +54,10 @@ module ANT
 			[50000, 3200],	# 52
 			[50000, 3500]]	# 53
 
-@@proc_time = Hash.new(0)
-def self.get_times
-	return @@proc_time
-end
+#@@proc_time = Hash.new(0)
+#def self.get_times
+#	return @@proc_time
+#end
 
 		def self.kronecker_table
 			unless @@kronecker_table
@@ -74,7 +74,7 @@ end
 		end
 
 		def initialize(n, thread_num)
-@@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#@@proc_time[:init] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@original_n = n
 			@thread_num = [thread_num, 1].max
 			@big_prime = {}
@@ -92,7 +92,7 @@ end
 			@matrix_right = []
 			@mask = 1
 			@check_list = Array.new(@factor_base_size)
-@@proc_time[:init] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#@@proc_time[:init] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 		end
 
 		def decide_multiplier(n)
@@ -154,9 +154,9 @@ end
 				a, b, c, d = next_poly
 
 				# Sieve
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				sieve_rslt = sieve(a, b, c, d)
-@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 				next if sieve_rslt.empty?
 				f, big, r = eliminate_big_primes(sieve_rslt)
 				next if f.empty?
@@ -166,9 +166,9 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				r_list += r
 				big_prime_sup += big
 
-@@proc_time[:gaussian] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#@@proc_time[:gaussian] -= Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				eliminated = gaussian_elimination(f)
-@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				eliminated.each do |row|
 					x = y = 1
 					f = Array.new(@factor_base_size, 0)
@@ -206,10 +206,10 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 					loop do
 						a, b, c, d = queue_poly.shift
 
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 						# Sieve
 						rslt = sieve(a, b, c, d)
-@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:sieve] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
 						queue_sieve_rslt.push rslt unless rslt.empty?
 					end
@@ -224,7 +224,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				sieve_rslt = queue_sieve_rslt.shift
 				next if sieve_rslt.empty?
 
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				f, big, r = eliminate_big_primes(sieve_rslt)
 				next if f.empty?
 
@@ -235,7 +235,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 				big_prime_sup.concat big
 
 				eliminated = gaussian_elimination(f)
-@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:gaussian] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 				eliminated.each do |row|
 					x = y = 1
 					f = Array.new(@factor_base_size, 0)
@@ -282,7 +282,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
 		# Return:: a, b,c
 		def next_poly
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@d = d = next_d
 			a = d ** 2
 			h1 = ANT.power(@n, (d >> 2) + 1, d)
@@ -291,7 +291,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			b = a - b if b.even?
 			c = ((b ** 2 - @n) >> 2) / a
 
-@@proc_time[:make_poly_2] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:make_poly_2] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 			return a, b, c, d
 		end
 
@@ -317,7 +317,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 
 			sieve = Array.new(@sieve_range_2, 0)
 
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			# Sieve by 2
 	#		0.upto(@sieve_range_2 - 1) do |i|
 	#			count = 1
@@ -355,9 +355,9 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 					e += 1
 				end
 			end
-@@proc_time[:sieve_a] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:sieve_a] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			# select trial division target
 			td_target = []
 			sieve.each.with_index do |sum_of_log, idx|
@@ -367,17 +367,17 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 					td_target.push([(t << 1) + b, (t + b) * x + c])
 				end
 			end
-@@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:sieve_slct] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
 			# trial division on factor base
 			rslt = []
-temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
+#temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			td_target.each do |r, s|
 				f, re = trial_division_on_factor_base(s, @factor_base)
 				f[1] += 2
 				rslt.push [f, re, d, r]
 			end
-@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
+#@@proc_time[:sieve_td] += Time.now.to_i + Time.now.usec.to_f / 10 ** 6 - temp
 
 			return rslt
 		end
@@ -477,6 +477,7 @@ temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 	end
 
 	def mpqs(n, thread_num = ANT::THREAD_NUM)
+p n
 		mpqs = MPQS.new(n, thread_num)
 		return mpqs.find_factor
 	end
