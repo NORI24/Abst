@@ -27,3 +27,5 @@ require_relative 'include/sequence'
 require_relative 'include/set'
 require_relative 'include/vector'
 require_relative 'include/matrix'
+
+include ANT if ANT::AUTO_INCLUDE

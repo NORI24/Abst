@@ -16,4 +16,6 @@ module ANT
 	FIXNUM_BIT_SIZE = 30
 
 	THREAD_NUM = defined?(JRUBY_VERSION) ? 2 : 1
+
+	AUTO_INCLUDE = false
 end
