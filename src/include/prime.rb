@@ -105,6 +105,7 @@ module ANT
 	# Return:: boolean whether n is prime or not
 	def n_minus_1(n, factor = nil)
 		factor = factorize(n - 1) unless factor
+		factor.shift if 2 == factor[0][0]
 
 		n_1 = n - 1
 		half_n_1 = n_1 >> 1
