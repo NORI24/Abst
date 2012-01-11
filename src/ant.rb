@@ -6,6 +6,8 @@ module ANT
 	# Integer block byte size
 	BASE_BYTE = 1.size
 	INFINITY = Float::INFINITY
+
+	I = Complex::I
 end
 
 require_relative 'ant_config'
