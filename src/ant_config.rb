@@ -15,7 +15,7 @@ module ANT
 	# integer e s.t. (2 ** e) is not Fixnum and (2 ** e - 1) is Fixnum
 	FIXNUM_BIT_SIZE = 30
 
-	THREAD_NUM = defined?(JRUBY_VERSION) ? 6 : 1
+	THREAD_NUM = defined?(JRUBY_VERSION) ? 2 : 1
 
-	AUTO_INCLUDE = true
+	AUTO_INCLUDE = false
 end
