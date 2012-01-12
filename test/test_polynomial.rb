@@ -6,6 +6,9 @@ class TC_Polynomial < Test::Unit::TestCase
 		polynomial = ANT.Polynomial(Rational)
 		assert_equal("Rational", polynomial.coef_class.name)
 
+		poly = polynomial.new([1, Rational(2, 7), 3])
+		assert_equal([1, Rational(2, 7), 3], poly.coef)
+
 		poly = ANT.Polynomial(Rational, [3, 5])
 		assert_equal([3, 5], poly.coef)
 	end
