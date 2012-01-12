@@ -9,4 +9,14 @@ class TC_Polynomial < Test::Unit::TestCase
 		poly = ANT.Polynomial(Rational, [3, 5])
 		assert_equal([3, 5], poly.coef)
 	end
+
+	def test_zero
+		polynomial = ANT.Polynomial(Rational)
+		assert_equal([0], polynomial.zero.coef)
+	end
+
+	def test_one
+		polynomial = ANT.Polynomial(Rational)
+		assert_equal([1], polynomial.one.coef)
+	end
 end

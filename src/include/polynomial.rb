@@ -4,6 +4,14 @@ module ANT
 	class Polynomial
 		class << self
 			attr_reader :coef_class
+
+			def zero
+				return self.new([coef_class.zero])
+			end
+
+			def one
+				return self.new([coef_class.one])
+			end
 		end
 
 		attr_accessor :coef
