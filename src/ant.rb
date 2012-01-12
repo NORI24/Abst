@@ -21,13 +21,14 @@ require_relative 'include/complex'
 require_relative 'include/float'
 require_relative 'include/fundamental'
 require_relative 'include/integer'
-require_relative 'include/polynomial'
 require_relative 'include/prime'
 require_relative 'include/prime_mpqs'
 require_relative 'include/rational'
 require_relative 'include/sequence'
 require_relative 'include/set'
+
 require_relative 'include/vector'
+require_relative 'include/polynomial'
 require_relative 'include/matrix'
 
 include ANT if ANT::AUTO_INCLUDE
