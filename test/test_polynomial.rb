@@ -24,18 +24,42 @@ class TC_Polynomial < Test::Unit::TestCase
 	end
 
 	def test_add
+		polynomial = ANT.Polynomial(Integer)
 
+		poly1 = polynomial.new([2, 3, 4])
+		poly2 = polynomial.new([-3, 12, -4])
+		assert_equal([-1, 15], (poly1 + poly2).coef)
+
+		poly1 = polynomial.new([2, 3, 4])
+		poly2 = polynomial.new([-3, 12])
+		assert_equal([-1, 15, 4], (poly1 + poly2).coef)
+
+		assert_equal([4, 3, 4], (poly1 + 2).coef)
 	end
 
 	def test_sub
+		polynomial = ANT.Polynomial(Integer)
 
+		poly1 = polynomial.new([2, 3, 4])
+		poly2 = polynomial.new([-3, 12, 4])
+		assert_equal([5, -9], (poly1 - poly2).coef)
+
+		poly1 = polynomial.new([2, 3, 4])
+		poly2 = polynomial.new([-3, 12])
+		assert_equal([5, -9, 4], (poly1 - poly2).coef)
+
+		assert_equal([0, 3, 4], (poly1 - 2).coef)
 	end
 
-	def test_mul
-
-	end
-
-	def test_div
-
-	end
+#	def test_sub
+#
+#	end
+#
+#	def test_mul
+#
+#	end
+#
+#	def test_div
+#
+#	end
 end
