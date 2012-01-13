@@ -15,6 +15,8 @@ require_relative 'ant_config'
 require_relative 'include/bisect'
 require_relative 'include/cache'
 
+require_relative 'include/ring'
+
 require_relative 'include/array'
 require_relative 'include/combination'
 require_relative 'include/complex'

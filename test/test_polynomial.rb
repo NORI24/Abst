@@ -22,4 +22,20 @@ class TC_Polynomial < Test::Unit::TestCase
 		polynomial = ANT.Polynomial(Rational)
 		assert_equal([1], polynomial.one.coef)
 	end
+
+	def test_add
+
+	end
+
+	def test_sub
+
+	end
+
+	def test_mul
+
+	end
+
+	def test_div
+
+	end
 end

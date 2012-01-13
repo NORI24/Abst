@@ -2,6 +2,8 @@ module ANT
 	module_function
 
 	class Polynomial
+		include ANT::Ring
+
 		class << self
 			attr_reader :coef_class
 
