@@ -23,14 +23,6 @@ module ANT
 			cutdown
 		end
 
-		def +(other)
-			return add_sub(other, :+)
-		end
-
-		def -(other)
-			return add_sub(other, :-)
-		end
-
 		def add_sub(other, op)
 			a = @coef
 			b = other.kind_of?(self.class.coef_class) ? [other] : other.coef
@@ -38,6 +30,39 @@ module ANT
 			coef = a.dup
 			b.size.times {|i| coef[i] = coef[i].__send__(op, b[i])}
 			return self.class.new(coef)
+		end
+
+		def *(other)
+			raise NotImplementedError
+		end
+
+		def divmod(other)
+			raise NotImplementedError
+		end
+
+		def ==(other)
+			raise NotImplementedError
+		end
+
+		def degree
+			raise NotImplementedError
+		end
+
+		# leading coefficient
+		def lc
+			raise NotImplementedError
+		end
+
+		def execute(x)
+			raise NotImplementedError
+		end
+
+		def normalize!
+			raise NotImplementedError
+		end
+
+		def normalize
+			return self.dup.normalize!
 		end
 
 		# delete last zero-entries
