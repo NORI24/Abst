@@ -5,15 +5,7 @@ module ANT
 		include ANT::Ring
 
 		class << self
-			attr_reader :coef_class
-
-			def zero
-				return self.new([coef_class.zero])
-			end
-
-			def one
-				return self.new([coef_class.one])
-			end
+			attr_reader :coef_class, :zero, :one
 		end
 
 		attr_accessor :coef
@@ -104,6 +96,8 @@ module ANT
 	def create_polynomial(coef_class, coef = nil)
 		poly = Class.new(Polynomial) do
 			@coef_class = coef_class
+			@zero = self.new([coef_class.zero]).freeze
+			@one = self.new([coef_class.one]).freeze
 		end
 
 		return poly.new(coef) if coef
