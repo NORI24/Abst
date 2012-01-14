@@ -45,7 +45,8 @@ module ANT
 		end
 
 		def degree
-			raise NotImplementedError
+			return -INFINITY if 1 == @coef.size and @coef[0] == self.class.coef_class.zero
+			return @coef.size - 1
 		end
 
 		# leading coefficient

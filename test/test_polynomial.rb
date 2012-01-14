@@ -62,4 +62,10 @@ class TC_Polynomial < Test::Unit::TestCase
 #	def test_div
 #
 #	end
+
+	def test_degree
+		polynomial = ANT.Polynomial(Integer)
+		poly = polynomial.new([2, 3, 4])
+		assert_equal(2, poly.degree)
+	end
 end
