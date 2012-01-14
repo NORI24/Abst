@@ -8,7 +8,8 @@ module ANT
 			attr_reader :coef_class, :zero, :one
 		end
 
-		attr_accessor :coef
+		attr_reader :coef
+		protected :coef
 
 		def initialize(coef)
 			@coef = VectorCore.new(coef)
@@ -106,6 +107,10 @@ module ANT
 			end
 
 			@coef[idx + 1, @coef.size] = []
+		end
+
+		def to_a
+			return @coef.dup
 		end
 	end
 

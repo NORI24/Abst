@@ -7,20 +7,20 @@ class TC_Polynomial < Test::Unit::TestCase
 		assert_equal("Rational", polynomial.coef_class.name)
 
 		poly = polynomial.new([1, Rational(2, 7), 3])
-		assert_equal([1, Rational(2, 7), 3], poly.coef)
+		assert_equal([1, Rational(2, 7), 3], poly.to_a)
 
 		poly = ANT.Polynomial(Rational, [3, 5])
-		assert_equal([3, 5], poly.coef)
+		assert_equal([3, 5], poly.to_a)
 	end
 
 	def test_zero
 		polynomial = ANT.Polynomial(Rational)
-		assert_equal([0], polynomial.zero.coef)
+		assert_equal([0], polynomial.zero.to_a)
 	end
 
 	def test_one
 		polynomial = ANT.Polynomial(Rational)
-		assert_equal([1], polynomial.one.coef)
+		assert_equal(polynomial.new([1]), polynomial.one)
 	end
 
 	def test_add_sub
@@ -29,14 +29,14 @@ class TC_Polynomial < Test::Unit::TestCase
 		poly1 = polynomial.new([2, 3, 4])
 		poly2 = polynomial.new([-3, 12, -4])
 		poly3 = polynomial.new([-3, 12, 4])
-		assert_equal([-1, 15], poly1.add_sub(poly2, :+).coef)
-		assert_equal([5, -9], poly1.add_sub(poly3, :-).coef)
+		assert_equal([-1, 15], poly1.add_sub(poly2, :+).to_a)
+		assert_equal([5, -9], poly1.add_sub(poly3, :-).to_a)
 
 		poly4 = polynomial.new([-3, 12])
-		assert_equal([-1, 15, 4], poly1.add_sub(poly4, :+).coef)
-		assert_equal([5, -9, 4], poly1.add_sub(poly4, :-).coef)
-		assert_equal([4, 3, 4], poly1.add_sub(2, :+).coef)
-		assert_equal([0, 3, 4], poly1.add_sub(2, :-).coef)
+		assert_equal([-1, 15, 4], poly1.add_sub(poly4, :+).to_a)
+		assert_equal([5, -9, 4], poly1.add_sub(poly4, :-).to_a)
+		assert_equal([4, 3, 4], poly1.add_sub(2, :+).to_a)
+		assert_equal([0, 3, 4], poly1.add_sub(2, :-).to_a)
 	end
 
 	def test_mul
@@ -91,5 +91,11 @@ class TC_Polynomial < Test::Unit::TestCase
 		poly = polynomial.new([2, -3, 4])
 		assert_equal(3, poly.eval(1))
 		assert_equal(12, poly.eval(2))
+	end
+
+	def test_to_a
+		polynomial = ANT.Polynomial(Integer)
+		poly = polynomial.new([2, -3, 4])
+		assert_equal([2, -3, 4], poly.to_a)
 	end
 end
