@@ -61,7 +61,7 @@ module ANT
 
 		# leading coefficient
 		def lc
-			raise NotImplementedError
+			return @coef.last
 		end
 
 		def execute(x)
