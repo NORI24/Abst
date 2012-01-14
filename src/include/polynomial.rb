@@ -64,8 +64,13 @@ module ANT
 			return @coef.last
 		end
 
-		def execute(x)
-			raise NotImplementedError
+		def eval(x)
+			rslt = @coef.last
+			(@coef.size - 2).downto(0) do |i|
+				rslt = rslt * x + @coef[i]
+			end
+
+			return rslt
 		end
 
 		def normalize!
