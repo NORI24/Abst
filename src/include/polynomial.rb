@@ -27,13 +27,22 @@ module ANT
 			a = @coef
 			b = other.kind_of?(self.class.coef_class) ? [other] : other.coef
 			a, b = b, a if a.size < b.size
-			coef = a.dup
-			b.size.times {|i| coef[i] = coef[i].__send__(op, b[i])}
-			return self.class.new(coef)
+			rslt_coef = a.dup
+			b.size.times {|i| rslt_coef[i] = rslt_coef[i].__send__(op, b[i])}
+			return self.class.new(rslt_coef)
 		end
 
 		def *(other)
-			raise NotImplementedError
+			other = other.kind_of?(self.class.coef_class) ? [other] : other.coef
+			rslt_coef = Array.new(@coef.size + other.size - 1, self.class.coef_class.zero)
+
+			@coef.size.times do |j|
+				other.size.times do |i|
+					rslt_coef[i + j] += @coef[j] * other[i]
+				end
+			end
+
+			return self.class.new(rslt_coef)
 		end
 
 		def divmod(other)
@@ -41,7 +50,8 @@ module ANT
 		end
 
 		def ==(other)
-			raise NotImplementedError
+			other = other.kind_of?(self.class.coef_class) ? [other] : other.coef
+			return @coef == other
 		end
 
 		def degree

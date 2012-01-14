@@ -39,21 +39,32 @@ class TC_Polynomial < Test::Unit::TestCase
 		assert_equal([0, 3, 4], poly1.add_sub(2, :-).coef)
 	end
 
-#	def test_sub
-#
-#	end
-#
-#	def test_mul
-#
-#	end
-#
-#	def test_div
+	def test_mul
+		polynomial = ANT.Polynomial(Integer)
+		poly1 = polynomial.new([2, 3, 4])
+		poly2 = polynomial.new([-3, 12, -4])
+		expect = polynomial.new([-6, 15, 16, 36, -16])
+
+		assert_equal(expect, (poly1 * poly2))
+	end
+
+#	def test_divmod
 #
 #	end
 
+	def test_eq
+		polynomial = ANT.Polynomial(Integer)
+		poly1 = polynomial.new([2, 3, 4])
+		poly2 = polynomial.new([2, 3, 4])
+		poly3 = polynomial.new([-3, 12, -4])
+
+		assert_equal(true, poly1 == poly2)
+		assert_equal(false, poly1 == poly3)
+	end
+
 	def test_degree
 		polynomial = ANT.Polynomial(Integer)
-		poly = polynomial.new([2, 3, 4])
+		poly = polynomial.new([2, 3, 4, 0])
 		assert_equal(2, poly.degree)
 	end
 end
