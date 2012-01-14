@@ -48,9 +48,21 @@ class TC_Polynomial < Test::Unit::TestCase
 		assert_equal(expect, (poly1 * poly2))
 	end
 
-#	def test_divmod
-#
-#	end
+	def test_divmod
+		polynomial = ANT.Polynomial(Integer)
+
+		poly1 = polynomial.new([1, 2, 3])
+		poly2 = polynomial.new([1])
+		q, r = poly1.divmod(poly2)
+		assert_equal(poly1, q)
+		assert_equal(polynomial.zero, r)
+
+		poly3 = polynomial.new([4, 5, 0, 1])
+		poly4 = polynomial.new([3, 3, 1])
+		q, r = poly3.divmod(poly4)
+		assert_equal(polynomial.new([-3, 1]), q)
+		assert_equal(polynomial.new([13, 11]), r)
+	end
 
 	def test_eq
 		polynomial = ANT.Polynomial(Integer)

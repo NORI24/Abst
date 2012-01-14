@@ -38,7 +38,24 @@ module ANT
 		end
 
 		def divmod(other)
-			raise NotImplementedError
+			other = other.kind_of?(self.class.coef_class) ? [other] : other.coef
+			q = [self.class.coef_class.zero]
+			r = @coef.dup
+
+			lc_other = other.last
+			(@coef.size - other.size).downto(0) do |i|
+				tq, tr = r.pop.divmod(lc_other)
+				raise NotImplementedError unless self.class.coef_class.zero == tr
+				q[i] = tq
+				next if self.class.coef_class.zero == tq
+
+				(other.size - 1).times do |j|
+					r[i + j] -= tq * other[j]
+				end
+			end
+
+			r[0] = self.class.coef_class.zero if r.empty?
+			return self.class.new(q), self.class.new(r)
 		end
 
 		def ==(other)
