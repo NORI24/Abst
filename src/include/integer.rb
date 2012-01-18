@@ -1,10 +1,18 @@
 class Integer
-	def self.one
-		return 1
-	end
+	class << self
+		def one
+			return 1
+		end
 
-	def self.zero
-		return 0
+		def zero
+			return 0
+		end
+
+		def *(other)
+			raise ArgumentError unless other.kind_of?(self)
+
+			raise NotImplementedError
+		end
 	end
 
 	def bit_size
