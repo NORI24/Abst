@@ -1,6 +1,10 @@
 module ANT
 	module Ring
-		include ANT::Group
+		def self.included(base)
+			base.class_eval do
+				include ANT::Group
+			end
+		end
 
 		def /(other)
 			return self.divmod(other)[0]
