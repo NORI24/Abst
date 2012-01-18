@@ -12,11 +12,11 @@ module ANT
 		protected :coef
 
 		def initialize(coef)
-			@coef = VectorCore.new(coef)
+			@coef = coef.to_a
 			cutdown
 		end
 
-		def add_sub(other, op)
+		def add_sub(op, other)
 			a = @coef
 			b = other.kind_of?(self.class.coef_class) ? [other] : other.coef
 			a, b = b, a if a.size < b.size

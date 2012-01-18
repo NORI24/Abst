@@ -1,30 +1,29 @@
 module ANT
 	module_function
 
-	class Matrix < VectorCore
+	class Matrix
+		include ANT::Group
+
 		class << self
 			attr_reader :coef_class, :height, :width, :coef_vector
 		end
 
+		attr_reader :coef
+		protected :coef
+
 		def initialize(m)
-			raise MatrixSizeError unless m.size == self.class.height
-
-			# vectorization each row
-			super(m.map{|row| self.class.coef_vector.new(row)})
+			raise MatrixSizeError unless self.class.height == m.size
+			@coef = m.map{|row| self.class.coef_vector.new(row)}
 		rescue VectorSizeError
 			raise MatrixSizeError
 		end
 
-		def +(other)
-			return super
-		rescue VectorSizeError
-			raise MatrixSizeError
+		def add_sub(op, other)
+			return self.class.new(@coef.zip(other.coef).map{|a, b| a.__send__(op, b)})
 		end
 
-		def -(other)
-			return super
-		rescue VectorSizeError
-			raise MatrixSizeError
+		def to_a
+			return @coef.map{|row| row.to_a}
 		end
 	end
 
@@ -32,7 +31,7 @@ module ANT
 		include ANT::Ring
 
 		def trace
-			return self.map.with_index{|row, i| row[i]}.inject(&:+)
+			return @coef.map.with_index{|row, i| row[i]}.inject(&:+)
 		end
 	end
 
@@ -48,7 +47,7 @@ module ANT
 			@coef_class = coef_class
 			@height = height
 			@width = width
-			@coef_vector = ANT.Vector(coef_class, width)
+			@coef_vector = ANT::Vector(coef_class, width)
 		end
 
 		return matrix.new(elems) if elems

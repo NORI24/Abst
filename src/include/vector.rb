@@ -1,30 +1,43 @@
 module ANT
 	module_function
 
-	class VectorCore < Array
+	class Vector
 		class << self
 			attr_reader :coef_class, :size
 		end
 
+		attr_reader :coef
+		protected :coef
+
+		def initialize(coef)
+			raise VectorSizeError unless coef.size == self.class.size
+			@coef = coef.to_a
+		end
+
 		def +(other)
 			raise VectorSizeError unless self.size == other.size
-			return self.class.new(self.zip(other).map{|a, b| a + b})
+			return self.class.new(self.coef.zip(other.coef).map{|a, b| a + b})
 		end
 
 		def -(other)
 			raise VectorSizeError unless self.size == other.size
-			return self.class.new(self.zip(other).map{|a, b| a - b})
+			return self.class.new(self.coef.zip(other.coef).map{|a, b| a - b})
+		end
+
+		def size
+			return self.class.size
 		end
 
 		def squared_length
-			return self.map{|i| i ** 2}.inject(&:+)
+			return self.coef.map{|i| i ** 2}.inject(&:+)
 		end
-	end
 
-	class Vector < VectorCore
-		def initialize(elems)
-			raise VectorSizeError unless elems.size == self.class.size
-			super
+		def to_a
+			return @coef.dup
+		end
+
+		def [](index)
+			return @coef[index]
 		end
 	end
 
