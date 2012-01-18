@@ -26,12 +26,12 @@ module ANT
 		rescue VectorSizeError
 			raise MatrixSizeError
 		end
+	end
+
+	class SquareMatrix < Matrix
+		include ANT::Ring
 
 		def trace
-			unless self.class.width == self.class.height
-				raise MatrixSizeError, "this is not square matrix"
-			end
-
 			return self.map.with_index{|row, i| row[i]}.inject(&:+)
 		end
 	end
@@ -43,7 +43,8 @@ module ANT
 			height = height.size
 		end
 
-		matrix = Class.new(Matrix) do
+		super_class = height == width ? SquareMatrix : Matrix
+		matrix = Class.new(super_class) do
 			@coef_class = coef_class
 			@height = height
 			@width = width
