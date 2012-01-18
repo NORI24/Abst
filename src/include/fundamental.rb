@@ -151,6 +151,10 @@ module ANT
 		return a
 	end
 
+	def lcm(a, b)
+		return a * b / gcd(a, b)
+	end
+
 	# Param::  integer a, b
 	# Return:: gcd of a and b
 	def lehmer_gcd(a, b)
