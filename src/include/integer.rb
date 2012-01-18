@@ -230,22 +230,24 @@ class Integer
 	end
 end
 
-class IntegerResidue
-	attr_reader :mod
+module ANT
+	class IntegerIdeal
+		attr_reader :mod
 
-	def initialize(n)
-		@mod = n
-	end
+		def initialize(n)
+			@mod = n
+		end
 
-	def +(other)
-		self.class.new(ANT.gcd(@mod, other.mod))
-	end
+		def +(other)
+			self.class.new(ANT.gcd(@mod, other.mod))
+		end
 
-	def *(other)
-		self.class.new(@mod * other.mod)
-	end
+		def *(other)
+			self.class.new(@mod * other.mod)
+		end
 
-	def &(other)
-		self.class.new(ANT.lcm(@mod, other.mod))
+		def &(other)
+			self.class.new(ANT.lcm(@mod, other.mod))
+		end
 	end
 end
