@@ -19,7 +19,6 @@ require_relative 'include/group'
 require_relative 'include/ring'
 
 require_relative 'include/array'
-require_relative 'include/combination'
 require_relative 'include/complex'
 require_relative 'include/float'
 require_relative 'include/fundamental'
