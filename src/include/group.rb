@@ -2,15 +2,11 @@ module ANT
 	module Group
 		def self.included(base)
 			base.class_eval do
-				unless method_defined? :+
-					def +(other)
-						return add_sub(other, :+)
-					end
-				end
-
-				unless method_defined? :-
-					def -(other)
-						return add_sub(other, :-)
+				[:+, :-].each do |sym|
+					unless method_defined? sym
+						define_method(sym) do |other|
+							return add_sub(other, sym)
+						end
 					end
 				end
 			end
