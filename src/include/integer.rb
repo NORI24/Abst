@@ -10,7 +10,7 @@ class Integer
 
 		def *(other)
 			raise ArgumentError unless other.kind_of?(self)
-			IntegerResidue.new(other)
+			IntegerIdeal.new(other)
 		end
 	end
 
@@ -232,10 +232,10 @@ end
 
 module ANT
 	class IntegerIdeal
-		attr_reader :mod
+		attr_reader :n
 
 		def initialize(n)
-			@mod = n
+			@n = n
 		end
 
 		def +(other)
@@ -248,6 +248,34 @@ module ANT
 
 		def &(other)
 			self.class.new(ANT.lcm(@mod, other.mod))
+		end
+	end
+
+	class IntegerResidueRing
+		class << self
+			attr_reader :mod
+		end
+
+		attr_reader :n
+
+		def initialize(n)
+			@n = n % self.class.mod
+		end
+
+		[:+, :-, :*].each do |op|
+			define_method(op) do |other|
+				return self.class.new(@n.__send__(op, other.n))
+			end
+		end
+	end
+
+	class IntegerResidueField < IntegerResidueRing
+		def inverse
+			return self.class.new(ANT.inverse(@n, self.class.mod))
+		end
+
+		def /(other)
+			return self.class.new(@n * other.inverse.n)
 		end
 	end
 end

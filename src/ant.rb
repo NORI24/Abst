@@ -26,6 +26,7 @@ require_relative 'include/integer'
 require_relative 'include/prime'
 require_relative 'include/prime_mpqs'
 require_relative 'include/rational'
+require_relative 'include/residue'
 require_relative 'include/sequence'
 require_relative 'include/set'
 
