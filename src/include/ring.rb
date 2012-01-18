@@ -1,12 +1,6 @@
 module ANT
 	module Ring
-		def +(other)
-			return add_sub(other, :+)
-		end
-
-		def -(other)
-			return add_sub(other, :-)
-		end
+		include ANT::Group
 
 		def /(other)
 			return self.divmod(other)[0]
