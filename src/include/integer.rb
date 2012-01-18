@@ -10,8 +10,7 @@ class Integer
 
 		def *(other)
 			raise ArgumentError unless other.kind_of?(self)
-
-			raise NotImplementedError
+			IntegerResidue.new(other)
 		end
 	end
 
@@ -228,5 +227,25 @@ class Integer
 		return false unless 0 == r
 
 		return q
+	end
+end
+
+class IntegerResidue
+	attr_reader :mod
+
+	def initialize(n)
+		@mod = n
+	end
+
+	def +(other)
+		self.class.new(ANT.gcd(@mod, other.mod))
+	end
+
+	def *(other)
+		self.class.new(@mod * other.mod)
+	end
+
+	def &(other)
+		self.class.new(ANT.lcm(@mod, other.mod))
 	end
 end
