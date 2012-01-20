@@ -407,7 +407,7 @@ module ANT
 	#          positive integer mod which is reratively prime with n
 	# Return:: inverse of n modulo mod. (1 <= inverse < mod)
 	def inverse(n, mod)
-		u, v, d = extended_gcd(n, mod)
+		u, _, d = extended_gcd(n, mod)
 
 		raise ArgumentError, 'n and mod must be reratively prime.' unless 1 == d
 
