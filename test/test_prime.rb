@@ -106,6 +106,7 @@ class TC_Prime < Test::Unit::TestCase
 		assert_equal([[2, 10]], ANT.factorize(1024))
 		assert_equal([[-1, 1], [3, 1], [5, 3]], ANT.factorize(-375))
 		assert_equal([[3, 1], [224743, 2]], ANT.factorize(151528248147))
+		assert_equal([[1658414587, 1], [5856287651, 1]], ANT.factorize(5856287651 * 1658414587))
 	end
 
 	def test_eratosthenes_sieve

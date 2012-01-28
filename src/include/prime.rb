@@ -130,6 +130,13 @@ module ANT
 		return true
 	end
 
+	# Primality test
+	# Param::  positive integer n
+	# Return:: boolean whether n is prime or not
+	def apr(n)
+		raise NotImplementedError
+	end
+
 	# Param::  positive integer n
 	# Return:: boolean whether n is prime or not
 	def prime?(n)
@@ -349,7 +356,7 @@ module ANT
 	#          if n < 0 then [-1, 1] is added as a factor.
 	def factorize(n, return_hash = false)
 		unless return_hash
-			return factorize(n, true).to_a
+			return factorize(n, true).to_a.sort
 		end
 
 		factor = Hash.new(0)
