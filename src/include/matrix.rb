@@ -6,6 +6,14 @@ module ANT
 
 		class << self
 			attr_reader :coef_class, :height, :width, :coef_vector
+
+			def to_s
+				return "#{height} * #{width} #{self.coef_class} Matrix"
+			end
+
+			def inspect
+				return to_s
+			end
 		end
 
 		attr_reader :coef, :height, :width
@@ -39,6 +47,14 @@ module ANT
 
 		def to_a
 			return @coef.map{|row| row.to_a}
+		end
+
+		def to_s
+			return @coef.inspect
+		end
+
+		def inspect
+			return "#{self.class}\n#{self}"
 		end
 	end
 
