@@ -12,6 +12,10 @@ class Integer
 			raise ArgumentError unless other.kind_of?(self)
 			IntegerIdeal.new(other)
 		end
+
+		def coerce(other)
+			return [self, other]
+		end
 	end
 
 	def bit_size
@@ -248,6 +252,14 @@ module ANT
 
 		def &(other)
 			self.class.new(ANT.lcm(@mod, other.mod))
+		end
+
+		def to_s
+			return "IntegerIdeal #{@n}Z"
+		end
+
+		def to_tex
+			return "#{@n}\\mathbb{Z}"
 		end
 	end
 
