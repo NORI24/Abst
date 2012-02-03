@@ -8,18 +8,33 @@ module ANT
 			attr_reader :coef_class, :height, :width, :coef_vector
 		end
 
-		attr_reader :coef
+		attr_reader :coef, :height, :width
 		protected :coef
 
 		def initialize(m)
 			raise MatrixSizeError unless self.class.height == m.size
 			@coef = m.map{|row| self.class.coef_vector.new(row)}
+			@height = self.class.height
+			@width = self.class.width
 		rescue VectorSizeError
 			raise MatrixSizeError
 		end
 
+		def each
+			return Enumerator.new(self) unless block_given?
+
+			@coef.each do |row|
+				row.each do |i|
+					yield i
+				end
+			end
+		end
+
 		def add_sub(op, other)
 			return self.class.new(@coef.zip(other.coef).map{|a, b| a.__send__(op, b)})
+		end
+
+		def solve
 		end
 
 		def to_a
