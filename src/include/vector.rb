@@ -4,6 +4,14 @@ module ANT
 	class Vector
 		class << self
 			attr_reader :coef_class, :size
+
+			def to_s
+				return "#{size} length #{self.coef_class} Vector"
+			end
+
+			def inspect
+				return to_s
+			end
 		end
 
 		attr_reader :coef
@@ -48,8 +56,12 @@ module ANT
 			return @coef[index]
 		end
 
+		def to_s
+			return @coef.to_s
+		end
+
 		def inspect
-			return @coef.inspect
+			return "#{self.class}\n#{self}"
 		end
 	end
 
