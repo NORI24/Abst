@@ -12,6 +12,12 @@ class TC_Matrix < Test::Unit::TestCase
 		assert_equal(m, ANT::Matrix(Rational, m).to_a)
 	end
 
+	def test_each
+		matrix = ANT::Matrix(Rational, 2, 2)
+		m = matrix.new([[3, 5], [1, 2]])
+		assert_equal([3, 5, 1, 2], m.each.to_a)
+	end
+
 	def test_add
 		matrix = ANT::Matrix(Rational, 2, 3)
 		m1 = matrix.new([[2, 3, 2], [4, 5, -7]])
