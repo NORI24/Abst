@@ -28,6 +28,14 @@ module ANT
 			return self.class.size
 		end
 
+		def each
+			return Enumerator.new(self) unless block_given?
+
+			@coef.each do |i|
+				yield i
+			end
+		end
+
 		def squared_length
 			return self.coef.map{|i| i ** 2}.inject(&:+)
 		end
@@ -38,6 +46,10 @@ module ANT
 
 		def [](index)
 			return @coef[index]
+		end
+
+		def inspect
+			return @coef.inspect
 		end
 	end
 
