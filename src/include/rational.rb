@@ -7,6 +7,10 @@ class Rational
 		return Rational(0, 1)
 	end
 
+	def inverse
+		return 1 / self
+	end
+
 	# to repeating decimal string
 	def to_rds(base = 10)
 		raise ArgumentError, "invalid radix #{base}" if base < 2 or 36 < base
