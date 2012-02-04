@@ -33,6 +33,14 @@ class TC_Matrix < Test::Unit::TestCase
 
 		assert_equal([[-1, 2, -2], [2, 8, -8]], (m1 - m2).to_a)
 	end
+
+	def test_solve
+		assert_equal([2].to_v, [[2, 4]].to_m.solve)
+		assert_equal([-5.5, 6.0].to_v, [[2, 3, 7], [4, 5, 8]].to_m.solve)
+		assert_equal([-22, 20].to_v, [[4, 5, 12], [2, 3, 16]].to_m.solve)
+		assert_equal([-2, 2, 1].to_v, [[1, 1, 1, 1], [1, 2, 3, 5], [2, 4, 8, 12]].to_m.solve)
+		assert_equal(nil, [[1, 2, 3, 12], [4, 5, 6, 13], [7, 8, 9, 14]].to_m.solve)
+	end
 end
 
 class TC_SquareMatrix < Test::Unit::TestCase
