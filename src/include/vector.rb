@@ -32,6 +32,10 @@ module ANT
 			return self.class.new(self.coef.zip(other.coef).map{|a, b| a - b})
 		end
 
+		def ==(other)
+			return @coef == other.to_a
+		end
+
 		def size
 			return self.class.size
 		end
@@ -48,12 +52,12 @@ module ANT
 			return self.coef.map{|i| i ** 2}.inject(&:+)
 		end
 
-		def to_a
-			return @coef.dup
-		end
-
 		def [](index)
 			return @coef[index]
+		end
+
+		def to_a
+			return @coef.dup
 		end
 
 		def to_s
