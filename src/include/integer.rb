@@ -33,6 +33,10 @@ class Integer
 		return 2.upto(self).inject(1, &:*)
 	end
 
+	def inverse
+		return 1 / Rational(self)
+	end
+
 	# Param::  prime
 	# Return:: self! mod prime
 	def pmod_factorial(prime)
