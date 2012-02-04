@@ -98,7 +98,7 @@ module ANT
 		end
 
 		def to_s
-			return @coef.to_s
+			return "[#{@coef.map(&:to_s).join(', ')}]"
 		end
 
 		def inspect

@@ -25,4 +25,10 @@ class Array
 		return SortableSet.new(self, &compare) if sortable
 		return Set.new(self)
 	end
+
+	# to_matrix
+	def to_m(coef_class = nil)
+		matrix = Matrix(coef_class || self[0][0].class, self.size, self[0].size)
+		return matrix.new(self)
+	end
 end
