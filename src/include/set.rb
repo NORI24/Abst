@@ -3,8 +3,10 @@ class Set
 		@set = ary.uniq
 	end
 
-	def add(a)
-		@set.push(a) unless @set.include?(a)
+	def add(*items)
+		items.each do |i|
+			@set.push(i) unless @set.include?(i)
+		end
 		return self
 	end
 
@@ -49,9 +51,11 @@ class SortableSet < Set
 		@compare = compare
 	end
 
-	def add(a)
-		i = Bisect.bisect_left(@set, a, &@compare)
-		@set.insert(i, a) unless @set[i] == a
+	def add(*items)
+		items.each do |i|
+			j = Bisect.bisect_left(@set, i, &@compare)
+			@set.insert(j, i) unless @set[j] == i
+		end
 		return self
 	end
 
