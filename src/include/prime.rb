@@ -402,7 +402,7 @@ module ANT
 				break unless c.square?
 			end
 			s = rand(n)
-			f = pollard_rho(n, c, s, 10_000)
+			f = pollard_rho(n, c, s, 50_000)
 			break unless f
 
 			# f is prime?

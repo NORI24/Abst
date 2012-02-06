@@ -103,7 +103,7 @@ module ANT
 
 		def decide_parameter
 			digit = Math.log(@n, 10).floor
-			parameter = @@mpqs_parameter_map[digit].dup
+			parameter = @@mpqs_parameter_map[digit] ? @@mpqs_parameter_map[digit].dup : @@mpqs_parameter_map.last.dup
 			parameter[0] = (parameter[0] * 2).floor
 			@sieve_range, @factor_base_size = parameter
 			@sieve_range_2 = @sieve_range << 1
