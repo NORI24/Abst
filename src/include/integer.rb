@@ -294,6 +294,10 @@ module ANT
 			return @n == other.n
 		end
 
+		def inspect
+			return "#{@n} (mod #{self.class.mod})"
+		end
+
 		def to_i
 			return @n
 		end
