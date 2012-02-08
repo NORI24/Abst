@@ -37,4 +37,9 @@ class Array
 		matrix = Matrix(coef_class || self[0][0].class, self.size, self[0].size)
 		return matrix.new(self)
 	end
+
+	# Create integer from factorization of it
+	def to_i
+		return self.map{|p, e| p ** e}.inject(&:*)
+	end
 end
