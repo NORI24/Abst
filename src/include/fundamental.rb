@@ -51,7 +51,7 @@ module ANT
 		while 0 != e
 			e -= 1
 
-			rslt = rslt ** 2
+			rslt *= rslt
 			rslt %= mod if mod
 
 			if 1 == n[e]

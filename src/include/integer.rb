@@ -270,6 +270,10 @@ module ANT
 	class IntegerResidueRing
 		class << self
 			attr_reader :mod
+
+			def one
+				return self.new(1)
+			end
 		end
 
 		attr_reader :n
@@ -283,6 +287,18 @@ module ANT
 				return self.class.new(@n.__send__(op, other.n))
 			end
 		end
+
+		def ==(other)
+			return false unless self.class.superclass == other.class.superclass
+			return false unless self.class.mod == other.class.mod
+			return @n == other.n
+		end
+
+		def to_i
+			return @n
+		end
+
+		include ANT::Ring
 	end
 
 	class IntegerResidueField < IntegerResidueRing

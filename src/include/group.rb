@@ -13,7 +13,21 @@ module ANT
 		end
 	end
 
-	def order(g)
-		raise NotImplementedError
+	def element_order(g, group_order)
+		one = g.class.one
+		order = group_order
+		factor = factorize(group_order)
+
+		factor.each do |f, e|
+			order /= f ** e
+
+			t = g ** order
+			until one == t
+				t **= f
+				order *= f
+			end
+		end
+
+		return order
 	end
 end
