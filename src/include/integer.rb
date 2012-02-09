@@ -14,7 +14,11 @@ class Integer
 		end
 
 		def /(other)
-			raise ArgumentError unless other.kind_of?(IntegerIdeal)
+			if other.kind_of?(Integer)
+				other = Integer * other
+			else
+				raise ArgumentError unless other.kind_of?(IntegerIdeal)
+			end
 			return residue_class(other)
 		end
 
@@ -283,7 +287,7 @@ module ANT
 			end
 
 			def order
-				@order = phi(@mod) unless @order
+				@order = phi(@mod) unless defined?(@order)
 				return @order
 			end
 		end
@@ -306,6 +310,10 @@ module ANT
 			return @n == other.n
 		end
 
+		def order
+			return element_order(self, self.class.order)
+		end
+
 		def inspect
 			return "#{@n} (mod #{self.class.mod})"
 		end
@@ -318,6 +326,12 @@ module ANT
 	end
 
 	class IntegerResidueField < IntegerResidueRing
+		class << self
+			def order
+				return @mod - 1
+			end
+		end
+
 		def inverse
 			return self.class.new(ANT.inverse(@n, self.class.mod))
 		end
