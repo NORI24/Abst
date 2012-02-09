@@ -13,6 +13,11 @@ class Integer
 			IntegerIdeal.new(other)
 		end
 
+		def /(other)
+			raise ArgumentError unless other.kind_of?(IntegerIdeal)
+			return residue_class(other)
+		end
+
 		def coerce(other)
 			return [self, other]
 		end
@@ -239,6 +244,8 @@ class Integer
 end
 
 module ANT
+	Z = Integer
+
 	class IntegerIdeal
 		attr_reader :n
 
@@ -273,6 +280,11 @@ module ANT
 
 			def one
 				return self.new(1)
+			end
+
+			def order
+				@order = phi(@mod) unless @order
+				return @order
 			end
 		end
 

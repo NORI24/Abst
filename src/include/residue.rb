@@ -1,4 +1,12 @@
 module ANT
+	def residue_class(ideal)
+		if prime?(ideal.n)
+			return residue_class_field(ideal)
+		else
+			return residue_class_ring(ideal)
+		end
+	end
+
 	def residue_class_ring(ideal)
 		residue_class = Class.new(IntegerResidueRing) do
 			@mod = ideal.n
