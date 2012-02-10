@@ -1,5 +1,6 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Combination < Test::Unit::TestCase
+class TC_Combination < MiniTest::Unit::TestCase
 end

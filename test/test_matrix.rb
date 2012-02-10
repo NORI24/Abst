@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Matrix < Test::Unit::TestCase
+class TC_Matrix < MiniTest::Unit::TestCase
 	def test_Matrix
 		matrix = ANT::Matrix(Rational, 2, 3)
 		assert_equal("Rational", matrix.coef_class.name)
@@ -43,7 +44,7 @@ class TC_Matrix < Test::Unit::TestCase
 	end
 end
 
-class TC_SquareMatrix < Test::Unit::TestCase
+class TC_SquareMatrix < MiniTest::Unit::TestCase
 	def test_trace
 		matrix = ANT::Matrix(Rational, 2, 2)
 		m = matrix.new([[2, 3], [4, 5]])

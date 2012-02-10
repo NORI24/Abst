@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Rational < Test::Unit::TestCase
+class TC_Rational < MiniTest::Unit::TestCase
 	def test_to_rds
 		assert_equal("0.5", Rational(1, 2).to_rds)
 		assert_equal("0.(3)", Rational(1, 3).to_rds)

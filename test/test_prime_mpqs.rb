@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_PrimeMPQS < Test::Unit::TestCase
+class TC_PrimeMPQS < MiniTest::Unit::TestCase
 	def test_primes_list
 		test = lambda do |n|
 			factor = ANT.mpqs(n)

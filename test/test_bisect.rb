@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Bisect < Test::Unit::TestCase
+class TC_Bisect < MiniTest::Unit::TestCase
 	def test_bisect_left
 		list = [1, 2, 3, 3, 4, 6]
 		assert_equal(1, Bisect.bisect_left(list, 2))

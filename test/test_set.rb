@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Set < Test::Unit::TestCase
+class TC_Set < MiniTest::Unit::TestCase
 	def test_add
 		assert_equal(Set.new([1, 2, 3]), Set.new([1, 3]).add(2))
 		assert_equal(Set.new([2, 1, 2, 3]), Set.new([1, 2, 3]).add(2))
@@ -17,7 +18,7 @@ class TC_Set < Test::Unit::TestCase
 	end
 end
 
-class TC_SortableSet < Test::Unit::TestCase
+class TC_SortableSet < MiniTest::Unit::TestCase
 	def test_add
 		assert_equal(SortableSet.new([1, 2, 3]), SortableSet.new([1, 3]).add(2))
 		assert_equal(SortableSet.new([2, 1, 2, 3]), SortableSet.new([1, 2, 3]).add(2))

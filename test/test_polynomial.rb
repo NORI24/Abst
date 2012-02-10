@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Polynomial < Test::Unit::TestCase
+class TC_Polynomial < MiniTest::Unit::TestCase
 	def test_Polynomial
 		polynomial = ANT::Polynomial(Rational)
 		assert_equal("Rational", polynomial.coef_class.name)

@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Vector < Test::Unit::TestCase
+class TC_Vector < MiniTest::Unit::TestCase
 	def test_Vector
 		vector = ANT::Vector(Rational, 3)
 		assert_equal("Rational", vector.coef_class.name)

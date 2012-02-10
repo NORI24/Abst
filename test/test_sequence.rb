@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Fundamental < Test::Unit::TestCase
+class TC_Fundamental < MiniTest::Unit::TestCase
 	def test_fibonacci
 		assert_equal(1, ANT.fibonacci(1))
 		assert_equal(1, ANT.fibonacci(2))

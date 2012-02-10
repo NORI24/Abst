@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Fundamental < Test::Unit::TestCase
+class TC_Fundamental < MiniTest::Unit::TestCase
 	def test_right_left_power
 		assert_equal(1, ANT.right_left_power(5, 0))
 		assert_equal(1024, ANT.right_left_power(2, 10))

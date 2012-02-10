@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Float < Test::Unit::TestCase
+class TC_Float < MiniTest::Unit::TestCase
 	def test_to_fs
 		assert_equal('0.0', 0.to_f.to_fs)
 		assert_equal('0.123456789', (0.123456789).to_fs)

@@ -1,7 +1,8 @@
-require 'test/unit'
+require 'minitest/unit'
+require 'minitest/autorun'
 require 'ant'
 
-class TC_Prime < Test::Unit::TestCase
+class TC_Prime < MiniTest::Unit::TestCase
 	def test_primes_list
 		list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 		assert_equal(list, ANT.primes_list[0...10])
