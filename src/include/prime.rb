@@ -45,7 +45,7 @@ module ANT
 
 	# Param::  positive integer n
 	#          positive integer base
-	# Return:: boolean whether n passes a pseudoprime test or not
+	# Return:: boolean whether n passes a pseudoprime test for the base or not
 	#          When n and base are not relatively prime, this algorithm
 	#          may judge a prime number n to be a composite number
 	def pseudoprime_test(n, base)
