@@ -287,8 +287,7 @@ module ANT
 			end
 
 			def order
-				@order = phi(@mod) unless defined?(@order)
-				return @order
+				return @mod
 			end
 			alias cardinality order
 		end
@@ -331,12 +330,6 @@ module ANT
 	end
 
 	class IntegerResidueField < IntegerResidueRing
-		class << self
-			def order
-				return @mod - 1
-			end
-		end
-
 		def inverse
 			return self.class.new(ANT.inverse(@n, self.class.mod))
 		end
