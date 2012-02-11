@@ -290,6 +290,7 @@ module ANT
 				@order = phi(@mod) unless defined?(@order)
 				return @order
 			end
+			alias cardinality order
 		end
 
 		attr_reader :n
@@ -308,6 +309,10 @@ module ANT
 			return false unless self.class.superclass == other.class.superclass
 			return false unless self.class.mod == other.class.mod
 			return @n == other.n
+		end
+
+		def inverse
+			return self.class.new(ANT.inverse(@n, self.class.mod))
 		end
 
 		def order
