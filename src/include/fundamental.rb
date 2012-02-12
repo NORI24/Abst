@@ -869,6 +869,7 @@ module ANT
 	# Param::  positive integer n
 	# Return:: the value of moebius function for n
 	def moebius(n)
+		return 1 if 1 == n
 		return 0 unless n.squarefree?
 		return factorize(n).size.odd? ? -1 : 1
 	end
