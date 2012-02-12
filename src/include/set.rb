@@ -1,4 +1,6 @@
 class Set
+	include Enumerable
+
 	def initialize(ary = [])
 		@set = ary.uniq
 	end
