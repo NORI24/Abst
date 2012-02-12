@@ -819,8 +819,8 @@ module ANT
 		end
 	end
 
-	# Param::  positive integer n
-	# Return:: positive integer a, b s.t. a**2 - n * b**2 == 1 or -1
+	# Param::  positive non-square integer n
+	# Return:: least positive integer a, b s.t. a**2 - n * b**2 == 1 or -1
 	def bhaskara_brouncker(n)
 		t = sqrt = isqrt(n)
 		u, u1 = 0, sqrt
