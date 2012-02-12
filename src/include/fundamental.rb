@@ -866,12 +866,19 @@ module ANT
 		end
 	end
 
+	# Param::  positive integer n
+	# Return:: the value of moebius function for n
+	def moebius(n)
+		return 0 unless n.squarefree?
+		return factorize(n).size.odd? ? -1 : 1
+	end
+
 	# Param::  Integer base (2 <= base < p)
 	#          Integer m (2 <= m < p)
 	#          prime p
 	# Return:: Integer e s.t. base ** e == m (mod p)
 	def dlog_rho(base, m, p)
-
+		raise NotImplementedError
 	end
 
 	# Param::  Integer base (2 <= base < p)
@@ -889,6 +896,6 @@ module ANT
 
 		# Solve DL of h for factor base
 
-
+		raise NotImplementedError
 	end
 end
