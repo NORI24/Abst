@@ -154,7 +154,7 @@ class Integer
 		return q
 	end
 
-	# #
+	#@slow
 	# Param::  positive integer self
 	# Return:: true if self is squarefree, false otherwise
 	def squarefree?
@@ -286,8 +286,15 @@ module ANT
 				return self.new(1)
 			end
 
-			def order
-				return @mod
+			def order(op = :+)
+				case op
+				when :+
+					return @mod
+				when :*
+					return phi(@mod)
+				end
+
+				raise ArgumentError, "unrecognized argument #{op} was specified"
 			end
 			alias cardinality order
 		end
