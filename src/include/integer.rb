@@ -1,11 +1,11 @@
 class Integer
 	class << self
-		def one
-			return 1
-		end
-
 		def zero
 			return 0
+		end
+
+		def one
+			return 1
 		end
 
 		def *(other)
@@ -276,6 +276,7 @@ module ANT
 		def to_s
 			return "IntegerIdeal #{@n}Z"
 		end
+		alias inspect to_s
 
 		def to_tex
 			return "#{@n}#{Z.to_tex}"
@@ -286,6 +287,10 @@ module ANT
 		class << self
 			attr_reader :mod
 
+			def zero
+				return self.new(0)
+			end
+
 			def one
 				return self.new(1)
 			end
@@ -295,7 +300,8 @@ module ANT
 				when :+
 					return @mod
 				when :*
-					return phi(@mod)
+					@order = phi(@mod) unless defined?(@order)
+					return @order
 				end
 
 				raise ArgumentError, "unrecognized argument #{op} was specified"
@@ -334,13 +340,24 @@ module ANT
 			return self.class.new(ANT.inverse(@n, self.class.mod))
 		end
 
-		def order
-			return element_order(self, self.class.order)
+		def order(op)
+			mod = self.class.mod
+
+			case op
+			when :+
+				return mod / gcd(@n, mod)
+			when :*
+				raise ArgumentError, "#{self} is not invertible" unless 1 == gcd(@n, mod)
+				return element_order(self, self.class.order(op))
+			end
+
+			raise ArgumentError, "unrecognized argument #{op} was specified"
 		end
 
-		def inspect
+		def to_s
 			return "#{@n} (mod #{self.class.mod})"
 		end
+		alias inspect to_s
 
 		def to_i
 			return @n
