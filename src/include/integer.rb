@@ -25,6 +25,10 @@ class Integer
 		def coerce(other)
 			return [self, other]
 		end
+
+		def to_tex
+			return "\\mathbb{Z}"
+		end
 	end
 
 	def bit_size
@@ -274,7 +278,7 @@ module ANT
 		end
 
 		def to_tex
-			return "#{@n}\\mathbb{Z}"
+			return "#{@n}#{Z.to_tex}"
 		end
 	end
 
@@ -303,7 +307,8 @@ module ANT
 			end
 
 			def to_tex
-				return "\mathbb{Z} / #{@mod}\mathbb{Z}"
+				z = Z.to_tex
+				return z + " / #{@mod}" + z
 			end
 		end
 
