@@ -297,6 +297,14 @@ module ANT
 				raise ArgumentError, "unrecognized argument #{op} was specified"
 			end
 			alias cardinality order
+
+			def to_s
+				return "Z / #{@mod}Z"
+			end
+
+			def to_tex
+				return "\mathbb{Z} / #{@mod}\mathbb{Z}"
+			end
 		end
 
 		attr_reader :n
