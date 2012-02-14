@@ -337,6 +337,13 @@ module ANT
 	end
 
 	class IntegerResidueField < IntegerResidueRing
+		class << self
+			def order(op = :+)
+				return @mod - 1 if :* == op
+				return super
+			end
+		end
+
 		def inverse
 			return self.class.new(ANT.inverse(@n, self.class.mod))
 		end
