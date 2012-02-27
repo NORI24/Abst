@@ -163,8 +163,10 @@ module ANT
 		return n_minus_1(n)
 	end
 
+	# Lucas-Lehmer primality test
 	# Param::  odd prime p
 	# Return:: boolean whether M(p) == 2**p - 1 is prime or not
+	#          there M(p) means p-th Mersenne number
 	def lucas_lehmer(p)
 		s = 4
 		m = (1 << p) - 1
