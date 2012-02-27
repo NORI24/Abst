@@ -163,6 +163,10 @@ module ANT
 		return n_minus_1(n)
 	end
 
+	def lucas_lehmer(n)
+		raise NotImplementedError
+	end
+
 	#
 	# factorization
 	#
