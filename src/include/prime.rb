@@ -163,8 +163,13 @@ module ANT
 		return n_minus_1(n)
 	end
 
-	def lucas_lehmer(n)
-		raise NotImplementedError
+	# Param::  odd prime p
+	# Return:: boolean whether M(p) == 2**p - 1 is prime or not
+	def lucas_lehmer(p)
+		s = 4
+		m = (1 << p) - 1
+		(p - 2).times {s = (s * s - 2) % m}
+		return 0 == s
 	end
 
 	#
