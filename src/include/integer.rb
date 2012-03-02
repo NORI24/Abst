@@ -326,7 +326,7 @@ module ANT
 
 		[:+, :-, :*].each do |op|
 			define_method(op) do |other|
-				return self.class.new(@n.__send__(op, other.n))
+				return self.class.new(@n.__send__(op, other.to_i))
 			end
 		end
 
