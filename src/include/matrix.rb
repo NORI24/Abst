@@ -42,6 +42,10 @@ module ANT
 			return self.class.new(@coef.zip(other.coef).map{|a, b| a.__send__(op, b)})
 		end
 
+		def *(other)
+			raise NotImplementedError
+		end
+
 		# Param::  self must be n * (n + 1) matrix s.t. (MB)
 		#          M is invertible n * n matrix
 		#          B is a column vector
