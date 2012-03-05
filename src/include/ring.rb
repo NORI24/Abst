@@ -15,7 +15,7 @@ module Abst
 		end
 
 		def **(e)
-			return power(self, e)
+			return Abst.power(self, e)
 		end
 	end
 end

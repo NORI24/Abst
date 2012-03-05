@@ -28,13 +28,13 @@ class Array
 
 	# to_vector
 	def to_v(coef_class = nil)
-		vector = Vector(coef_class || self[0].class, self.size)
+		vector = Abst::Vector(coef_class || self[0].class, self.size)
 		return vector.new(self)
 	end
 
 	# to_matrix
 	def to_m(coef_class = nil)
-		matrix = Matrix(coef_class || self[0][0].class, self.size, self[0].size)
+		matrix = Abst::Matrix(coef_class || self[0][0].class, self.size, self[0].size)
 		return matrix.new(self)
 	end
 

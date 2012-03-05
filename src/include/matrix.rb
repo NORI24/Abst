@@ -94,7 +94,7 @@ module Abst
 				x[i] = temp * inverse[i]
 			end
 
-			return Vector(self.class.coef_class, x)
+			return Abst::Vector(self.class.coef_class, x)
 		end
 
 		def to_a

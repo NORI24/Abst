@@ -1,4 +1,6 @@
 module Abst
+	module_function
+
 	def residue_class(ideal)
 		if prime?(ideal.n)
 			return residue_class_field(ideal)

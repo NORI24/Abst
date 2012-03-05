@@ -13,6 +13,8 @@ module Abst
 		end
 	end
 
+	module_function
+
 	def element_order(g, group_order)
 		one = g.class.one
 		order = group_order
