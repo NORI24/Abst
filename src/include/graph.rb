@@ -1,4 +1,4 @@
-module ANT
+module Abst
 	def show_gif_image(path)
 		require 'tk'
 		TkButton.new do

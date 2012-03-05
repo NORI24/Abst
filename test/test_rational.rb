@@ -1,6 +1,6 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_Rational < MiniTest::Unit::TestCase
 	def test_to_rds

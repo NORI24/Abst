@@ -1,11 +1,11 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_PrimeMPQS < MiniTest::Unit::TestCase
 	def test_primes_list
 		test = lambda do |n|
-			factor = ANT.mpqs(n)
+			factor = Abst.mpqs(n)
 			assert(1 < factor && factor < n)
 			assert_equal(0, n % factor)
 		end

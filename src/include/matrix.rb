@@ -1,8 +1,8 @@
-module ANT
+module Abst
 	module_function
 
 	class Matrix
-		include ANT::Group
+		include Abst::Group
 
 		class << self
 			attr_reader :coef_class, :height, :width, :coef_vector
@@ -111,7 +111,7 @@ module ANT
 	end
 
 	class SquareMatrix < Matrix
-		include ANT::Ring
+		include Abst::Ring
 
 		def trace
 			return @coef.map.with_index{|row, i| row[i]}.inject(&:+)
@@ -130,7 +130,7 @@ module ANT
 			@coef_class = coef_class
 			@height = height
 			@width = width
-			@coef_vector = ANT::Vector(coef_class, width)
+			@coef_vector = Abst::Vector(coef_class, width)
 		end
 
 		return matrix.new(elems) if elems

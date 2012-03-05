@@ -1,8 +1,8 @@
-module ANT
+module Abst
 	module_function
 
 	class Polynomial
-		include ANT::Ring
+		include Abst::Ring
 
 		class << self
 			attr_reader :coef_class, :zero, :one

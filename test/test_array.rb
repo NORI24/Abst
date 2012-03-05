@@ -1,6 +1,6 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_Array < MiniTest::Unit::TestCase
 	def test_each_coefficient

@@ -1,26 +1,26 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_Matrix < MiniTest::Unit::TestCase
 	def test_Matrix
-		matrix = ANT::Matrix(Rational, 2, 3)
+		matrix = Abst::Matrix(Rational, 2, 3)
 		assert_equal("Rational", matrix.coef_class.name)
 		assert_equal(2, matrix.height)
 		assert_equal(3, matrix.width)
 
 		m = [[3, 5, 1], [9, 2, 3]]
-		assert_equal(m, ANT::Matrix(Rational, m).to_a)
+		assert_equal(m, Abst::Matrix(Rational, m).to_a)
 	end
 
 	def test_each
-		matrix = ANT::Matrix(Rational, 2, 2)
+		matrix = Abst::Matrix(Rational, 2, 2)
 		m = matrix.new([[3, 5], [1, 2]])
 		assert_equal([3, 5, 1, 2], m.each.to_a)
 	end
 
 	def test_add
-		matrix = ANT::Matrix(Rational, 2, 3)
+		matrix = Abst::Matrix(Rational, 2, 3)
 		m1 = matrix.new([[2, 3, 2], [4, 5, -7]])
 		m2 = matrix.new([[3, 1, 4], [2, -3, 1]])
 
@@ -28,7 +28,7 @@ class TC_Matrix < MiniTest::Unit::TestCase
 	end
 
 	def test_sub
-		matrix = ANT::Matrix(Rational, 2, 3)
+		matrix = Abst::Matrix(Rational, 2, 3)
 		m1 = matrix.new([[2, 3, 2], [4, 5, -7]])
 		m2 = matrix.new([[3, 1, 4], [2, -3, 1]])
 
@@ -46,7 +46,7 @@ end
 
 class TC_SquareMatrix < MiniTest::Unit::TestCase
 	def test_trace
-		matrix = ANT::Matrix(Rational, 2, 2)
+		matrix = Abst::Matrix(Rational, 2, 2)
 		m = matrix.new([[2, 3], [4, 5]])
 
 		assert_equal(7, m.trace)

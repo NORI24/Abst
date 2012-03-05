@@ -1,7 +1,7 @@
 require_relative 'include/compatibility'
 
-module ANT
-	ANT_ROOT = File.dirname(__FILE__) + '/'
+module Abst
+	ABST_ROOT = File.dirname(__FILE__) + '/'
 
 	# Integer block byte size
 	BASE_BYTE = 1.size
@@ -10,7 +10,7 @@ module ANT
 	I = Complex::I
 end
 
-require_relative 'ant_config'
+require_relative 'config'
 
 require_relative 'include/bisect'
 require_relative 'include/cache'
@@ -35,4 +35,4 @@ require_relative 'include/vector'
 require_relative 'include/polynomial'
 require_relative 'include/matrix'
 
-include ANT if ANT::AUTO_INCLUDE
+include Abst if Abst::AUTO_INCLUDE

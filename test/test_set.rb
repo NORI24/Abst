@@ -1,6 +1,6 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_Set < MiniTest::Unit::TestCase
 	def test_add

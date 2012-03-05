@@ -32,7 +32,7 @@ class Integer
 	end
 
 	def bit_size
-		return ANT.ilog2(self) + 1
+		return Abst.ilog2(self) + 1
 	end
 
 	# Return:: formatted string
@@ -101,7 +101,7 @@ class Integer
 		f3, e3 = (self - r).extended_pmod_factorial(prime)
 
 		return 0 if e2 + e3 < e1
-		return f1 * ANT.inverse(f2 * f3, prime) % prime
+		return f1 * Abst.inverse(f2 * f3, prime) % prime
 	end
 
 	def repeated_combination(r)
@@ -152,7 +152,7 @@ class Integer
 			return false unless check[c][r % c]
 		end
 
-		q = ANT.isqrt(self)
+		q = Abst.isqrt(self)
 		return false unless q ** 2 == self
 
 		return q
@@ -171,10 +171,10 @@ class Integer
 		return true if self <= 3
 		return false if self.square?
 
-		pl = ANT.primes_list
+		pl = Abst.primes_list
 
 		# trial division
-		limit = ANT.isqrt(n)
+		limit = Abst.isqrt(n)
 		1.upto(pl.size - 1).each do |i|
 			d = pl[i]
 			return true if limit < d
@@ -182,7 +182,7 @@ class Integer
 			if n % d == 0
 				n /= d
 				return false if n % d == 0
-				limit = ANT.isqrt(n)
+				limit = Abst.isqrt(n)
 			end
 		end
 
@@ -193,7 +193,7 @@ class Integer
 			if n % d == 0
 				n /= d
 				return false if n % d == 0
-				limit = ANT.isqrt(n)
+				limit = Abst.isqrt(n)
 			end
 
 			d += 2
@@ -251,7 +251,7 @@ class Integer
 	end
 end
 
-module ANT
+module Abst
 	Z = Integer
 
 	class IntegerIdeal
@@ -262,7 +262,7 @@ module ANT
 		end
 
 		def +(other)
-			self.class.new(ANT.gcd(@mod, other.mod))
+			self.class.new(Abst.gcd(@mod, other.mod))
 		end
 
 		def *(other)
@@ -270,7 +270,7 @@ module ANT
 		end
 
 		def &(other)
-			self.class.new(ANT.lcm(@mod, other.mod))
+			self.class.new(Abst.lcm(@mod, other.mod))
 		end
 
 		def to_s
@@ -337,7 +337,7 @@ module ANT
 		end
 
 		def inverse
-			return self.class.new(ANT.inverse(@n, self.class.mod))
+			return self.class.new(Abst.inverse(@n, self.class.mod))
 		end
 
 		def order(op)
@@ -363,7 +363,7 @@ module ANT
 			return @n
 		end
 
-		include ANT::Ring
+		include Abst::Ring
 	end
 
 	class IntegerResidueField < IntegerResidueRing
@@ -375,7 +375,7 @@ module ANT
 		end
 
 		def inverse
-			return self.class.new(ANT.inverse(@n, self.class.mod))
+			return self.class.new(Abst.inverse(@n, self.class.mod))
 		end
 
 		def /(other)

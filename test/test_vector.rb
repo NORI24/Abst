@@ -1,19 +1,19 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_Vector < MiniTest::Unit::TestCase
 	def test_Vector
-		vector = ANT::Vector(Rational, 3)
+		vector = Abst::Vector(Rational, 3)
 		assert_equal("Rational", vector.coef_class.name)
 		assert_equal(3, vector.size)
 
-		v = ANT::Vector(Rational, [2, 3, 4])
+		v = Abst::Vector(Rational, [2, 3, 4])
 		assert_equal([2, 3, 4], v.to_a)
 	end
 
 	def test_add
-		vector = ANT::Vector(Integer, 4)
+		vector = Abst::Vector(Integer, 4)
 		v1 = vector.new([3, 4, 5, 6])
 		v2 = vector.new([1, 1, 1, 3])
 
@@ -21,7 +21,7 @@ class TC_Vector < MiniTest::Unit::TestCase
 	end
 
 	def test_sub
-		vector = ANT::Vector(Integer, 4)
+		vector = Abst::Vector(Integer, 4)
 		v1 = vector.new([3, 4, 5, 6])
 		v2 = vector.new([1, 1, 1, 3])
 
@@ -29,7 +29,7 @@ class TC_Vector < MiniTest::Unit::TestCase
 	end
 
 	def test_squared_length
-		vector = ANT::Vector(Integer, 4)
+		vector = Abst::Vector(Integer, 4)
 		v = vector.new([3, 4, 5, 6])
 
 		assert_equal(9 + 16 + 25 + 36, v.squared_length)

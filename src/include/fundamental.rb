@@ -1,4 +1,4 @@
-module ANT
+module Abst
 	module_function
 
 	# Right-Left Binary Power

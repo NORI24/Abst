@@ -1,4 +1,4 @@
-module ANT
+module Abst
 	module_function
 
 	$fibonacci = {0 => 0, 1 => 1}

@@ -1,6 +1,6 @@
 require 'thread'
 
-module ANT
+module Abst
 	module_function
 
 	class MPQS
@@ -64,7 +64,7 @@ module ANT
 				target = [3, 5, 7, 11, 13]
 				@@kronecker_table = 4.times.map{Hash.new}
 				(17..3583).each_prime do |p|
-					k = target.map {|b| ANT.kronecker_symbol(p, b)}
+					k = target.map {|b| Abst.kronecker_symbol(p, b)}
 					@@kronecker_table[(p & 6) >> 1][k] ||= p
 				end
 				@@kronecker_table[0][[1, 1, 1, 1, 1]] = 1
@@ -85,7 +85,7 @@ module ANT
 			select_factor_base
 			some_precomputations
 
-			@d = ANT.isqrt(ANT.isqrt(@n >> 1) / @sieve_range)
+			@d = Abst.isqrt(Abst.isqrt(@n >> 1) / @sieve_range)
 			@d -= (@d & 3) + 1
 
 			@matrix_left = []
@@ -96,7 +96,7 @@ module ANT
 		end
 
 		def decide_multiplier(n)
-			t = [3, 5, 7, 11, 13].map {|p| ANT.kronecker_symbol(n, p)}
+			t = [3, 5, 7, 11, 13].map {|p| Abst.kronecker_symbol(n, p)}
 			multiplier = self.class.kronecker_table[(n & 6) >> 1][t]
 			@n = n * multiplier
 		end
@@ -112,7 +112,7 @@ module ANT
 		def select_factor_base
 			@factor_base = @@fixed_factor_base.dup
 			(17..INFINITY).each_prime do |p|
-				if 1 == ANT.kronecker_symbol(@n, p)
+				if 1 == Abst.kronecker_symbol(@n, p)
 					@factor_base.push(p)
 					break if @factor_base_size <= @factor_base.size
 				end
@@ -128,7 +128,7 @@ module ANT
 			2.upto(@factor_base_size - 1) do |i|
 				p = @factor_base[i]
 				@power_limit[i] = (@factor_base_log.last / @factor_base_log[i]).floor
-				@mod_sqrt_cache[i] = [nil] + ANT.mod_sqrt(@n, p, @power_limit[i], true)
+				@mod_sqrt_cache[i] = [nil] + Abst.mod_sqrt(@n, p, @power_limit[i], true)
 			end
 
 			target = Math.log(@n) / 2 + Math.log(@sieve_range) - 1
@@ -180,11 +180,11 @@ module ANT
 					end
 
 					2.upto(@factor_base_size - 1) do |i|
-						y = y * ANT.power(@factor_base[i], f[i] >> 1, @n) % @n
+						y = y * Abst.power(@factor_base[i], f[i] >> 1, @n) % @n
 					end
 					y = (y << (f[1] >> 1)) % @n
 
-					z = ANT.lehmer_gcd(x - y, @original_n)
+					z = Abst.lehmer_gcd(x - y, @original_n)
 					return z if 1 < z and z < @original_n
 				end
 			end
@@ -247,11 +247,11 @@ module ANT
 					end
 
 					2.upto(@factor_base_size - 1) do |i|
-						y = y * ANT.power(@factor_base[i], f[i] >> 1, @n) % @n
+						y = y * Abst.power(@factor_base[i], f[i] >> 1, @n) % @n
 					end
 					y = (y << (f[1] >> 1)) % @n
 
-					z = ANT.lehmer_gcd(x - y, @original_n)
+					z = Abst.lehmer_gcd(x - y, @original_n)
 					return z if 1 < z and z < @original_n
 				end
 			end
@@ -285,8 +285,8 @@ module ANT
 #temp = Time.now.to_i + Time.now.usec.to_f / 10 ** 6
 			@d = d = next_d
 			a = d ** 2
-			h1 = ANT.power(@n, (d >> 2) + 1, d)
-			h2 = ((@n - h1 ** 2) / d) * ANT.extended_lehmer_gcd(h1 << 1, d)[0] % d
+			h1 = Abst.power(@n, (d >> 2) + 1, d)
+			h2 = ((@n - h1 ** 2) / d) * Abst.extended_lehmer_gcd(h1 << 1, d)[0] % d
 			b = h1 + h2 * d
 			b = a - b if b.even?
 			c = ((b ** 2 - @n) >> 2) / a
@@ -297,16 +297,16 @@ module ANT
 
 		def next_d
 			d = @d + 4
-			if d < ANT.primes_list.last
-				plist = ANT.primes_list
+			if d < Abst.primes_list.last
+				plist = Abst.primes_list
 				(d..plist.last).each_prime do |p|
-					return p if p[1] == 1 and ANT.kronecker_symbol(@n, p) == 1
+					return p if p[1] == 1 and Abst.kronecker_symbol(@n, p) == 1
 				end
 				d += 4
 			end
 
 			loop do
-				return d if ANT.kronecker_symbol(@n, d) == 1 and ANT.power(@n, d >> 1, d) == 1
+				return d if Abst.kronecker_symbol(@n, d) == 1 and Abst.power(@n, d >> 1, d) == 1
 				d += 4
 			end
 		end
@@ -329,7 +329,7 @@ module ANT
 	#		2.upto(@factor_base_size - 1) do |i|
 			4.upto(@factor_base_size - 1) do |i|
 				p = @factor_base[i]
-				a_inverse = ANT.extended_lehmer_gcd(a2, p ** @power_limit[i])[0]
+				a_inverse = Abst.extended_lehmer_gcd(a2, p ** @power_limit[i])[0]
 				pe = 1
 				e = 1
 
@@ -476,7 +476,7 @@ module ANT
 		end
 	end
 
-	def mpqs(n, thread_num = ANT::THREAD_NUM)
+	def mpqs(n, thread_num = Abst::THREAD_NUM)
 		mpqs = MPQS.new(n, thread_num)
 		return mpqs.find_factor
 	end

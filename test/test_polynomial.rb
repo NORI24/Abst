@@ -1,31 +1,31 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-require 'ant'
+require 'abst'
 
 class TC_Polynomial < MiniTest::Unit::TestCase
 	def test_Polynomial
-		polynomial = ANT::Polynomial(Rational)
+		polynomial = Abst::Polynomial(Rational)
 		assert_equal("Rational", polynomial.coef_class.name)
 
 		poly = polynomial.new([1, Rational(2, 7), 3])
 		assert_equal([1, Rational(2, 7), 3], poly.to_a)
 
-		poly = ANT::Polynomial(Rational, [3, 5])
+		poly = Abst::Polynomial(Rational, [3, 5])
 		assert_equal([3, 5], poly.to_a)
 	end
 
 	def test_zero
-		polynomial = ANT::Polynomial(Rational)
+		polynomial = Abst::Polynomial(Rational)
 		assert_equal([0], polynomial.zero.to_a)
 	end
 
 	def test_one
-		polynomial = ANT::Polynomial(Rational)
+		polynomial = Abst::Polynomial(Rational)
 		assert_equal(polynomial.new([1]), polynomial.one)
 	end
 
 	def test_add
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly1 = polynomial.new([2, 3, 4])
 		poly2 = polynomial.new([-3, 12, -4])
 		poly3 = polynomial.new([-3, 12])
@@ -35,7 +35,7 @@ class TC_Polynomial < MiniTest::Unit::TestCase
 	end
 
 	def test_sub
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 
 		poly1 = polynomial.new([2, 3, 4])
 		poly2 = polynomial.new([-3, 12, 4])
@@ -46,7 +46,7 @@ class TC_Polynomial < MiniTest::Unit::TestCase
 	end
 
 	def test_mul
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly1 = polynomial.new([2, 3, 4])
 		poly2 = polynomial.new([-3, 12, -4])
 		expect = polynomial.new([-6, 15, 16, 36, -16])
@@ -55,7 +55,7 @@ class TC_Polynomial < MiniTest::Unit::TestCase
 	end
 
 	def test_divmod
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 
 		poly1 = polynomial.new([1, 2, 3])
 		poly2 = polynomial.new([1])
@@ -71,7 +71,7 @@ class TC_Polynomial < MiniTest::Unit::TestCase
 	end
 
 	def test_eq
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly1 = polynomial.new([2, 3, 4])
 		poly2 = polynomial.new([2, 3, 4])
 		poly3 = polynomial.new([-3, 12, -4])
@@ -81,26 +81,26 @@ class TC_Polynomial < MiniTest::Unit::TestCase
 	end
 
 	def test_degree
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly = polynomial.new([2, 3, 4, 0])
 		assert_equal(2, poly.degree)
 	end
 
 	def test_lc
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly = polynomial.new([2, 3, 4])
 		assert_equal(4, poly.lc)
 	end
 
 	def test_eval
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly = polynomial.new([2, -3, 4])
 		assert_equal(3, poly.eval(1))
 		assert_equal(12, poly.eval(2))
 	end
 
 	def test_to_a
-		polynomial = ANT::Polynomial(Integer)
+		polynomial = Abst::Polynomial(Integer)
 		poly = polynomial.new([2, -3, 4])
 		assert_equal([2, -3, 4], poly.to_a)
 	end

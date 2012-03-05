@@ -1,8 +1,8 @@
-module ANT
+module Abst
 	module Ring
 		def self.included(base)
 			base.class_eval do
-				include ANT::Group
+				include Abst::Group
 			end
 		end
 

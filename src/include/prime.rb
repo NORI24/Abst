@@ -1,4 +1,4 @@
-module ANT
+module Abst
 	module_function
 
 	#
@@ -537,7 +537,7 @@ class Range
 	def each_prime()
 		return Enumerator.new(self, :each_prime) unless block_given?
 
-		primes = ANT.primes_list
+		primes = Abst.primes_list
 
 		max = last + (exclude_end? ? -1 : 0)
 		if (first <= primes.last)

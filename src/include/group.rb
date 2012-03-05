@@ -1,4 +1,4 @@
-module ANT
+module Abst
 	module Group
 		def self.included(base)
 			base.class_eval do

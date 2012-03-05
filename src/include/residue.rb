@@ -1,4 +1,4 @@
-module ANT
+module Abst
 	def residue_class(ideal)
 		if prime?(ideal.n)
 			return residue_class_field(ideal)
