@@ -10,14 +10,14 @@ class Integer
 
 		def *(other)
 			raise ArgumentError unless other.kind_of?(self)
-			IntegerIdeal.new(other)
+			Abst::IntegerIdeal.new(other)
 		end
 
 		def /(other)
 			if other.kind_of?(Integer)
 				other = Integer * other
 			else
-				raise ArgumentError unless other.kind_of?(IntegerIdeal)
+				raise ArgumentError unless other.kind_of?(Abst::IntegerIdeal)
 			end
 			return residue_class(other)
 		end
