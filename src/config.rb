@@ -17,5 +17,5 @@ module Abst
 
 	THREAD_NUM = defined?(JRUBY_VERSION) ? 6 : 1
 
-	AUTO_INCLUDE = true
+	AUTO_INCLUDE = false
 end
