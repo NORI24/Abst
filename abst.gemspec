@@ -1,0 +1,9 @@
+Gem::Specification.new do |s|
+	s.platform = Gem::Platform::RUBY
+	s.summary = "Ruby based algebraic number theory system"
+	s.name = 'Abst'
+	s.version = "0.2.0"
+	s.author = "Yasunori Miyamoto"
+	s.files = Dir.glob("lib/**/*.rb")
+	s.description = "prime,matrix, polynomial,etc"
+end
