@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 	s.platform = Gem::Platform::RUBY
 	s.summary = "Ruby based algebraic number theory system"
-	s.name = 'Abst'
+	s.name = 'abst'
 	s.version = "0.2.0"
 	s.author = "Yasunori Miyamoto"
 	s.require_path = 'lib'
