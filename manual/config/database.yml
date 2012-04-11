@@ -14,8 +14,8 @@ development:
   reconnect: false
   database: manual_development
   pool: 5
-  username: root
-  password:
+  username: abst
+  password:l4C2.utj4YUf8GKUR26lX_ltP
   socket: /var/lib/mysql/mysql.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -27,8 +27,8 @@ test:
   reconnect: false
   database: manual_test
   pool: 5
-  username: root
-  password:
+  username: abst
+  password:l4C2.utj4YUf8GKUR26lX_ltP
   socket: /var/lib/mysql/mysql.sock
 
 production:
@@ -37,6 +37,6 @@ production:
   reconnect: false
   database: manual_production
   pool: 5
-  username: root
-  password:
+  username: abst
+  password:l4C2.utj4YUf8GKUR26lX_ltP
   socket: /var/lib/mysql/mysql.sock
