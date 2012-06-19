@@ -3,6 +3,15 @@ module Abst
 		PREFIX = 'abst_cache_'
 		CACHE_DIR = CACHE_DIR
 
+		def self.cache(cache_id)
+			if value = self[cache_id]
+				return value
+			end
+
+			return nil unless block_given?
+			return self[cache_id] = yield
+		end
+
 		def self.mkdir(dir)
 			pdir = File.dirname(dir)
 			mkdir(pdir) unless FileTest.exist?(pdir)
