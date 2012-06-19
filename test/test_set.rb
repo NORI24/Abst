@@ -5,6 +5,8 @@ require 'abst'
 class TC_Set < MiniTest::Unit::TestCase
 	def test_add
 		assert_equal(Set.new([1, 2, 3]), Set.new([1, 3]).add(2))
+		assert_equal(Set.new([1, 2, 3, 8]), Set.new([1, 3]).add(2, 8))
+		assert_equal(Set.new([1, 2, 3]), Set.new([1, 3]) << 2)
 		assert_equal(Set.new([2, 1, 2, 3]), Set.new([1, 2, 3]).add(2))
 		assert_equal(Set.new([3, 1, 2, 3, 5]), Set.new([5, 2, 3, 1]).add(2))
 	end
@@ -23,6 +25,10 @@ class TC_SortableSet < MiniTest::Unit::TestCase
 		assert_equal(SortableSet.new([1, 2, 3]), SortableSet.new([1, 3]).add(2))
 		assert_equal(SortableSet.new([2, 1, 2, 3]), SortableSet.new([1, 2, 3]).add(2))
 		assert_equal(SortableSet.new([3, 1, 2, 3, 5]), SortableSet.new([5, 2, 3, 1]).add(2))
+	end
+
+	def test_index
+		assert_equal(3, SortableSet.new([5, 2, 3, 1])[2])
 	end
 
 	def test_dup

@@ -12,6 +12,10 @@ class Set
 		return self
 	end
 
+	def <<(item)
+		add(item)
+	end
+
 	def ==(other)
 		return false unless self.size == other.size
 		@set.each do |i|
@@ -51,6 +55,10 @@ class SortableSet < Set
 	def initialize(ary = [], &compare)
 		@set = ary.uniq.sort(&compare)
 		@compare = compare
+	end
+
+	def [](idx)
+		return @set[idx]
 	end
 
 	def add(*items)
