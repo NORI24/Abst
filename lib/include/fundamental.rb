@@ -152,7 +152,7 @@ module Abst
 	end
 
 	def lcm(a, b)
-		return a * b / gcd(a, b)
+		return a * b / Abst.gcd(a, b)
 	end
 
 	# Param::  integer a, b
@@ -163,7 +163,7 @@ module Abst
 		a, b = b, a if a < b
 
 		until 0 == b
-			return gcd(a, b) if b.instance_of?(Fixnum)
+			return Abst.gcd(a, b) if b.instance_of?(Fixnum)
 
 			# Get most significant digits of a and b
 			shift_size = (a < b ? b : a).bit_size - FIXNUM_BIT_SIZE
@@ -806,7 +806,7 @@ module Abst
 			a, b, c = a * c, -b * c, a**2 * m - b**2
 
 			# reduction
-			t = gcd(gcd(a, b), c)
+			t = Abst.gcd(Abst.gcd(a, b), c)
 			a /= t
 			b /= t
 			c /= t
@@ -851,7 +851,7 @@ module Abst
 			mm = m ** 2
 			s = m.even? ? 1 : 2
 			s.step(m, 2) do |n|
-				next unless gcd(m, n) == 1
+				next unless Abst.gcd(m, n) == 1
 
 				nn = n ** 2
 				c = mm + nn
