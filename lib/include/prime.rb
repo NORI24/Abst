@@ -514,6 +514,44 @@ module Abst
 		end
 	end
 
+	# Param::  integer max
+	# Return:: hash of factorization of 2..max
+	def consecutive_factorization(max)
+		rslt = Hash.new do |hash, key|
+			next nil unless key.kind_of?(Integer)
+			next nil if key <= 1 or max < key
+			i = 1
+			i += 1 while key[i] == 0
+			t = key >> i
+			1 == t ? [[2, i]] : hash[t].dup.unshift([2, i])
+		end
+
+		3.step(max, 2) do |n|
+			next if rslt.has_key?(n)
+			rslt[n] = [[n, 1]]
+			(n * 3).step(max, n << 1) do |m|
+				rslt[m] = [m] unless rslt.has_key?(m)
+				t = rslt[m].last / n
+				e = 1
+				loop do
+					q, r = t.divmod(n)
+					break unless 0 == r
+					t = q
+					e += 1
+				end
+
+				rslt[m][-1, 0] = [[n, e]]
+				if 1 == t
+					rslt[m].pop
+				else
+					rslt[m][-1] = t
+				end
+			end
+		end
+
+		return rslt
+	end
+
 	# Param::  integer n
 	# Return:: The least prime greater than n
 	def next_prime(n)
