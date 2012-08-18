@@ -20,6 +20,7 @@ require_relative 'include/ring'
 
 require_relative 'include/array'
 require_relative 'include/complex'
+require_relative 'include/enumerable'
 require_relative 'include/float'
 require_relative 'include/fundamental'
 require_relative 'include/graph'
