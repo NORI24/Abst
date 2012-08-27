@@ -118,7 +118,7 @@ class TC_Prime < MiniTest::Unit::TestCase
 	end
 
 	def test_consecutive_factorization
-		rslt = consecutive_factorization(15)
+		rslt = Abst.consecutive_factorization(15)
 		assert_equal({3=>[[3, 1]], 5=>[[5, 1]], 7=>[[7, 1]], 9=>[[3, 2]],
 			11=>[[11, 1]], 13=>[[13, 1]], 15=>[[3, 1], [5, 1]]}, rslt)
 		assert_equal(nil, rslt[0])
