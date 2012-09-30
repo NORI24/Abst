@@ -16,7 +16,7 @@ module Abst
 			end
 		end
 
-		attr_reader :coef, :height, :width
+		attr_reader :coef, :coef_class, :height, :width
 		protected :coef
 
 		def initialize(m)
@@ -111,6 +111,15 @@ module Abst
 
 		def inspect
 			return "#{self.class}\n#{self}"
+		end
+
+		def eql?(other)
+			@coef_classse == other.coef_class and self.to_a == other.to_a
+		end
+		alias :== :eql?
+
+		def hash
+			inspect.hash
 		end
 	end
 
