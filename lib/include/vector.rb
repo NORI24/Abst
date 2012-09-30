@@ -20,7 +20,8 @@ module Abst
 
 		attr_reader :coef
 		protected :coef
-		def_delegators :@coef, :map, :to_s
+		def_delegators :@coef, :each, :map, :to_s, :[]
+		def_delegator :@coef, :dup, :to_a
 
 		def initialize(coef)
 			raise VectorSizeError unless coef.size == self.class.size
@@ -45,24 +46,8 @@ module Abst
 			return self.class.size
 		end
 
-		def each
-			return Enumerator.new(self) unless block_given?
-
-			@coef.each do |i|
-				yield i
-			end
-		end
-
 		def squared_length
 			return self.coef.map{|i| i ** 2}.inject(&:+)
-		end
-
-		def [](index)
-			return @coef[index]
-		end
-
-		def to_a
-			return @coef.dup
 		end
 
 		def inspect
