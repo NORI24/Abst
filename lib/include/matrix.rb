@@ -43,7 +43,11 @@ module Abst
 		end
 
 		def *(other)
-			raise NotImplementedError
+			if self.class == other.class
+				raise NotImplementedError
+			end
+
+			return self.class.new(@coef.map{|row| row.map{|i| i * other}})
 		end
 
 		# Param::  self must be n * (n + 1) matrix s.t. (MB)

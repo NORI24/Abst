@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Abst
 	module_function
 
@@ -14,8 +16,11 @@ module Abst
 			end
 		end
 
+		extend Forwardable
+
 		attr_reader :coef
 		protected :coef
+		def_delegators :@coef, :map, :to_s
 
 		def initialize(coef)
 			raise VectorSizeError unless coef.size == self.class.size
@@ -58,10 +63,6 @@ module Abst
 
 		def to_a
 			return @coef.dup
-		end
-
-		def to_s
-			return @coef.to_s
 		end
 
 		def inspect
