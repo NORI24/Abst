@@ -55,6 +55,16 @@ class TC_Fundamental < MiniTest::Unit::TestCase
 		assert_equal(32, Abst.gcd(1024, 32))
 	end
 
+	def test_lcm
+		assert_equal 1, Abst.lcm(1)
+		assert_equal 2, Abst.lcm(2)
+		assert_equal 6, Abst.lcm(2, 3)
+		assert_equal 12, Abst.lcm(4, 6)
+		assert_equal 0, Abst.lcm(0, 3)
+		assert_equal 12, Abst.lcm(2, 3, 4)
+		assert_equal 60, Abst.lcm(6, 10, 12)
+	end
+
 	def test_lehmer_gcd
 		assert_equal(7, Abst.lehmer_gcd(14, 21))
 		assert_equal(4294967311, Abst.lehmer_gcd(4294967311 * 2, 4294967311 * 3))

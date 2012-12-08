@@ -151,8 +151,9 @@ module Abst
 		return a
 	end
 
-	def lcm(a, b)
-		return a * b / Abst.gcd(a, b)
+	def lcm(*nums)
+		return nums.first if nums.length == 1
+		return nums.inject{|a, b| a * b / Abst.gcd(a, b)}
 	end
 
 	# Param::  integer a, b
