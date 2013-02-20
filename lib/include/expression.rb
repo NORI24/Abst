@@ -14,11 +14,20 @@ class Expression
 	def method_missing(name, *args)
 		self.class.new(self, name.to_sym, *args)
 	end
+
+	def to_s
+		return @receiver.to_s unless @method
+		@receiver.to_s + ' ' + @method.to_s + ' ' + @args.first.to_s
+	end
+
+	def coerce(other)
+		[Expression.new(other), self]
+	end
 end
 
 class Symbol
 	def eval(assignment)
-		assignment[self] || self
+		return assignment.instance_of?(Hash) ? assignment[self] || self : assignment
 	end
 
 	[:+, :-, :*, :/, :**].each do |op|
