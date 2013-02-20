@@ -1,6 +1,7 @@
 require_relative 'test_array'
 require_relative 'test_bisect'
 require_relative 'test_combination'
+require_relative 'test_expression'
 require_relative 'test_float'
 require_relative 'test_fundamental'
 require_relative 'test_group'
