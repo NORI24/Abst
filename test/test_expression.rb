@@ -5,6 +5,11 @@ require 'abst'
 class TC_Symbol < MiniTest::Unit::TestCase
 	def test_eval
 		assert_equal(3, :x.eval(x: 3))
+		assert_equal(4, (:x + 1).eval(x: 3))
+		assert_equal(2, (:x - 1).eval(x: 3))
+		assert_equal(6, (:x * 2).eval(x: 3))
+		assert_equal(2, (:x / 2).eval(x: 4))
+		assert_equal(9, (:x ** 2).eval(x: 3))
 	end
 end
 

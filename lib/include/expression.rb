@@ -6,9 +6,9 @@ class Expression
 	end
 
 	def eval(assignment = {})
-		receiver = @receiver.class.method_defined?(:eval) ? @receiver.eval(assignment) : @receiver
+		receiver = @receiver.respond_to?(:eval) ? @receiver.eval(assignment) : @receiver
 		return receiver unless @method
-		receiver.__send__(@method, *@args.map{|i| i.class.method_defined?(:eval) ? i.eval(assignment) : i})
+		receiver.__send__(@method, *@args.map{|i| i.respond_to?(:eval) ? i.eval(assignment) : i})
 	end
 
 	def method_missing(name, *args)
@@ -21,8 +21,10 @@ class Symbol
 		assignment[self] || self
 	end
 
-	def +(other)
-		Expression.new(self, :+, other)
+	[:+, :-, :*, :/, :**].each do |op|
+		define_method op do |other|
+			Expression.new(self, op, other)
+		end
 	end
 
 	def coerce(other)
