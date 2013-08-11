@@ -82,16 +82,10 @@ class Integer
 		r = self - r if self - r < r
 
 		if r <= 0
-			return 1 if 0 == r
-			return 0
+			return r.zero? ? 1 : 0
 		end
 
-		rslt = self
-		2.upto(r) do |i|
-			rslt = rslt * (self - i + 1) / i
-		end
-
-		return rslt
+		return 2.upto(r).inject(self) {|rslt, i| rslt * (self - i + 1) / i}
 	end
 	alias :C :combination
 
