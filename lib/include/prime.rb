@@ -453,7 +453,7 @@ module Abst
 	#
 
 	def eratosthenes_sieve(n)
-		return Enumerator.new(self, :eratosthenes_sieve, n) unless block_given?
+		return to_enum(:eratosthenes_sieve, n) unless block_given?
 
 		return if n < 2
 
@@ -573,7 +573,7 @@ end
 
 class Range
 	def each_prime()
-		return Enumerator.new(self, :each_prime) unless block_given?
+		return to_enum(:each_prime) unless block_given?
 
 		primes = Abst.primes_list
 

@@ -29,7 +29,7 @@ module Abst
 		end
 
 		def each
-			return Enumerator.new(self) unless block_given?
+			return to_enum unless block_given?
 
 			@coef.each do |row|
 				row.each do |i|

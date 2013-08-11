@@ -841,7 +841,7 @@ module Abst
 	# Return:: array of primitive Pythagorean numbers s.t. [[a, b, c], ...]
 	#          a**2 + b**2 == c**2 and a < b < c <= max_c
 	def pythagorean(max_c)
-		return Enumerator.new(self, :pythagorean, max_c) unless block_given?
+		return to_enum(:pythagorean, max_c) unless block_given?
 		return [] if max_c <= 4
 
 		1.upto(isqrt(max_c - 1)) do |m|
