@@ -141,15 +141,17 @@ module Abst
 	end
 
 	# GCD
-	# Param::  a and b are member of a Euclidean domain
-	# Return:: gcd of a and b
-	def gcd(a, b)
-		a, b = b, a % b until b.zero?
-		return a
+	# Param::  members of a Euclidean domain
+	# Return:: gcd of nums
+	def gcd(*nums)
+		return nums.inject do |a, b|
+			a, b = b, a % b until b.zero?
+			next a
+		end
 	end
 
 	def lcm(*nums)
-		return nums.inject{|a, b| a * b / Abst.gcd(a, b)}
+		return nums.inject {|a, b| a * b / Abst.gcd(a, b)}
 	end
 
 	# Param::  integer a, b
