@@ -45,6 +45,7 @@ class Integer
 	def factorial
 		return 2.upto(self).inject(1, &:*)
 	end
+	alias :! :factorial
 
 	def inverse
 		return 1 / Rational(self)
