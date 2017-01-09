@@ -150,14 +150,14 @@ class TC_Prime < MiniTest::Unit::TestCase
 		assert_equal([23, 29, 31, 37, 41], (21..41).each_prime.to_a)
 	end
 
-	def test_phi
-		assert_equal(1, Abst.phi(1))
-		assert_equal(1, Abst.phi(2))
-		assert_equal(2, Abst.phi(3))
-		assert_equal(2, Abst.phi(4))
-		assert_equal(4, Abst.phi(5))
-		assert_equal(2, Abst.phi(6))
-		assert_equal(6, Abst.phi(7))
-		assert_equal(4, Abst.phi(8))
+	def test_totient
+		assert_equal(1, Abst.totient(1))
+		assert_equal(1, Abst.totient(2))
+		assert_equal(2, Abst.totient(3))
+		assert_equal(2, Abst.totient(4))
+		assert_equal(4, Abst.totient(5))
+		assert_equal(2, Abst.totient(6))
+		assert_equal(6, Abst.totient(7))
+		assert_equal(4, Abst.totient(8))
 	end
 end

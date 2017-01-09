@@ -140,10 +140,7 @@ module Abst
 	# Param::  positive integer n
 	# Return:: boolean whether n is prime or not
 	def prime?(n)
-		if n <= 3
-			return false if n <= 1
-			return true
-		end
+		return 1 < n if n <= 3
 
 		if n <= primes_list.last
 			return Bisect.index(primes_list, n) ? true : false
@@ -563,7 +560,7 @@ module Abst
 		return n
 	end
 
-	def phi(n)
+	def totient(n)
 		return 1 if 1 == n
 		return n - 1 if prime?(n)
 
