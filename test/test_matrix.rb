@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Matrix < MiniTest::Unit::TestCase
+class TC_Matrix < MiniTest::Test
 	def test_Matrix
 		matrix = Abst::Matrix(Rational, 2, 3)
 		assert_equal("Rational", matrix.coef_class.name)
@@ -44,7 +43,7 @@ class TC_Matrix < MiniTest::Unit::TestCase
 	end
 end
 
-class TC_SquareMatrix < MiniTest::Unit::TestCase
+class TC_SquareMatrix < MiniTest::Test
 	def test_trace
 		matrix = Abst::Matrix(Rational, 2, 2)
 		m = matrix.new([[2, 3], [4, 5]])

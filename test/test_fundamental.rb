@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Fundamental < MiniTest::Unit::TestCase
+class TC_Fundamental < MiniTest::Test
 	def test_right_left_power
 		assert_equal(1, Abst.right_left_power(5, 0))
 		assert_equal(1024, Abst.right_left_power(2, 10))

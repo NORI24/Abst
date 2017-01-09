@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Vector < MiniTest::Unit::TestCase
+class TC_Vector < MiniTest::Test
 	def test_Vector
 		vector = Abst::Vector(Rational, 3)
 		assert_equal("Rational", vector.coef_class.name)

@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Set < MiniTest::Unit::TestCase
+class TC_Set < MiniTest::Test
 	def test_add
 		assert_equal(Set.new([1, 2, 3]), Set.new([1, 3]).add(2))
 		assert_equal(Set.new([1, 2, 3, 8]), Set.new([1, 3]).add(2, 8))
@@ -20,7 +19,7 @@ class TC_Set < MiniTest::Unit::TestCase
 	end
 end
 
-class TC_SortableSet < MiniTest::Unit::TestCase
+class TC_SortableSet < MiniTest::Test
 	def test_add
 		assert_equal(SortableSet.new([1, 2, 3]), SortableSet.new([1, 3]).add(2))
 		assert_equal(SortableSet.new([2, 1, 2, 3]), SortableSet.new([1, 2, 3]).add(2))

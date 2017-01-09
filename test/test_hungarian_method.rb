@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_HungarianMethod < MiniTest::Unit::TestCase
+class TC_HungarianMethod < MiniTest::Test
 	def test_cover
 		matrix = <<-EOS
 			26 20  0  0 22  1 28 24

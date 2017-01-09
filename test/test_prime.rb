@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Prime < MiniTest::Unit::TestCase
+class TC_Prime < MiniTest::Test
 	def test_primes_list
 		list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 		assert_equal(list, Abst.primes_list[0...10])

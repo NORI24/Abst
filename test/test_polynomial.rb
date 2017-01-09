@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Polynomial < MiniTest::Unit::TestCase
+class TC_Polynomial < MiniTest::Test
 	def test_Polynomial
 		polynomial = Abst::Polynomial(Rational)
 		assert_equal("Rational", polynomial.coef_class.name)

@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_PrimeMPQS < MiniTest::Unit::TestCase
+class TC_PrimeMPQS < MiniTest::Test
 	def test_primes_list
 		test = lambda do |n|
 			factor = Abst.mpqs(n)

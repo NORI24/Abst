@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Symbol < MiniTest::Unit::TestCase
+class TC_Symbol < MiniTest::Test
 	def test_eval
 		assert_equal(3, :x.eval(x: 3))
 	end
@@ -20,7 +19,7 @@ class TC_Symbol < MiniTest::Unit::TestCase
 	end
 end
 
-class TC_Expression < MiniTest::Unit::TestCase
+class TC_Expression < MiniTest::Test
 	def test_initialize
 		t = Expression.new(:x, :+, 1)
 		assert_equal(:x, t.instance_eval{@receiver})

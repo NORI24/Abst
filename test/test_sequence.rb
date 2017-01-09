@@ -1,8 +1,7 @@
-require 'minitest/unit'
 require 'minitest/autorun'
 require 'abst'
 
-class TC_Fundamental < MiniTest::Unit::TestCase
+class TC_Fundamental < MiniTest::Test
 	def test_fibonacci
 		assert_equal(1, Abst.fibonacci(1))
 		assert_equal(1, Abst.fibonacci(2))
