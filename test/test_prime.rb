@@ -159,4 +159,9 @@ class TC_Prime < MiniTest::Test
 		assert_equal(6, Abst.totient(7))
 		assert_equal(4, Abst.totient(8))
 	end
+
+	def test_totient_sum
+		assert_equal(30397486, Abst.totient_sum(10 ** 4))
+		assert_equal(3039650754, Abst.totient_sum(10 ** 5))
+	end
 end

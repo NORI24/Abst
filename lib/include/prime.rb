@@ -560,11 +560,111 @@ module Abst
 		return n
 	end
 
+	# Euler's totient function
 	def totient(n)
 		return 1 if 1 == n
 		return n - 1 if prime?(n)
 
 		return factorize(n).inject(1) {|r, i| r * i[0] ** (i[1] - 1) * (i[0] - 1)}
+	end
+
+	# Compute moebius function under n^(2/3).
+	# Param: Integer n
+	# Return: Array return[i] == moebius(i).
+	def moebius_sieve(n)
+		sieve = Array.new(n + 1)
+		sieve[1] = 1
+
+		# sieve on odd numbers
+		d = 3
+		while d <= n
+			if sieve[d]
+				# sieve[d] has number of prime divisors if d is squarefree otherwise 0.
+				if 0 < sieve[d]
+					sieve[d] = sieve[d].even?? 1 : -1
+				end
+			else
+				# Now d is prime
+				sieve[d] = -1
+
+				# non squeare free
+				(d ** 2).step(n, (d ** 2) << 1) do |j|
+					sieve[j] = 0
+				end
+
+				# Increment sieve[j] it has number of prime divisors.
+				(3 * d).step(n, d << 1) do |j|
+					next if sieve[j] == 0
+					sieve[j] = (sieve[j] || 0) + 1
+				end
+			end
+
+			d += 2
+		end
+
+		# sieve on even numbers
+		2.step(n, 4) do |i|
+			sieve[i] = -sieve[i >> 1]
+		end
+		4.step(n, 4) do |i|
+			sieve[i] = 0
+		end
+
+		return sieve
+	end
+
+	$mertens_cache_2 = {}
+	def mertens(n)
+		if n < $mertens_cache.size
+			return $mertens_cache[n]
+		end
+
+		rslt = $mertens_cache_2[n]
+		unless rslt
+			rslt = 0
+			d = 2
+			while d <= n
+				q = n / d
+				next_d = n / q + 1
+				rslt += mertens(q) * (next_d - d)
+				d = next_d
+			end
+
+			rslt = 1 - rslt
+			$mertens_cache_2[n] = rslt
+		end
+
+		return rslt
+	end
+
+	# Param: Integer n
+	# Return: Sum of totient(i) for (1 <= i <= n)
+	def totient_sum(n)
+		n_23 = (n ** (2/3r)).to_i
+
+		# Compute moebius function under n^(2/3) by sieve
+		moebius_sieve_rslt = moebius_sieve(n_23)
+
+		# Compute mertens under n^(2/3)
+		$mertens_cache = Array.new(n_23 + 1)
+		$mertens_cache[0] = 0
+		i = 1
+		while i <= n_23
+			$mertens_cache[i] = $mertens_cache[i - 1] + moebius_sieve_rslt[i]
+			i += 1
+		end
+
+		rslt = 1
+		d = 2
+		while d <= n
+			a = n / d
+			next_d = n / a + 1
+			m = mertens(a)
+			rslt += (d + next_d - 3) * (next_d - d) / 2 * m
+			d = next_d
+		end
+
+		return rslt
 	end
 end
 
