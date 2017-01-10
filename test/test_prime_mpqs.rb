@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'abst'
 
 class TC_PrimeMPQS < MiniTest::Test
-	def test_primes_list
+	def test_mpqs
 		test = lambda do |n|
 			factor = Abst.mpqs(n)
 			assert(1 < factor && factor < n)
