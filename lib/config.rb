@@ -1,6 +1,6 @@
 module Abst
-	# Precompute primes under the value
-	PRIME_CACHE_LIMIT = 1_000_000
+	# Default precompute size of Eratosthenes sieve
+	DEFAULT_SIEVE_SIZE = 1_000_000
 
 	# System cache files will be created in this directory
 	DATA_DIR = ABST_ROOT + 'data/'

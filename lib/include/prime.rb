@@ -7,13 +7,13 @@ module Abst
 
 	$precomputed_sieve = nil
 	def precomputed_sieve
-		precompute_sieve(PRIME_CACHE_LIMIT) unless $precomputed_sieve
+		precompute_sieve(DEFAULT_SIEVE_SIZE) unless $precomputed_sieve
 		return $precomputed_sieve
 	end
 
 	$precomputed_primes = nil
 	def precomputed_primes
-		precompute_sieve(PRIME_CACHE_LIMIT) unless $precomputed_sieve
+		precompute_sieve(DEFAULT_SIEVE_SIZE) unless $precomputed_sieve
 		return $precomputed_primes
 	end
 
@@ -87,7 +87,7 @@ module Abst
 
 	# precompute primes by eratosthenes
 	def precompute_primes
-		primes = eratosthenes_sieve(PRIME_CACHE_LIMIT).to_a
+		primes = eratosthenes_sieve(DEFAULT_SIEVE_SIZE).to_a
 
 		Dir::mkdir(DATA_DIR) unless FileTest.exist?(DATA_DIR)
 		open(PRIMES_LIST, "w") {|io| io.write(primes.map(&:to_s).join("\n"))}
@@ -372,7 +372,7 @@ module Abst
 	end
 
 	# Param::  positive integer n
-	#          positive integer bound <= PRIME_CACHE_LIMIT
+	#          positive integer bound <= DEFAULT_SIEVE_SIZE
 	#          positive integer m (2 <= m < n)
 	# Return:: a factor f (1 < f < n) if found else nil
 	def p_minus_1(n, bound = 10_000, m = 2)
