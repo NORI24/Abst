@@ -5,6 +5,86 @@ module Abst
 	# Cache
 	#
 
+	$precomputed_sieve = nil
+	def precomputed_sieve
+		precompute_sieve(PRIME_CACHE_LIMIT) unless $precomputed_sieve
+		return $precomputed_sieve
+	end
+
+	$precomputed_primes = nil
+	def precomputed_primes
+		precompute_sieve(PRIME_CACHE_LIMIT) unless $precomputed_sieve
+		return $precomputed_primes
+	end
+
+	# Compute eratosthenes sieve.
+	# Cache the sieve array and primes.
+	def precompute_sieve(n)
+		n = 100 if n < 100
+		return if $precomputed_sieve && n + 1 < $precomputed_sieve.size
+
+		primes = [2]
+
+		# make array for sieve
+		sieve_len_max = (n + 1) >> 1
+		sieve = [nil]
+		sieve_len = sieve.size
+		k = 3
+		i = 1
+		while sieve_len < sieve_len_max
+			if sieve[i].nil?
+				primes << k
+				sieve_len *= k
+				if sieve_len_max < sieve_len
+					sieve_len /= k
+					# adjust sieve list length
+					sieve *= sieve_len_max / sieve_len
+					sieve += sieve[0...(sieve_len_max - sieve.size)]
+					sieve_len = sieve_len_max
+				else
+					sieve *= k
+				end
+
+				i.step(sieve_len - 1, k) do |j|
+					sieve[j] = k
+				end
+			end
+
+			k += 2
+			i += 1
+		end
+
+		# Set sieve[prime] = nil
+		(1...i).each do |j|
+			sieve[j] = nil if sieve[j] == (j << 1) + 1
+		end
+
+		# sieve
+		limit = (isqrt(n) - 1) >> 1
+		while i <= limit
+			unless sieve[i]
+				primes << (k = (i << 1) + 1)
+				j = (k ** 2) >> 1
+				while j < sieve_len_max
+					sieve[j] = k
+					j += k
+				end
+			end
+
+			i += 1
+		end
+
+		# output result
+		limit = (n - 1) >> 1
+		while i <= limit
+			primes << (i << 1) + 1 unless sieve[i]
+			i += 1
+		end
+
+		$precomputed_primes = primes
+		$precomputed_sieve = sieve
+	end
+
 	# precompute primes by eratosthenes
 	def precompute_primes
 		primes = eratosthenes_sieve(PRIME_CACHE_LIMIT).to_a
