@@ -2,41 +2,87 @@ module Abst
 	module_function
 
 	#
-	# Cache
+	# Precomputation
 	#
 
-	# precompute primes by eratosthenes
-	def precompute_primes
-		primes = eratosthenes_sieve(PRIME_CACHE_LIMIT).to_a
-
-		Dir::mkdir(DATA_DIR) unless FileTest.exist?(DATA_DIR)
-		open(PRIMES_LIST, "w") {|io| io.write(primes.map(&:to_s).join("\n"))}
-
-		return primes
+	$precomputed_sieve = nil
+	def precomputed_sieve
+		precompute_sieve(DEFAULT_SIEVE_SIZE) unless $precomputed_sieve
+		return $precomputed_sieve
 	end
 
-	def load_precomputed_primes
-		open(PRIMES_LIST) {|io| return io.read.split("\n").map(&:to_i)}
+	$precomputed_primes = nil
+	def precomputed_primes
+		precompute_sieve(DEFAULT_SIEVE_SIZE) unless $precomputed_sieve
+		return $precomputed_primes
 	end
 
-	$primes = nil
-	def primes_list
-		return $primes if $primes
+	# Compute eratosthenes sieve.
+	# Cache the sieve array and primes.
+	def precompute_sieve(n)
+		n = 100 if n < 100
+		return if $precomputed_sieve && (n + 1) >> 1 <= $precomputed_sieve.size
 
-		# precomputed?
-		if FileTest.exist?(PRIMES_LIST)
-			$primes = load_precomputed_primes
-		else
-			$primes = precompute_primes
+		primes = [2]
+
+		# make array for sieve
+		sieve_len_max = (n + 1) >> 1
+		sieve = [nil]
+		sieve_len = sieve.size
+		k = 3
+		i = 1
+		while sieve_len < sieve_len_max
+			if sieve[i].nil?
+				primes << k
+				sieve_len *= k
+				if sieve_len_max < sieve_len
+					sieve_len /= k
+					# adjust sieve list length
+					sieve *= sieve_len_max / sieve_len
+					sieve += sieve[0...(sieve_len_max - sieve.size)]
+					sieve_len = sieve_len_max
+				else
+					sieve *= k
+				end
+
+				i.step(sieve_len - 1, k) do |j|
+					sieve[j] = k
+				end
+			end
+
+			k += 2
+			i += 1
 		end
 
-		def $primes.include?(n)
-			return Bisect.index(self, n)
+		# Set sieve[prime] = nil
+		(1...i).each do |j|
+			sieve[j] = nil if sieve[j] == (j << 1) + 1
 		end
 
-		$primes.freeze
+		# sieve
+		limit = (isqrt(n) - 1) >> 1
+		while i <= limit
+			unless sieve[i]
+				primes << (k = (i << 1) + 1)
+				j = (k ** 2) >> 1
+				while j < sieve_len_max
+					sieve[j] = k
+					j += k
+				end
+			end
 
-		return $primes
+			i += 1
+		end
+
+		# output result
+		limit = (n - 1) >> 1
+		while i <= limit
+			primes << (i << 1) + 1 unless sieve[i]
+			i += 1
+		end
+
+		$precomputed_primes = primes
+		$precomputed_sieve = sieve
 	end
 
 	#
@@ -110,7 +156,7 @@ module Abst
 		n_1 = n - 1
 		half_n_1 = n_1 >> 1
 
-		primes = primes_list.each
+		primes = precomputed_primes.each
 		find_base = proc do
 			b = primes.next
 			until (t = power(b, half_n_1, n)) == n_1
@@ -142,8 +188,8 @@ module Abst
 	def prime?(n)
 		return 1 < n if n <= 3
 
-		if n <= primes_list.last
-			return Bisect.index(primes_list, n) ? true : false
+		if n <= precomputed_primes.last
+			return Bisect.index(precomputed_primes, n) ? true : false
 		end
 
 		factor = trial_division(n, 257)[0]
@@ -201,7 +247,7 @@ module Abst
 			lim < d
 		end
 
-		(plist = primes_list).each do |d|
+		(plist = precomputed_primes).each do |d|
 			break if lim < d
 			break if 0 == n % d and divide.call(d)
 		end
@@ -292,11 +338,11 @@ module Abst
 	end
 
 	# Param::  positive integer n
-	#          positive integer bound <= PRIME_CACHE_LIMIT
+	#          positive integer bound <= DEFAULT_SIEVE_SIZE
 	#          positive integer m (2 <= m < n)
 	# Return:: a factor f (1 < f < n) if found else nil
 	def p_minus_1(n, bound = 10_000, m = 2)
-		plist = primes_list
+		plist = precomputed_primes
 
 		p = nil
 		old_m = m
@@ -552,7 +598,7 @@ module Abst
 	# Param::  integer n
 	# Return:: The least prime greater than n
 	def next_prime(n)
-		return Bisect.find_gt(primes_list, n) if n < primes_list.last
+		return Bisect.find_gt(precomputed_primes, n) if n < precomputed_primes.last
 
 		n += (n.even? ? 1 : 2)
 		n += 2 until prime?(n)
@@ -672,7 +718,7 @@ class Range
 	def each_prime()
 		return to_enum(:each_prime) unless block_given?
 
-		primes = Abst.primes_list
+		primes = Abst.precomputed_primes
 
 		max = last + (exclude_end? ? -1 : 0)
 		if (first <= primes.last)

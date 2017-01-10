@@ -166,7 +166,7 @@ class Integer
 		return true if self <= 3
 		return false if self.square?
 
-		pl = Abst.primes_list
+		pl = Abst.precomputed_primes
 
 		# trial division
 		limit = Abst.isqrt(n)
