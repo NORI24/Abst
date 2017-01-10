@@ -30,11 +30,6 @@ class TC_Prime < MiniTest::Test
 		$precomputed_sieve = recovery_sieve
 	end
 
-	def test_primes_list
-		list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-		assert_equal(list, Abst.primes_list[0...10])
-	end
-
 	def test_pseudoprime_test
 		assert_equal(true, Abst.pseudoprime_test(3, 2))
 		assert_equal(true, Abst.pseudoprime_test(5, 3))

@@ -2,7 +2,7 @@ module Abst
 	module_function
 
 	#
-	# Cache
+	# Precomputation
 	#
 
 	$precomputed_sieve = nil
@@ -85,40 +85,6 @@ module Abst
 		$precomputed_sieve = sieve
 	end
 
-	# precompute primes by eratosthenes
-	def precompute_primes
-		primes = eratosthenes_sieve(DEFAULT_SIEVE_SIZE).to_a
-
-		Dir::mkdir(DATA_DIR) unless FileTest.exist?(DATA_DIR)
-		open(PRIMES_LIST, "w") {|io| io.write(primes.map(&:to_s).join("\n"))}
-
-		return primes
-	end
-
-	def load_precomputed_primes
-		open(PRIMES_LIST) {|io| return io.read.split("\n").map(&:to_i)}
-	end
-
-	$primes = nil
-	def primes_list
-		return $primes if $primes
-
-		# precomputed?
-		if FileTest.exist?(PRIMES_LIST)
-			$primes = load_precomputed_primes
-		else
-			$primes = precompute_primes
-		end
-
-		def $primes.include?(n)
-			return Bisect.index(self, n)
-		end
-
-		$primes.freeze
-
-		return $primes
-	end
-
 	#
 	# primality test
 	#
@@ -190,7 +156,7 @@ module Abst
 		n_1 = n - 1
 		half_n_1 = n_1 >> 1
 
-		primes = primes_list.each
+		primes = precomputed_primes.each
 		find_base = proc do
 			b = primes.next
 			until (t = power(b, half_n_1, n)) == n_1
@@ -222,8 +188,8 @@ module Abst
 	def prime?(n)
 		return 1 < n if n <= 3
 
-		if n <= primes_list.last
-			return Bisect.index(primes_list, n) ? true : false
+		if n <= precomputed_primes.last
+			return Bisect.index(precomputed_primes, n) ? true : false
 		end
 
 		factor = trial_division(n, 257)[0]
@@ -281,7 +247,7 @@ module Abst
 			lim < d
 		end
 
-		(plist = primes_list).each do |d|
+		(plist = precomputed_primes).each do |d|
 			break if lim < d
 			break if 0 == n % d and divide.call(d)
 		end
@@ -376,7 +342,7 @@ module Abst
 	#          positive integer m (2 <= m < n)
 	# Return:: a factor f (1 < f < n) if found else nil
 	def p_minus_1(n, bound = 10_000, m = 2)
-		plist = primes_list
+		plist = precomputed_primes
 
 		p = nil
 		old_m = m
@@ -632,7 +598,7 @@ module Abst
 	# Param::  integer n
 	# Return:: The least prime greater than n
 	def next_prime(n)
-		return Bisect.find_gt(primes_list, n) if n < primes_list.last
+		return Bisect.find_gt(precomputed_primes, n) if n < precomputed_primes.last
 
 		n += (n.even? ? 1 : 2)
 		n += 2 until prime?(n)
@@ -752,7 +718,7 @@ class Range
 	def each_prime()
 		return to_enum(:each_prime) unless block_given?
 
-		primes = Abst.primes_list
+		primes = Abst.precomputed_primes
 
 		max = last + (exclude_end? ? -1 : 0)
 		if (first <= primes.last)

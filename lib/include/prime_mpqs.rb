@@ -297,8 +297,8 @@ module Abst
 
 		def next_d
 			d = @d + 4
-			if d < Abst.primes_list.last
-				plist = Abst.primes_list
+			if d < Abst.precomputed_primes.last
+				plist = Abst.precomputed_primes
 				(d..plist.last).each_prime do |p|
 					return p if p[1] == 1 and Abst.kronecker_symbol(@n, p) == 1
 				end
