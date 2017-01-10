@@ -3,7 +3,9 @@ require 'abst'
 
 class TC_Prime < MiniTest::Test
 	def test_precompute_sieve
-		temp = $precomputed_sieve
+		recovery_primes = $precomputed_primes
+		recovery_sieve = $precomputed_sieve
+		$precomputed_primes = nil
 		$precomputed_sieve = nil
 
 		lim = 1000
@@ -24,7 +26,8 @@ class TC_Prime < MiniTest::Test
 		Abst.precompute_sieve(lim)
 		assert_equal (lim + 1) / 2, Abst.precomputed_sieve.size
 
-		$precomputed_sieve = temp
+		$precomputed_primes = recovery_primes
+		$precomputed_sieve = recovery_sieve
 	end
 
 	def test_primes_list
