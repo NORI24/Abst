@@ -6,14 +6,23 @@ class TC_Prime < MiniTest::Test
 		temp = $precomputed_sieve
 		$precomputed_sieve = nil
 
-		Abst.precompute_sieve(100)
-		assert_equal 25, Abst.precomputed_primes.size, "Count of primes under 100"
-		assert_equal 1060, Abst.precomputed_primes.sum, "Sum of primes under 100"
+		lim = 1000
+		Abst.precompute_sieve(lim)
+		assert_equal 168, Abst.precomputed_primes.size, "Count of primes under 100"
+		assert_equal 76127, Abst.precomputed_primes.sum, "Sum of primes under 100"
+		assert_equal (lim + 1) / 2, Abst.precomputed_sieve.size, "sieve array size"
 		assert_equal nil, Abst.precomputed_sieve[3 >> 1], "sieve[3 >> 1]"
 		assert_equal nil, Abst.precomputed_sieve[7 >> 1], "sieve[7 >> 1]"
 		Abst.precomputed_primes.sample(3).each do |s|
 			assert_equal nil, Abst.precomputed_sieve[s >> 1], "sieve[#{s} >> 1]"
 		end
+
+		Abst.precompute_sieve(995)
+		assert_equal (lim + 1) / 2, Abst.precomputed_sieve.size
+
+		lim = 1005
+		Abst.precompute_sieve(lim)
+		assert_equal (lim + 1) / 2, Abst.precomputed_sieve.size
 
 		$precomputed_sieve = temp
 	end

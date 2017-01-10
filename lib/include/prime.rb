@@ -21,7 +21,7 @@ module Abst
 	# Cache the sieve array and primes.
 	def precompute_sieve(n)
 		n = 100 if n < 100
-		return if $precomputed_sieve && n + 1 < $precomputed_sieve.size
+		return if $precomputed_sieve && (n + 1) >> 1 <= $precomputed_sieve.size
 
 		primes = [2]
 
