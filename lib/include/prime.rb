@@ -415,6 +415,32 @@ module Abst
 			factor << [-1, 1]
 		end
 
+		if n < precomputed_sieve.size * 2
+			# division of 2
+			if n.even?
+				count = 0
+				count += 1 while n[count] == 0
+				n >>= count
+				factor << [2, count]
+			end
+
+			while 1 < n do
+				d = (precomputed_sieve[n >> 1] || n)
+				# division of d
+				q = n = n / d
+				count = 1
+				loop do
+					q, r = q.divmod(d)
+					break unless r.zero?
+					n = q
+					count += 1
+				end
+				factor << [d, count]
+			end
+
+			return factor.sort
+		end
+
 		found_factor, n = trial_division(n, td_lim = 10_000)
 		factor += found_factor
 		td_lim_square = (td_lim + 1) ** 2 - 1
