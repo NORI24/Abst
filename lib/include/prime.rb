@@ -75,14 +75,14 @@ module Abst
 		end
 
 		# output result
-		limit = (n - 1) >> 1
-		while i <= limit
+		while i < sieve_len_max
 			primes << (i << 1) + 1 unless sieve[i]
 			i += 1
 		end
 
 		$precomputed_primes = primes
 		$precomputed_sieve = sieve
+		nil
 	end
 
 	#
@@ -569,8 +569,7 @@ module Abst
 		end
 
 		# output result
-		limit = (n - 1) >> 1
-		while i <= limit
+		while i < sieve_len_max
 			yield((i << 1) + 1) if sieve[i]
 			i += 1
 		end
