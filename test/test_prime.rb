@@ -130,6 +130,7 @@ class TC_Prime < MiniTest::Test
 		assert_equal([[-1, 1], [3, 1], [5, 3]], Abst.factorize(-375))
 		assert_equal([[3, 1], [224743, 2]], Abst.factorize(151528248147))
 		assert_equal([[1658414587, 1], [5856287651, 1]], Abst.factorize(5856287651 * 1658414587))
+		assert_equal([[2856287659, 1], [5856287651, 1]], Abst.factorize(2856287659 * 5856287651))
 	end
 
 	def test_eratosthenes_sieve

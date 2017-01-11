@@ -188,7 +188,7 @@ module Abst
 	def prime?(n)
 		return 1 < n if n <= 3
 
-		if n <= precomputed_primes.last
+		if n <= precomputed_sieve.size * 2 + 2
 			return Bisect.index(precomputed_primes, n) ? true : false
 		end
 
@@ -225,7 +225,7 @@ module Abst
 	#          positive integer limit
 	# Return:: factorization up to limit and remainder of n i.e.
 	#          [[[a, b], [c, d], ...], r] s.t.
-	#          n == a**b * c**d * ... * r, (r have no factor less than or equal to limit ** 2)
+	#          n == a**b * c**d * ... * r, (r have no factor less than or equal to limit)
 	def trial_division(n, limit = INFINITY)
 		factor = []
 		lim = [limit, isqrt(n)].min
@@ -265,7 +265,7 @@ module Abst
 		end
 
 		# n is prime?
-		if 1 < n and isqrt(n) <= lim
+		if 1 < n and n <= (lim + 1) ** 2 - 1
 			factor.push([n, 1])
 			n = 1
 		end
@@ -403,34 +403,31 @@ module Abst
 	end
 
 	# Param::  integer n
-	#          boolean return_hash
 	# Return:: prime factorization of n s.t. [[p_1, e_1], [p_2, e_2], ...]
 	#          n == p_1**e_1 * p_2**e_2 * ... (p_1 < p_2 < ...)
 	#          if |n| <= 1 then return [[n, 1]].
 	#          if n < 0 then [-1, 1] is added as a factor.
-	def factorize(n, return_hash = false)
-		unless return_hash
-			return factorize(n, true).to_a.sort
-		end
-
-		factor = Hash.new(0)
+	def factorize(n)
+		factor = []
 		if n <= 1
-			return {n => 1} if -1 <= n
+			return [[n, 1]] if -1 <= n
 			n = -n
-			factor[-1] = 1
+			factor << [-1, 1]
 		end
 
 		found_factor, n = trial_division(n, td_lim = 10_000)
-		found_factor.each {|k, v| factor[k] += v}
-		td_lim_square = td_lim ** 2
+		factor += found_factor
+		td_lim_square = (td_lim + 1) ** 2 - 1
 
 		check_finish = lambda do
 			if n <= td_lim_square or prime?(n)
-				factor[n] += 1 unless 1 == n
+				factor << [n, 1] unless 1 == n
 				return true
 			end
 			return false
 		end
+
+		return factor if check_finish.call
 
 		divide = lambda do |f|
 			f.size.times do |i|
@@ -446,8 +443,6 @@ module Abst
 			return f
 		end
 
-		return factor if check_finish.call
-
 		# pollard_rho
 		loop do
 			c = nil
@@ -462,13 +457,12 @@ module Abst
 			# f is prime?
 			n /= f
 			if f <= td_lim_square or prime?(f)
-				f = divide.call([[f, 1]])
+				factor += divide.call([[f, 1]])
 			else
-				f = divide.call(factorize(f))
+				factor += divide.call(factorize(f))
 			end
 
-			f.each {|k, v| factor[k] += v}
-			return factor if check_finish.call
+			return factor.sort if check_finish.call
 		end
 
 		# MPQS
@@ -479,16 +473,15 @@ module Abst
 			# f is prime?
 			n /= f
 			if f <= td_lim_square or prime?(f)
-				f = divide.call([[f, 1]])
+				factor += divide.call([[f, 1]])
 			else
-				f = divide.call(factorize(f))
+				factor += divide.call(factorize(f))
 			end
 
-			f.each {|k, v| factor[k] += v}
-			return factor if check_finish.call
+			return factor.sort if check_finish.call
 		end
 
-		raise [factor, n].to_s
+		raise [factor.sort, n].to_s
 	end
 
 	#
