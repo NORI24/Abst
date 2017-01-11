@@ -188,7 +188,7 @@ module Abst
 	def prime?(n)
 		return 1 < n if n <= 3
 
-		if n <= precomputed_sieve.size * 2 + 2
+		if n <= precomputed_sieve.size * 2
 			return Bisect.index(precomputed_primes, n) ? true : false
 		end
 
